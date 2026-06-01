@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Environments
+.env
+.venv/
+venv/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Generated experiment artifacts
+generated/**/*.so
+generated/**/*.o
+generated/**/*.cu.o
+results/raw/*.jsonl
+results/tables/*.csv
+results/figures/*.png
+paper/*.pdf
+
+# Local planning notes
+implementation_pan.md
+implementation_plan.md
+
+# Local editor/system files
+.DS_Store
+.idea/
+.vscode/
+
+# Local agent/session state
+.agents/
+.codex/

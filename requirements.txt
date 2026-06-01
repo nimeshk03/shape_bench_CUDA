@@ -1,0 +1,13 @@
+numpy
+pandas
+matplotlib
+scipy
+pytest
+tqdm
+pyyaml
+jinja2
+rich
+tabulate
+jsonlines
+orjson
+python-dotenv

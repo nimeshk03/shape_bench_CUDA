@@ -1,0 +1,20 @@
+name: shapebench-cuda
+channels:
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+      - numpy
+      - pandas
+      - matplotlib
+      - scipy
+      - pytest
+      - tqdm
+      - pyyaml
+      - jinja2
+      - rich
+      - tabulate
+      - jsonlines
+      - orjson
+      - python-dotenv
