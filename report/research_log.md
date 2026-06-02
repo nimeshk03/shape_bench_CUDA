@@ -130,3 +130,36 @@ Commit:
 - Should the first prompt pair be generic for all tasks or task-specific?
 - Should task metadata include tolerance settings such as `atol` and `rtol` from the beginning?
 - Should shape variants remain fixed per task or be generated from metadata by the harness?
+
+### Prompt Mode Decision
+
+Decision:
+
+```text
+Use generic prompt files first.
+```
+
+Files added:
+
+- `prompts/baseline_prompt.md`
+- `prompts/shape_aware_prompt.md`
+- `tests/test_prompts.py`
+
+Reasoning:
+
+- The core experiment compares baseline prompting against shape-aware prompting.
+- Generic prompts are reusable across future tasks.
+- Task-specific prompt rendering can be added later by combining these files with task metadata and model code.
+
+Baseline prompt intent:
+
+- Optimize CUDA performance.
+- Preserve normal numerical correctness.
+- Avoid special shape-robustness emphasis.
+
+Shape-aware prompt intent:
+
+- Avoid hardcoded dimensions.
+- Use runtime shape information.
+- Handle smaller, larger, odd, non-power-of-two, and batch-varied shapes.
+- Preserve performance where possible without sacrificing multi-shape correctness.

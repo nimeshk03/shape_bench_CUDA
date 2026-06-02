@@ -55,6 +55,13 @@ The first local benchmark task is:
 
 It includes task metadata, fixed shape variants, a PyTorch `Model`, deterministic input generation, and a functional reference. This task is intentionally simple so the harness can be validated before moving to generated CUDA kernels.
 
+## Prompt Modes
+
+The initial prompt modes are:
+
+- `prompts/baseline_prompt.md`: asks for a fast correct CUDA implementation without special shape-generalization emphasis.
+- `prompts/shape_aware_prompt.md`: asks for a fast correct CUDA implementation that explicitly handles shape variants, odd dimensions, non-power-of-two sizes, and batch changes.
+
 ## Current Phase
 
 Phase 1 focuses on:
