@@ -61,6 +61,41 @@ def test_task_summary_from_results() -> None:
     assert summary.failure_reasons == {"boundary_condition_bug": 1}
 
 
+def test_task_summary_requires_exactly_one_original_result() -> None:
+    with pytest.raises(ValueError, match="exactly one original"):
+        TaskSummary.from_results(
+            [
+                ShapeBenchResult(
+                    task_id="task_001",
+                    prompt_mode="baseline",
+                    shape_category="odd",
+                    shape=(7, 9),
+                    correct=True,
+                )
+            ]
+        )
+
+    with pytest.raises(ValueError, match="exactly one original"):
+        TaskSummary.from_results(
+            [
+                ShapeBenchResult(
+                    task_id="task_001",
+                    prompt_mode="baseline",
+                    shape_category="original",
+                    shape=(8, 8),
+                    correct=True,
+                ),
+                ShapeBenchResult(
+                    task_id="task_001",
+                    prompt_mode="baseline",
+                    shape_category="original",
+                    shape=(8, 8),
+                    correct=True,
+                ),
+            ]
+        )
+
+
 def test_jsonl_round_trip(tmp_path) -> None:
     path = tmp_path / "results.jsonl"
     result = ShapeBenchResult(
@@ -75,4 +110,3 @@ def test_jsonl_round_trip(tmp_path) -> None:
     loaded = read_jsonl(path, ShapeBenchResult)
 
     assert loaded == [result]
-

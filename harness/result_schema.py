@@ -121,10 +121,14 @@ class TaskSummary:
             raise ValueError("TaskSummary requires one task_id and one prompt_mode")
 
         failure_reasons: dict[str, int] = {}
-        original_passed = False
+        original_results = [result for result in results if result.shape_category == "original"]
+        if len(original_results) != 1:
+            raise ValueError(
+                "TaskSummary requires exactly one original shape result, "
+                f"got {len(original_results)}"
+            )
+
         for result in results:
-            if result.shape_category == "original":
-                original_passed = result.correct
             if result.failure_reason is not None:
                 failure_reasons[result.failure_reason] = failure_reasons.get(result.failure_reason, 0) + 1
 
@@ -133,7 +137,7 @@ class TaskSummary:
             prompt_mode=results[0].prompt_mode,
             total_shapes=len(results),
             passed_shapes=sum(result.correct for result in results),
-            original_passed=original_passed,
+            original_passed=original_results[0].correct,
             failure_reasons=failure_reasons,
         )
 
@@ -150,4 +154,3 @@ class ExperimentSummary:
             "name": self.name,
             "task_summaries": [summary.to_dict() for summary in self.task_summaries],
         }
-

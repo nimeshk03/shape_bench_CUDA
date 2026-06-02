@@ -163,3 +163,63 @@ Shape-aware prompt intent:
 - Use runtime shape information.
 - Handle smaller, larger, odd, non-power-of-two, and batch-varied shapes.
 - Preserve performance where possible without sacrificing multi-shape correctness.
+
+### Prompt Renderer Milestone
+
+Implemented a local prompt renderer that combines:
+
+- a generic prompt mode,
+- task metadata,
+- shape variants,
+- and the PyTorch reference model.
+
+Files added:
+
+- `harness/prompt_renderer.py`
+- `scripts/render_prompt.py`
+- `tests/test_prompt_renderer.py`
+- `generated/prompts/task_001_baseline.md`
+- `generated/prompts/task_001_shape_aware.md`
+
+Task metadata update:
+
+- Added `atol` and `rtol` to `tasks/task_001/metadata.json`.
+
+Reasoning:
+
+- This creates concrete prompts ready to give to an LLM.
+- The workflow is still local and CPU-compatible.
+- API integration can be delayed until the manual prompt workflow is validated.
+
+Validation result:
+
+```text
+pytest -q
+29 passed in 2.62s
+```
+
+Current generated prompt commands:
+
+```bash
+python scripts/render_prompt.py --task-dir tasks/task_001 --mode baseline
+python scripts/render_prompt.py --task-dir tasks/task_001 --mode shape_aware
+```
+
+### Skeptic Review Cleanup
+
+Reviewed the Phase 1 implementation before starting CUDA generation.
+
+Issues addressed:
+
+- Prompt renderer default output paths are now resolved relative to the project root.
+- Rendered prompts now clarify that generated CUDA should match `Model.forward` and `reference`; `create_inputs` is only testing context.
+- Task metadata validation now checks required fields, dtype, tolerances, input names, and original shape format.
+- Task loading now verifies `metadata.original_shape` matches `shapes.original`.
+- `TaskSummary.from_results()` now requires exactly one `original` shape result to avoid confusing missing original-shape data with original-shape failure.
+- `.env.local` is ignored so local API keys are not committed accidentally.
+- Rendered prompts for `task_001` were regenerated and kept as reproducible prompt artifacts.
+
+Rationale:
+
+- These fixes reduce silent failure modes before generated CUDA code enters the workflow.
+- The project remains local and CPU-compatible.

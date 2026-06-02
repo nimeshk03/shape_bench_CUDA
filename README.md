@@ -62,6 +62,15 @@ The initial prompt modes are:
 - `prompts/baseline_prompt.md`: asks for a fast correct CUDA implementation without special shape-generalization emphasis.
 - `prompts/shape_aware_prompt.md`: asks for a fast correct CUDA implementation that explicitly handles shape variants, odd dimensions, non-power-of-two sizes, and batch changes.
 
+Render a concrete prompt for a task:
+
+```bash
+python scripts/render_prompt.py --task-dir tasks/task_001 --mode baseline
+python scripts/render_prompt.py --task-dir tasks/task_001 --mode shape_aware
+```
+
+Rendered prompts are written to `generated/prompts/`.
+
 ## Current Phase
 
 Phase 1 focuses on:

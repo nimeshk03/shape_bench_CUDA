@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 
+import pytest
+
 from harness.compare_outputs import compare_tensors
 from harness.cuda_checks import get_gpu_info, is_cuda_available
 from harness.run_benchmark import benchmark_callable
@@ -42,7 +44,21 @@ def test_task_loader_reads_task_definition(tmp_path) -> None:
     task_dir.mkdir()
     (task_dir / "model.py").write_text("def model(x):\n    return x\n", encoding="utf-8")
     (task_dir / "metadata.json").write_text(
-        json.dumps({"task_id": "task_001", "name": "demo"}),
+        json.dumps(
+            {
+                "task_id": "task_001",
+                "name": "demo",
+                "description": "demo task",
+                "category": "elementwise",
+                "input_kind": "matrix",
+                "input_names": ["x", "y"],
+                "original_shape": [8, 8],
+                "dtype": "float32",
+                "atol": 1e-4,
+                "rtol": 1e-4,
+                "expected_output": "same shape tensor",
+            }
+        ),
         encoding="utf-8",
     )
     (task_dir / "shapes.json").write_text(
@@ -63,3 +79,43 @@ def test_task_loader_reads_task_definition(tmp_path) -> None:
     assert load_shapes(task_dir)["odd"] == (7, 9)
     task = load_task(task_dir)
     assert task.model_path.name == "model.py"
+
+
+def test_task_loader_rejects_metadata_shape_mismatch(tmp_path) -> None:
+    task_dir = tmp_path / "task_001"
+    task_dir.mkdir()
+    (task_dir / "model.py").write_text("def model(x):\n    return x\n", encoding="utf-8")
+    (task_dir / "metadata.json").write_text(
+        json.dumps(
+            {
+                "task_id": "task_001",
+                "name": "demo",
+                "description": "demo task",
+                "category": "elementwise",
+                "input_kind": "matrix",
+                "input_names": ["x", "y"],
+                "original_shape": [4, 4],
+                "dtype": "float32",
+                "atol": 1e-4,
+                "rtol": 1e-4,
+                "expected_output": "same shape tensor",
+            }
+        ),
+        encoding="utf-8",
+    )
+    (task_dir / "shapes.json").write_text(
+        json.dumps(
+            {
+                "original": [8, 8],
+                "smaller": [4, 8],
+                "larger": [16, 8],
+                "odd": [7, 9],
+                "batch_variant": [2, 8],
+                "non_power_of_two": [7, 9],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="original_shape must match"):
+        load_task(task_dir)
