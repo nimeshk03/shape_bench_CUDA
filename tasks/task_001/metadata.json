@@ -1,0 +1,12 @@
+{
+  "task_id": "task_001",
+  "name": "elementwise_add_relu",
+  "description": "Compute relu(x + y) for two tensors with the same shape.",
+  "category": "elementwise",
+  "input_kind": "matrix",
+  "input_names": ["x", "y"],
+  "original_shape": [1024, 1024],
+  "dtype": "float32",
+  "expected_output": "Tensor with same shape as inputs",
+  "notes": "Starter task for validating shape-generalization harness behavior before CUDA experiments."
+}

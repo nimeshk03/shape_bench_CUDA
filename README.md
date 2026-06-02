@@ -47,6 +47,14 @@ The local harness currently includes:
 
 These pieces are intentionally CPU-compatible. CUDA compilation and benchmarking are expected to run later on an AWS GPU instance.
 
+## Initial Benchmark Task
+
+The first local benchmark task is:
+
+- `tasks/task_001`: elementwise `relu(x + y)` for two same-shaped tensors.
+
+It includes task metadata, fixed shape variants, a PyTorch `Model`, deterministic input generation, and a functional reference. This task is intentionally simple so the harness can be validated before moving to generated CUDA kernels.
+
 ## Current Phase
 
 Phase 1 focuses on:
