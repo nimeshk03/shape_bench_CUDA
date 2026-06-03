@@ -1021,3 +1021,54 @@ Validation result:
 conda run -n shapebench-cuda pytest -q
 76 passed in 2.26s
 ```
+
+### Vast.ai Successful GPU Evaluation
+
+Observation:
+
+```text
+After adding `ninja`, the guarded Vast.ai run completed the full GPU evaluation
+successfully. The instance was created, passed CUDA preflight, ran remote tests,
+ran the GPU batch evaluator, downloaded artifacts, and destroyed itself.
+```
+
+Run metadata:
+
+```text
+Local run dir: results/vast_runs/20260603T062646Z
+Instance id: 39254037
+Offer id: 36368079
+Template hash: e4c5e88bc289f4eecb0c955c4fe7430d
+Remote exit code: 0
+Destroyed: True
+Cleanup error: None
+Active Vast instances after run: 0
+```
+
+CUDA preflight:
+
+```text
+GPU: NVIDIA GeForce RTX 4090
+Python: 3.10.13
+PyTorch: 2.2.0
+torch CUDA: 12.1
+torch.cuda.is_available(): True
+nvcc: CUDA compilation tools 12.1, V12.1.105
+Remote pytest: 76 passed in 5.20s
+```
+
+Evaluation result:
+
+```text
+baseline attempt_003: 6/6 shapes passed; original_passed=True; failures={}
+shape_aware attempt_002: 6/6 shapes passed; original_passed=True; failures={}
+```
+
+Notes:
+
+```text
+This proves the Vast.ai automation path is working for a small CUDA evaluation
+batch. The result should be treated as a first infrastructure smoke run, not a
+final research conclusion, because only one task and one attempt per prompt
+mode were evaluated.
+```
