@@ -1129,3 +1129,57 @@ six explicit attempts. The generated CUDA should be treated as experiment
 data; GPU correctness/performance failures should be recorded, not patched
 away, unless the failure comes from the harness itself.
 ```
+
+### Task 001 Six-Attempt GPU Correctness Result
+
+Validated run:
+
+```text
+Commit: 8b494c7 Add task 001 experiment generation batch
+Run artifacts: results/vast_runs/20260603T142019Z
+GPU: NVIDIA GeForce RTX 4090
+PyTorch: 2.2.0
+CUDA available: true
+Remote tests: 77 passed
+Evaluator exit code: 0
+```
+
+Correctness result:
+
+```text
+baseline attempt_004: 6/6 shapes passed
+baseline attempt_005: 6/6 shapes passed
+baseline attempt_006: 6/6 shapes passed
+shape_aware attempt_003: 6/6 shapes passed
+shape_aware attempt_004: 6/6 shapes passed
+shape_aware attempt_005: 6/6 shapes passed
+```
+
+Shape coverage:
+
+```text
+original: 1024 x 1024
+smaller: 512 x 1024
+larger: 2048 x 1024
+odd: 1007 x 1013
+batch_variant: 256 x 1024
+non_power_of_two: 1000 x 1007
+```
+
+Interpretation:
+
+```text
+For task_001, both baseline and shape-aware prompting produced generated CUDA
+attempts that generalized correctly across all configured shape variants in
+this first six-attempt batch. This task is an elementwise add+ReLU case, so it
+may be too simple to expose meaningful shape-generalization differences.
+```
+
+Limitation:
+
+```text
+This run established correctness but did not produce runtime or speedup
+measurements; generated_ms, pytorch_eager_ms, torch_compile_ms, and speedup
+fields were null. The next harness improvement should add reliable timing so
+we can compare robustness and performance together.
+```
