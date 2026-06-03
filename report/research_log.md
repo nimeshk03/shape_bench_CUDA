@@ -1408,3 +1408,82 @@ Open next step:
 Run a guarded GPU evaluation for task_002 and task_003 together after committing
 the setup, then compare correctness and timing across the two harder tasks.
 ```
+
+## 2026-06-04 - Task 002 and Task 003 GPU Timing Result
+
+GPU run:
+
+```text
+run directory: results/vast_runs/20260603T191105Z
+GPU: NVIDIA GeForce RTX 4090
+PyTorch: 2.2.0
+CUDA available: true
+nvcc: 12.1
+remote tests: 87 passed
+evaluator exit code: 0
+instance cleanup: destroyed
+benchmark warmup: 10 iterations
+benchmark timing: 50 iterations
+```
+
+Correctness:
+
+```text
+task_002 rowwise_sum: 36/36 shape checks passed
+task_003 matrix_transpose: 36/36 shape checks passed
+
+All six shape categories passed for both tasks:
+original, smaller, larger, odd, batch_variant, non_power_of_two
+
+task_002 max_abs_error across this run: 1.52587890625e-05
+task_003 max_abs_error across this run: 0.0
+```
+
+Mean timing by task and prompt mode:
+
+```text
+task_id   prompt_mode   checks_passed   generated_ms   pytorch_eager_ms   mean_speedup_vs_eager
+task_002  baseline      18/18           0.007          0.007              0.930
+task_002  shape_aware   18/18           0.012          0.008              0.740
+task_003  baseline      18/18           0.009          0.034              3.067
+task_003  shape_aware   18/18           0.009          0.034              3.175
+```
+
+Mean timing by attempt:
+
+```text
+task_002 baseline attempt_001: 6/6 passed, generated_ms=0.006, pytorch_eager_ms=0.005, speedup=0.935
+task_002 baseline attempt_002: 6/6 passed, generated_ms=0.006, pytorch_eager_ms=0.005, speedup=0.924
+task_002 baseline attempt_003: 6/6 passed, generated_ms=0.011, pytorch_eager_ms=0.010, speedup=0.932
+task_002 shape_aware attempt_001: 6/6 passed, generated_ms=0.015, pytorch_eager_ms=0.009, speedup=0.659
+task_002 shape_aware attempt_002: 6/6 passed, generated_ms=0.015, pytorch_eager_ms=0.009, speedup=0.681
+task_002 shape_aware attempt_003: 6/6 passed, generated_ms=0.007, pytorch_eager_ms=0.006, speedup=0.881
+task_003 baseline attempt_001: 6/6 passed, generated_ms=0.009, pytorch_eager_ms=0.034, speedup=3.227
+task_003 baseline attempt_002: 6/6 passed, generated_ms=0.010, pytorch_eager_ms=0.034, speedup=2.815
+task_003 baseline attempt_003: 6/6 passed, generated_ms=0.009, pytorch_eager_ms=0.034, speedup=3.158
+task_003 shape_aware attempt_001: 6/6 passed, generated_ms=0.009, pytorch_eager_ms=0.034, speedup=3.238
+task_003 shape_aware attempt_002: 6/6 passed, generated_ms=0.009, pytorch_eager_ms=0.033, speedup=3.156
+task_003 shape_aware attempt_003: 6/6 passed, generated_ms=0.009, pytorch_eager_ms=0.033, speedup=3.131
+```
+
+Interpretation:
+
+```text
+The harder task_003 transpose benchmark produced clean correctness across all
+configured shape variants for both prompt modes. Unlike task_002, transpose also
+showed a clear speedup over PyTorch eager execution in this run, around 3x on
+average. The prompt-mode difference is still not conclusive: both baseline and
+shape-aware attempts passed all shapes, and their task_003 timing was very
+similar. Current evidence supports that the benchmark harness can capture both
+correctness and timing on a layout-sensitive task, but it still does not show a
+shape-aware robustness advantage.
+```
+
+Open next step:
+
+```text
+Add a task where shape-aware prompting is more likely to matter for correctness,
+such as tiled matrix multiplication or non-contiguous/batched inputs. Also add
+per-attempt progress logging to the remote evaluator so long CUDA compilation
+phases are easier to monitor during larger batches.
+```
