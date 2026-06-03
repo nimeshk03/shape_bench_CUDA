@@ -17,11 +17,14 @@ def test_run_gpu_eval_batch_writes_summary_for_attempts(tmp_path) -> None:
         device="cpu",
         require_cuda=False,
         run_preflight=False,
+        benchmark_warmup=1,
+        benchmark_iters=2,
     )
 
     summary = json.loads(summary_output.read_text(encoding="utf-8"))
     assert batch.summary_output == summary_output.relative_to(tmp_path)
     assert summary["require_cuda"] is False
+    assert summary["benchmark"] == {"enabled": True, "iterations": 2, "warmup": 1}
     assert summary["preflight"] == {"skipped": True}
     assert len(summary["attempts"]) == 2
     assert summary["attempts"][0]["prompt_mode"] == "baseline"

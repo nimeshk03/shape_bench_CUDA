@@ -11,7 +11,14 @@ def test_evaluate_attempt_passes_cpu_solution_and_writes_jsonl(tmp_path) -> None
     attempt_dir = _make_project(tmp_path, solution_source=_solution_source("torch.relu(x + y)"))
     output_path = tmp_path / "results" / "attempt.jsonl"
 
-    run = evaluate_attempt(attempt_dir, output_path=output_path, device="cpu", seed=123)
+    run = evaluate_attempt(
+        attempt_dir,
+        output_path=output_path,
+        device="cpu",
+        seed=123,
+        benchmark_warmup=1,
+        benchmark_iters=2,
+    )
 
     assert run.summary.passed_shapes == 6
     assert run.summary.total_shapes == 6
@@ -22,12 +29,29 @@ def test_evaluate_attempt_passes_cpu_solution_and_writes_jsonl(tmp_path) -> None
     assert all(result.correct for result in loaded)
     assert loaded[0].extra["attempt"] == 1
     assert loaded[0].extra["device"] == "cpu"
+    assert loaded[0].pytorch_eager_ms is not None
+    assert loaded[0].generated_ms is not None
+    assert loaded[0].speedup_vs_eager is not None
+    assert loaded[0].extra["benchmark"]["enabled"] is True
+    assert loaded[0].extra["benchmark"]["iterations"] == 2
+
+
+def test_evaluate_attempt_can_disable_benchmarking(tmp_path) -> None:
+    attempt_dir = _make_project(tmp_path, solution_source=_solution_source("torch.relu(x + y)"))
+
+    run = evaluate_attempt(attempt_dir, device="cpu", benchmark=False)
+
+    assert run.summary.passed_shapes == 6
+    assert all(result.generated_ms is None for result in run.results)
+    assert all(result.pytorch_eager_ms is None for result in run.results)
+    assert all(result.speedup_vs_eager is None for result in run.results)
+    assert {result.extra["benchmark"]["enabled"] for result in run.results} == {False}
 
 
 def test_evaluate_attempt_records_correctness_failures(tmp_path) -> None:
     attempt_dir = _make_project(tmp_path, solution_source=_solution_source("x + y"))
 
-    run = evaluate_attempt(attempt_dir, device="cpu")
+    run = evaluate_attempt(attempt_dir, device="cpu", benchmark_warmup=1, benchmark_iters=2)
 
     assert run.summary.passed_shapes == 0
     assert run.summary.failure_reasons == {
@@ -37,6 +61,7 @@ def test_evaluate_attempt_records_correctness_failures(tmp_path) -> None:
     original = next(result for result in run.results if result.shape_category == "original")
     assert original.failure_reason == "original_shape_correctness_failure"
     assert original.max_abs_error is not None
+    assert original.generated_ms is None
 
 
 def test_evaluate_attempt_records_import_compile_failure_for_all_shapes(tmp_path) -> None:
@@ -69,7 +94,7 @@ def test_evaluate_attempt_allows_solution_local_helper_imports(tmp_path) -> None
         encoding="utf-8",
     )
 
-    run = evaluate_attempt(attempt_dir, device="cpu")
+    run = evaluate_attempt(attempt_dir, device="cpu", benchmark_warmup=1, benchmark_iters=2)
 
     assert run.summary.passed_shapes == 6
 

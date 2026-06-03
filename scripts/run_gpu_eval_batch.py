@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from harness.evaluator import DEFAULT_BENCHMARK_ITERS, DEFAULT_BENCHMARK_WARMUP  # noqa: E402
 from harness.gpu_eval_batch import DEFAULT_ATTEMPTS, run_gpu_eval_batch  # noqa: E402
 
 
@@ -34,6 +35,19 @@ def parse_args() -> argparse.Namespace:
         help="Device passed to the evaluator. On a GPU machine, auto should resolve to cuda.",
     )
     parser.add_argument("--seed", type=int, default=0, help="Seed passed to task create_inputs.")
+    parser.add_argument("--no-benchmark", action="store_true", help="Run correctness only and leave timing fields empty.")
+    parser.add_argument(
+        "--benchmark-warmup",
+        type=int,
+        default=DEFAULT_BENCHMARK_WARMUP,
+        help="Warmup calls per callable before timing.",
+    )
+    parser.add_argument(
+        "--benchmark-iters",
+        type=int,
+        default=DEFAULT_BENCHMARK_ITERS,
+        help="Timed calls per callable.",
+    )
     parser.add_argument(
         "--allow-cpu",
         action="store_true",
@@ -59,6 +73,9 @@ def main() -> int:
             seed=args.seed,
             require_cuda=not args.allow_cpu,
             run_preflight=not args.skip_preflight,
+            benchmark=not args.no_benchmark,
+            benchmark_warmup=args.benchmark_warmup,
+            benchmark_iters=args.benchmark_iters,
         )
     except RuntimeError as exc:
         print(str(exc), file=sys.stderr)

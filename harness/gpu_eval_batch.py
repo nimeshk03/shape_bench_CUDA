@@ -10,7 +10,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from harness.evaluator import default_output_path, evaluate_attempt
+from harness.evaluator import (
+    DEFAULT_BENCHMARK_ITERS,
+    DEFAULT_BENCHMARK_WARMUP,
+    default_output_path,
+    evaluate_attempt,
+)
 
 
 DEFAULT_ATTEMPTS = (
@@ -49,6 +54,7 @@ class GpuEvalBatchRun:
     device: str
     seed: int
     require_cuda: bool
+    benchmark: dict[str, Any]
     preflight: dict[str, Any]
     attempts: list[BatchAttemptSummary]
     summary_output: Path
@@ -59,6 +65,7 @@ class GpuEvalBatchRun:
             "device": self.device,
             "seed": self.seed,
             "require_cuda": self.require_cuda,
+            "benchmark": self.benchmark,
             "preflight": self.preflight,
             "attempts": [attempt.to_dict() for attempt in self.attempts],
             "summary_output": str(self.summary_output),
@@ -74,6 +81,9 @@ def run_gpu_eval_batch(
     seed: int = 0,
     require_cuda: bool = True,
     run_preflight: bool = True,
+    benchmark: bool = True,
+    benchmark_warmup: int = DEFAULT_BENCHMARK_WARMUP,
+    benchmark_iters: int = DEFAULT_BENCHMARK_ITERS,
 ) -> GpuEvalBatchRun:
     """Run a small GPU correctness batch and write a summary JSON file."""
     root = Path(project_root)
@@ -83,7 +93,15 @@ def run_gpu_eval_batch(
 
     for attempt_dir in attempts:
         output_path = default_output_path(attempt_dir)
-        run = evaluate_attempt(attempt_dir, output_path=output_path, device=device, seed=seed)
+        run = evaluate_attempt(
+            attempt_dir,
+            output_path=output_path,
+            device=device,
+            seed=seed,
+            benchmark=benchmark,
+            benchmark_warmup=benchmark_warmup,
+            benchmark_iters=benchmark_iters,
+        )
         summaries.append(
             BatchAttemptSummary(
                 attempt_dir=_display_path(attempt_dir, root),
@@ -103,6 +121,11 @@ def run_gpu_eval_batch(
         device=device,
         seed=seed,
         require_cuda=require_cuda,
+        benchmark={
+            "enabled": benchmark,
+            "warmup": benchmark_warmup,
+            "iterations": benchmark_iters,
+        },
         preflight=preflight,
         attempts=summaries,
         summary_output=_display_path(destination, root),

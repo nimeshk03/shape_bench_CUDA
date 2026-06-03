@@ -16,11 +16,14 @@ from typing import Any, Callable
 from harness.compare_outputs import compare_tensors
 from harness.cuda_checks import get_gpu_info
 from harness.result_io import write_jsonl
+from harness.run_benchmark import benchmark_callable
 from harness.result_schema import ShapeBenchResult, TaskSummary
 from harness.task_loader import TaskDefinition, load_task
 
 
 DEFAULT_CONTRACT_FILE = "eval_contract.json"
+DEFAULT_BENCHMARK_WARMUP = 10
+DEFAULT_BENCHMARK_ITERS = 50
 
 
 @dataclass(frozen=True)
@@ -36,8 +39,15 @@ def evaluate_attempt(
     output_path: str | Path | None = None,
     device: str = "auto",
     seed: int = 0,
+    benchmark: bool = True,
+    benchmark_warmup: int = DEFAULT_BENCHMARK_WARMUP,
+    benchmark_iters: int = DEFAULT_BENCHMARK_ITERS,
 ) -> EvaluationRun:
     """Evaluate one prepared attempt across all task shape variants."""
+    if benchmark_warmup < 0:
+        raise ValueError("benchmark_warmup must be non-negative")
+    if benchmark_iters <= 0:
+        raise ValueError("benchmark_iters must be positive")
     attempt_path = Path(attempt_dir)
     contract = _load_contract(attempt_path)
     project_root = _project_root_from_attempt(attempt_path)
@@ -87,6 +97,9 @@ def evaluate_attempt(
             device=resolved_device,
             seed=seed,
             environment=environment,
+            benchmark=benchmark,
+            benchmark_warmup=benchmark_warmup,
+            benchmark_iters=benchmark_iters,
         )
         for shape_category, shape in task.shapes.items()
     ]
@@ -115,6 +128,9 @@ def _evaluate_shape(
     device: str,
     seed: int,
     environment: dict[str, Any],
+    benchmark: bool,
+    benchmark_warmup: int,
+    benchmark_iters: int,
 ) -> ShapeBenchResult:
     base_extra = _base_extra(contract, device=device, environment=environment)
     base_extra["seed"] = seed
@@ -152,6 +168,14 @@ def _evaluate_shape(
             if shape_category == "original"
             else "shape_variant_correctness_failure"
         )
+    timing = _benchmark_shape(
+        task_module=task_module,
+        forward=forward,
+        inputs=inputs,
+        enabled=benchmark and comparison.passed,
+        warmup=benchmark_warmup,
+        iters=benchmark_iters,
+    )
     return _result(
         task=task,
         contract=contract,
@@ -161,10 +185,14 @@ def _evaluate_shape(
         failure_reason=failure_reason,
         max_abs_error=comparison.max_abs_error,
         mean_abs_error=comparison.mean_abs_error,
+        pytorch_eager_ms=timing["pytorch_eager_ms"],
+        generated_ms=timing["generated_ms"],
+        speedup_vs_eager=timing["speedup_vs_eager"],
         extra={
             **base_extra,
             "phase": "shape_evaluation",
             "comparison": comparison.message,
+            "benchmark": timing["extra"],
         },
     )
 
@@ -189,6 +217,9 @@ def _failure_results_for_all_shapes(
             failure_reason=failure_reason,
             max_abs_error=None,
             mean_abs_error=None,
+            pytorch_eager_ms=None,
+            generated_ms=None,
+            speedup_vs_eager=None,
             extra={
                 **_base_extra(contract, device=device, environment=environment),
                 "phase": phase,
@@ -218,6 +249,9 @@ def _result(
     max_abs_error: float | None,
     mean_abs_error: float | None,
     extra: dict[str, Any],
+    pytorch_eager_ms: float | None = None,
+    generated_ms: float | None = None,
+    speedup_vs_eager: float | None = None,
 ) -> ShapeBenchResult:
     environment = extra.get("environment", {})
     return ShapeBenchResult(
@@ -227,6 +261,9 @@ def _result(
         shape=shape,
         correct=correct,
         failure_reason=failure_reason,
+        pytorch_eager_ms=pytorch_eager_ms,
+        generated_ms=generated_ms,
+        speedup_vs_eager=speedup_vs_eager,
         max_abs_error=max_abs_error,
         mean_abs_error=mean_abs_error,
         gpu_name=environment.get("gpu_name"),
@@ -295,6 +332,67 @@ def _reference_output(task_module: ModuleType, inputs: tuple[Any, ...]) -> Any:
     if hasattr(task_module, "Model"):
         return task_module.Model()(*inputs)
     raise AttributeError("task model.py must define reference or Model")
+
+
+def _benchmark_shape(
+    *,
+    task_module: ModuleType,
+    forward: Callable[..., Any],
+    inputs: tuple[Any, ...],
+    enabled: bool,
+    warmup: int,
+    iters: int,
+) -> dict[str, Any]:
+    if not enabled:
+        return {
+            "pytorch_eager_ms": None,
+            "generated_ms": None,
+            "speedup_vs_eager": None,
+            "extra": {
+                "enabled": False,
+                "warmup": warmup,
+                "iterations": iters,
+            },
+        }
+
+    extra: dict[str, Any] = {
+        "enabled": True,
+        "warmup": warmup,
+        "iterations": iters,
+    }
+    try:
+        eager = benchmark_callable(
+            lambda *args: _reference_output(task_module, args),
+            inputs,
+            warmup=warmup,
+            iters=iters,
+        )
+        generated = benchmark_callable(
+            forward,
+            inputs,
+            warmup=warmup,
+            iters=iters,
+        )
+    except Exception as exc:
+        extra["error"] = str(exc)
+        return {
+            "pytorch_eager_ms": None,
+            "generated_ms": None,
+            "speedup_vs_eager": None,
+            "extra": extra,
+        }
+
+    speedup = None
+    if generated.average_ms > 0:
+        speedup = eager.average_ms / generated.average_ms
+    extra["pytorch_eager_total_ms"] = eager.total_ms
+    extra["generated_total_ms"] = generated.total_ms
+    return {
+        "pytorch_eager_ms": eager.average_ms,
+        "generated_ms": generated.average_ms,
+        "speedup_vs_eager": speedup,
+        "extra": extra,
+    }
 
 
 def _resolve_device(device: str) -> str:

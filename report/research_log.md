@@ -1183,3 +1183,36 @@ measurements; generated_ms, pytorch_eager_ms, torch_compile_ms, and speedup
 fields were null. The next harness improvement should add reliable timing so
 we can compare robustness and performance together.
 ```
+
+## 2026-06-03 - Evaluator Timing Instrumentation
+
+Decision:
+
+```text
+Add timing to the evaluator before drawing prompt-mode or performance
+conclusions. Correctness remains the gate: benchmark timings are collected only
+for shapes that pass correctness.
+```
+
+Implementation:
+
+```text
+The evaluator now records PyTorch eager time, generated-kernel time, and
+speedup_vs_eager in each per-shape JSONL result. Batch summaries also record
+the benchmark warmup and iteration settings so later analysis can distinguish
+full timing runs from smoke-test timing runs.
+```
+
+Local validation:
+
+```text
+conda run -n shapebench-cuda pytest -q
+78 passed in 2.32s
+```
+
+Open next step:
+
+```text
+Run the six-attempt task_001 batch again on a GPU worker with timing enabled,
+then compare correctness and speedup across baseline and shape-aware attempts.
+```
