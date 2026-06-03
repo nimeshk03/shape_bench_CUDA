@@ -198,10 +198,17 @@ After choosing an `offer_id`, commit the local repo first, then run:
 python scripts/run_vast_eval.py --offer-id <offer_id>
 ```
 
+By default this uses the Vast.ai `PyTorch (cuDNN Devel)` template instead of raw image mode:
+
+```text
+3ba4addf2b917a405583ebb21dfd3f72
+```
+
 The Vast runner:
 
-- creates an SSH-enabled direct Vast instance,
+- creates an SSH-capable Vast instance from the template,
 - uses noninteractive SSH options, including automatic first-use host-key acceptance,
+- aborts after repeated SSH public-key failures instead of waiting until the full timeout,
 - uploads a committed `git archive` of this repo,
 - installs Python requirements,
 - runs CUDA preflight checks,
@@ -211,10 +218,10 @@ The Vast runner:
 - streams remote output to the terminal and saves it as `remote_eval.log`,
 - destroys the Vast instance automatically unless `--keep-instance` is passed.
 
-Default Vast image:
+Raw Docker image fallback:
 
-```text
-pytorch/pytorch:2.4.0-cuda12.4-cudnn9-devel
+```bash
+python scripts/run_vast_eval.py --offer-id <offer_id> --template-hash "" --image pytorch/pytorch:2.4.0-cuda12.4-cudnn9-devel
 ```
 
 Use `--keep-instance` only for debugging. Otherwise the script destroys the instance to control cost.

@@ -12,18 +12,40 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from harness.vast_runner import DEFAULT_DISK_GB, DEFAULT_IMAGE, VastRunConfig, run_vast_eval  # noqa: E402
+from harness.vast_runner import (  # noqa: E402
+    DEFAULT_DISK_GB,
+    DEFAULT_IMAGE,
+    DEFAULT_MAX_SSH_AUTH_FAILURES,
+    DEFAULT_TEMPLATE_HASH,
+    VastRunConfig,
+    run_vast_eval,
+)
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--offer-id", type=int, required=True, help="Vast.ai offer id from `vastai search offers`.")
-    parser.add_argument("--image", default=DEFAULT_IMAGE, help="Docker image to launch on Vast.ai.")
+    parser.add_argument(
+        "--template-hash",
+        default=DEFAULT_TEMPLATE_HASH,
+        help="Vast.ai template hash to launch. Pass an empty string with --image to use raw image mode.",
+    )
+    parser.add_argument(
+        "--image",
+        default=None,
+        help=f"Raw Docker image fallback. Defaults to {DEFAULT_IMAGE!r} only when --template-hash is empty.",
+    )
     parser.add_argument("--disk", type=int, default=DEFAULT_DISK_GB, help="Disk size in GB.")
     parser.add_argument("--repo-ref", default="HEAD", help="Git ref to archive and upload.")
     parser.add_argument("--remote-dir", default="/root/shape_bench_CUDA", help="Remote project directory.")
     parser.add_argument("--poll-seconds", type=int, default=10, help="Seconds between SSH readiness checks.")
     parser.add_argument("--max-wait-seconds", type=int, default=600, help="Maximum wait for SSH readiness.")
+    parser.add_argument(
+        "--max-ssh-auth-failures",
+        type=int,
+        default=DEFAULT_MAX_SSH_AUTH_FAILURES,
+        help="Abort after this many repeated SSH public-key failures.",
+    )
     parser.add_argument(
         "--keep-instance",
         action="store_true",
@@ -43,7 +65,8 @@ def main() -> int:
     config = VastRunConfig(
         offer_id=args.offer_id,
         project_root=ROOT,
-        image=args.image,
+        image=args.image or (DEFAULT_IMAGE if not args.template_hash else None),
+        template_hash=args.template_hash or None,
         disk_gb=args.disk,
         remote_dir=args.remote_dir,
         repo_ref=args.repo_ref,
@@ -52,9 +75,13 @@ def main() -> int:
         keep_instance=args.keep_instance,
         allow_dirty=args.allow_dirty,
         skip_tests=args.skip_tests,
+        max_ssh_auth_failures=args.max_ssh_auth_failures,
     )
     try:
         result = run_vast_eval(config)
+    except KeyboardInterrupt:
+        print("Vast run interrupted after cleanup attempt.", file=sys.stderr)
+        return 130
     except Exception as exc:
         print(f"Vast run failed: {exc}", file=sys.stderr)
         return 1

@@ -13,6 +13,7 @@ from harness.vast_runner import (
     parse_instance_id,
     parse_ssh_args,
     ssh_command,
+    wait_for_ssh,
 )
 
 
@@ -45,6 +46,7 @@ def test_ssh_command_disables_interactive_prompts() -> None:
     assert "BatchMode=yes" in command
     assert "StrictHostKeyChecking=accept-new" in command
     assert "ConnectTimeout=10" in command
+    assert "LogLevel=ERROR" in command
     assert command[-4:] == ["-p", "20182", "root@79.117.120.96", "echo ok"]
 
 
@@ -76,7 +78,7 @@ def test_build_remote_eval_script_can_skip_tests() -> None:
     assert "python scripts/run_gpu_eval_batch.py" in script
 
 
-def test_create_instance_asks_vast_to_cancel_unavailable(monkeypatch, tmp_path) -> None:
+def test_create_instance_uses_vast_template_by_default(monkeypatch, tmp_path) -> None:
     commands: list[list[str]] = []
 
     def fake_run_checked(command, *, cwd=None):
@@ -92,7 +94,65 @@ def test_create_instance_asks_vast_to_cancel_unavailable(monkeypatch, tmp_path) 
     instance_id = create_instance(VastRunConfig(offer_id=99, project_root=tmp_path))
 
     assert instance_id == 123
+    assert "--template_hash" in commands[0]
+    assert "--image" not in commands[0]
+    assert "--ssh" not in commands[0]
+    assert "--direct" not in commands[0]
     assert "--cancel-unavail" in commands[0]
+
+
+def test_create_instance_can_use_raw_image_fallback(monkeypatch, tmp_path) -> None:
+    commands: list[list[str]] = []
+
+    def fake_run_checked(command, *, cwd=None):
+        commands.append(command)
+
+        class Result:
+            stdout = '{"success": true, "new_contract": 123}'
+
+        return Result()
+
+    monkeypatch.setattr(vast_runner, "_run_checked", fake_run_checked)
+
+    instance_id = create_instance(
+        VastRunConfig(
+            offer_id=99,
+            project_root=tmp_path,
+            template_hash=None,
+            image="pytorch/pytorch:2.4.0-cuda12.4-cudnn9-devel",
+        )
+    )
+
+    assert instance_id == 123
+    assert "--template_hash" not in commands[0]
+    assert "--image" in commands[0]
+    assert "--ssh" in commands[0]
+    assert "--direct" in commands[0]
+    assert "--cancel-unavail" in commands[0]
+
+
+def test_wait_for_ssh_fails_fast_on_repeated_publickey_denials(monkeypatch) -> None:
+    def fake_run(command, *, cwd=None, timeout=60):
+        class Result:
+            returncode = 0
+            stdout = ""
+            stderr = ""
+
+        if command[:3] == ["vastai", "show", "instance"]:
+            Result.stdout = '{"actual_status": "running", "intended_status": "running"}'
+        elif command[:2] == ["vastai", "ssh-url"]:
+            Result.stdout = "ssh://root@example.com:2222"
+        elif command[0] == "ssh":
+            Result.returncode = 255
+            Result.stderr = "root@example.com: Permission denied (publickey)."
+        else:
+            raise AssertionError(command)
+        return Result()
+
+    monkeypatch.setattr(vast_runner, "_run", fake_run)
+
+    with pytest.raises(RuntimeError, match="public-key authentication failed"):
+        wait_for_ssh(123, poll_seconds=0, max_wait_seconds=60, max_auth_failures=2)
 
 
 def test_destroy_instance_skips_confirmation(monkeypatch) -> None:

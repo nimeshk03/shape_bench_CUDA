@@ -823,3 +823,38 @@ Validation result:
 conda run -n shapebench-cuda pytest -q
 72 passed in 2.14s
 ```
+
+### Vast.ai Template Launch Fix
+
+Observation:
+
+```text
+The first RTX 4090 Vast offer reached a running/loading state but repeatedly
+rejected SSH public-key authentication. The runner treated this as normal
+startup delay, so it kept waiting until the user interrupted the run. Cleanup
+then destroyed the instance, and `vastai show instances` reported no active
+instances.
+```
+
+Implementation:
+
+- Switched the default Vast launch path from raw Docker image mode to Vast template mode.
+- Default template: `PyTorch (cuDNN Devel)`, hash `3ba4addf2b917a405583ebb21dfd3f72`.
+- Kept raw Docker image mode as an explicit fallback using `--template-hash "" --image ...`.
+- Added `LogLevel=ERROR` to SSH options to suppress noisy post-quantum warnings during readiness probes.
+- Added fast failure after repeated `Permission denied (publickey)` SSH responses.
+- Added a clean `KeyboardInterrupt` path in the CLI so Ctrl-C does not print a full traceback after cleanup.
+
+Open question:
+
+```text
+Need to retry with the Vast template launch path. If SSH still fails, the next
+suspect is account-level SSH key registration rather than the container image.
+```
+
+Validation result:
+
+```text
+conda run -n shapebench-cuda pytest -q
+74 passed in 2.30s
+```

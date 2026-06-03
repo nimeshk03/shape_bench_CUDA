@@ -16,9 +16,11 @@ from urllib.parse import urlparse
 
 
 DEFAULT_IMAGE = "pytorch/pytorch:2.4.0-cuda12.4-cudnn9-devel"
+DEFAULT_TEMPLATE_HASH = "3ba4addf2b917a405583ebb21dfd3f72"
 DEFAULT_DISK_GB = 40
 DEFAULT_REMOTE_DIR = "/root/shape_bench_CUDA"
 DEFAULT_LOCAL_RUNS_DIR = "results/vast_runs"
+DEFAULT_MAX_SSH_AUTH_FAILURES = 4
 SSH_OPTIONS = [
     "-o",
     "BatchMode=yes",
@@ -30,6 +32,8 @@ SSH_OPTIONS = [
     "ServerAliveInterval=30",
     "-o",
     "ServerAliveCountMax=4",
+    "-o",
+    "LogLevel=ERROR",
 ]
 
 
@@ -37,7 +41,8 @@ SSH_OPTIONS = [
 class VastRunConfig:
     offer_id: int
     project_root: Path
-    image: str = DEFAULT_IMAGE
+    image: str | None = None
+    template_hash: str | None = DEFAULT_TEMPLATE_HASH
     disk_gb: int = DEFAULT_DISK_GB
     remote_dir: str = DEFAULT_REMOTE_DIR
     local_runs_dir: str = DEFAULT_LOCAL_RUNS_DIR
@@ -47,6 +52,7 @@ class VastRunConfig:
     keep_instance: bool = False
     allow_dirty: bool = False
     skip_tests: bool = False
+    max_ssh_auth_failures: int = DEFAULT_MAX_SSH_AUTH_FAILURES
 
 
 @dataclass(frozen=True)
@@ -73,7 +79,12 @@ def run_vast_eval(config: VastRunConfig) -> VastRunResult:
         _log(f"creating Vast instance from offer {config.offer_id}")
         instance_id = create_instance(config)
         _log(f"created Vast instance {instance_id}")
-        ssh_args = wait_for_ssh(instance_id, poll_seconds=config.poll_seconds, max_wait_seconds=config.max_wait_seconds)
+        ssh_args = wait_for_ssh(
+            instance_id,
+            poll_seconds=config.poll_seconds,
+            max_wait_seconds=config.max_wait_seconds,
+            max_auth_failures=config.max_ssh_auth_failures,
+        )
         _log("uploading committed project archive")
         upload_git_archive(config, ssh_args)
         _log("starting remote GPU evaluation")
@@ -97,6 +108,7 @@ def run_vast_eval(config: VastRunConfig) -> VastRunResult:
                 "instance_id": instance_id,
                 "offer_id": config.offer_id,
                 "image": config.image,
+                "template_hash": config.template_hash,
                 "disk_gb": config.disk_gb,
                 "repo_ref": config.repo_ref,
                 "remote_exit_code": remote_exit_code,
@@ -120,29 +132,40 @@ def run_vast_eval(config: VastRunConfig) -> VastRunResult:
 
 
 def create_instance(config: VastRunConfig) -> int:
-    output = _run_checked(
+    command = ["vastai", "create", "instance", str(config.offer_id)]
+    if config.template_hash:
+        _log(f"using Vast template hash {config.template_hash}")
+        command.extend(["--template_hash", config.template_hash])
+    elif config.image:
+        _log(f"using raw Docker image {config.image}")
+        command.extend(["--image", config.image, "--ssh", "--direct"])
+    else:
+        raise ValueError("either template_hash or image must be configured")
+    command.extend(
         [
-            "vastai",
-            "create",
-            "instance",
-            str(config.offer_id),
-            "--image",
-            config.image,
             "--disk",
             str(config.disk_gb),
-            "--ssh",
-            "--direct",
             "--cancel-unavail",
             "--raw",
-        ],
+        ]
+    )
+    output = _run_checked(
+        command,
         cwd=config.project_root,
     )
     return parse_instance_id(output.stdout)
 
 
-def wait_for_ssh(instance_id: int, *, poll_seconds: int, max_wait_seconds: int) -> list[str]:
+def wait_for_ssh(
+    instance_id: int,
+    *,
+    poll_seconds: int,
+    max_wait_seconds: int,
+    max_auth_failures: int = DEFAULT_MAX_SSH_AUTH_FAILURES,
+) -> list[str]:
     deadline = time.monotonic() + max_wait_seconds
     last_error = ""
+    publickey_denials = 0
     _log(f"waiting up to {max_wait_seconds}s for SSH on Vast instance {instance_id}")
     while time.monotonic() < deadline:
         status = _run(["vastai", "show", "instance", str(instance_id), "--raw"])
@@ -172,6 +195,15 @@ def wait_for_ssh(instance_id: int, *, poll_seconds: int, max_wait_seconds: int) 
                     _log("SSH is ready")
                     return ssh_args
                 last_error = probe.stderr.strip() or probe.stdout.strip()
+                if "Permission denied (publickey)" in last_error:
+                    publickey_denials += 1
+                    if publickey_denials >= max_auth_failures:
+                        raise RuntimeError(
+                            "Vast SSH public-key authentication failed repeatedly. "
+                            "Stop this offer and use a Vast template or verify the account SSH key."
+                        )
+                else:
+                    publickey_denials = 0
             else:
                 last_error = ssh_url.stderr.strip()
             if actual_status:
