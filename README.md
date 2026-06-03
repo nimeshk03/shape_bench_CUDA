@@ -71,6 +71,45 @@ python scripts/render_prompt.py --task-dir tasks/task_001 --mode shape_aware
 
 Rendered prompts are written to `generated/prompts/`.
 
+## Anthropic Generation
+
+Set your Anthropic API key in `.env.local`:
+
+```bash
+ANTHROPIC_API_KEY=...
+```
+
+`CLAUDE_API_KEY=...` is also accepted.
+
+`.env.local` is ignored by Git.
+
+Generate code for a task and prompt mode:
+
+```bash
+python scripts/check_anthropic_api.py
+python scripts/generate_with_anthropic.py --task-dir tasks/task_001 --mode baseline --attempt 1
+python scripts/generate_with_anthropic.py --task-dir tasks/task_001 --mode shape_aware --attempt 1
+```
+
+Generation uses `temperature=0.1` by default for reproducibility.
+
+Generation artifacts are saved under:
+
+```text
+generated/<prompt_mode>/<task_id>/attempt_<number>/
+```
+
+Each attempt stores `metadata.json`, `prompt.md`, `response.md`, and `raw_response.json`.
+
+Extract generated code blocks from an attempt:
+
+```bash
+python scripts/extract_generated_code.py generated/baseline/task_001/attempt_002
+python scripts/extract_generated_code.py generated/shape_aware/task_001/attempt_002
+```
+
+Extracted files are written to the attempt's `extracted/` directory with a `manifest.json`.
+
 ## Current Phase
 
 Phase 1 focuses on:

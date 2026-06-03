@@ -223,3 +223,237 @@ Rationale:
 
 - These fixes reduce silent failure modes before generated CUDA code enters the workflow.
 - The project remains local and CPU-compatible.
+
+### Anthropic API Generation Decision
+
+Decision:
+
+```text
+Use the Anthropic API for first generated CUDA attempts.
+```
+
+Implementation:
+
+- Added `harness/anthropic_generation.py`.
+- Added `scripts/generate_with_anthropic.py`.
+- Added `tests/test_anthropic_generation.py`.
+
+API details:
+
+- Uses Anthropic Messages API.
+- Sends `anthropic-version: 2023-06-01`.
+- Default generation model: `claude-sonnet-4-6`.
+- Smoke-test model: `claude-haiku-4-5-20251001`.
+- Default maximum output tokens: `4096`.
+- Default generation temperature: `0.1`.
+- API key is read from `ANTHROPIC_API_KEY` or `CLAUDE_API_KEY` in the environment or `.env.local`.
+- `.env.local` remains ignored and must not be committed.
+
+Generation artifact layout:
+
+```text
+generated/<prompt_mode>/<task_id>/attempt_<number>/
+├── metadata.json
+├── prompt.md
+├── raw_response.json
+└── response.md
+```
+
+Reasoning:
+
+- This records model, prompt mode, attempt number, token usage, raw response, and extracted text for paper traceability.
+- Tests avoid real API calls and do not read the user's actual `.env.local`.
+
+### Anthropic API Smoke Test
+
+Ran a tiny Anthropic API smoke test before sending full CUDA-generation prompts.
+
+Command:
+
+```bash
+python scripts/check_anthropic_api.py
+```
+
+Result:
+
+```text
+Anthropic API smoke test passed.
+Model: claude-haiku-4-5-20251001
+Response: OK.
+Usage: input_tokens=12, output_tokens=5
+```
+
+Notes:
+
+- `.env.local` used `CLAUDE_API_KEY`, so the loader was updated to accept both `ANTHROPIC_API_KEY` and `CLAUDE_API_KEY`.
+- The first sandboxed network attempt failed due DNS restrictions, then the same smoke test passed outside the sandbox.
+
+### First CUDA Generation Attempts
+
+Generated first CUDA responses for `task_001` with Anthropic Claude.
+
+Commands:
+
+```bash
+python scripts/generate_with_anthropic.py --task-dir tasks/task_001 --mode baseline --attempt 1
+python scripts/generate_with_anthropic.py --task-dir tasks/task_001 --mode shape_aware --attempt 1
+```
+
+Artifacts:
+
+```text
+generated/baseline/task_001/attempt_001/
+generated/shape_aware/task_001/attempt_001/
+```
+
+Baseline attempt metadata:
+
+```text
+model: claude-sonnet-4-6
+response_id: msg_01JgYx8vjSrKKxwFRLDHA9AY
+input_tokens: 1018
+output_tokens: 1205
+stop_reason: end_turn
+```
+
+Shape-aware attempt metadata:
+
+```text
+model: claude-sonnet-4-6
+response_id: msg_01Vy3eDW3Tb2JHJKZ1Nh9fH5
+input_tokens: 1092
+output_tokens: 894
+stop_reason: end_turn
+```
+
+Status:
+
+- Generation only.
+- No CUDA compilation yet.
+- No correctness or benchmark results yet.
+
+### Low-Temperature Regeneration
+
+Decision:
+
+```text
+Regenerate task_001 before code extraction using explicit temperature=0.1.
+```
+
+Reasoning:
+
+- Attempt 1 used Anthropic's default/unspecified temperature.
+- Research runs should use explicit generation settings for reproducibility.
+- The extractor should target the generation style we plan to use.
+
+Commands:
+
+```bash
+python scripts/generate_with_anthropic.py --task-dir tasks/task_001 --mode baseline --attempt 2 --temperature 0.1
+python scripts/generate_with_anthropic.py --task-dir tasks/task_001 --mode shape_aware --attempt 2 --temperature 0.1
+```
+
+Baseline attempt 2 metadata:
+
+```text
+model: claude-sonnet-4-6
+temperature: 0.1
+response_id: msg_01UDatMNmZHQZ8jo8oSogk
+input_tokens: 1018
+output_tokens: 1096
+stop_reason: end_turn
+```
+
+Shape-aware attempt 2 metadata:
+
+```text
+model: claude-sonnet-4-6
+temperature: 0.1
+response_id: msg_01YMUSYzKsqCL4KwUw12rqV9
+input_tokens: 1092
+output_tokens: 912
+stop_reason: end_turn
+```
+
+Status:
+
+- Generation only.
+- No CUDA compilation yet.
+- Use attempt 2 as the main target for the code extractor.
+
+### Code Extractor Milestone
+
+Implemented an automatic extractor for fenced code blocks in generated LLM responses.
+
+Files added:
+
+- `harness/code_extractor.py`
+- `scripts/extract_generated_code.py`
+- `tests/test_code_extractor.py`
+
+Extractor behavior:
+
+- Reads `response.md` from a generation attempt directory.
+- Parses fenced Markdown code blocks.
+- Infers filenames using conservative rules.
+- Writes extracted files to `extracted/`.
+- Writes `extracted/manifest.json`.
+- Refuses to overwrite existing extracted files unless `--overwrite` is passed.
+
+Commands run:
+
+```bash
+python scripts/extract_generated_code.py generated/baseline/task_001/attempt_002
+python scripts/extract_generated_code.py generated/shape_aware/task_001/attempt_002
+```
+
+Extraction results:
+
+```text
+baseline attempt 2:
+  extracted/extension.cu
+  extracted/setup.py
+  extracted/manifest.json
+
+shape-aware attempt 2:
+  extracted/extension.cu
+  extracted/setup.py
+  extracted/solution.py
+  extracted/manifest.json
+```
+
+Observed follow-up issue:
+
+- The shape-aware `solution.py` references `add_relu.cu`, while the extractor named the CUDA block `extension.cu`.
+- This should be handled before AWS compilation, either by improving filename inference or adding a compile-prep step that reconciles filenames.
+
+### Code Extractor Filename Fix
+
+Addressed the extractor review feedback:
+
+- The extractor now scans generated Python/setup blocks for referenced `.cu` filenames.
+- If exactly one CUDA filename is referenced, the CUDA block is saved with that filename.
+- Re-extracted attempt 2 artifacts now use `add_relu.cu`, matching generated `setup.py` and `solution.py` references.
+- `--overwrite` now removes previous manifest-tracked extracted files before writing new ones.
+
+Re-extraction commands:
+
+```bash
+python scripts/extract_generated_code.py generated/baseline/task_001/attempt_002 --overwrite
+python scripts/extract_generated_code.py generated/shape_aware/task_001/attempt_002 --overwrite
+```
+
+Updated extraction results:
+
+```text
+baseline attempt 2:
+  extracted/add_relu.cu
+  extracted/setup.py
+  extracted/manifest.json
+
+shape-aware attempt 2:
+  extracted/add_relu.cu
+  extracted/setup.py
+  extracted/solution.py
+  extracted/manifest.json
+```

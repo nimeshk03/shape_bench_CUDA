@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "text": "```cpp\n#include <torch/extension.h>\n#include <cuda.h>\n#include <cuda_runtime.h>\n\n__global__ void add_relu_kernel(\n    const float* __restrict__ x,\n    const float* __restrict__ y,\n    float* __restrict__ out,\n    int64_t n\n) {\n    int64_t idx = (int64_t)blockIdx.x * blockDim.x + threadIdx.x;\n    if (idx < n) {\n        float val = x[idx] + y[idx];\n        out[idx] = val > 0.0f ? val : 0.0f;\n    }\n}\n\ntorch::Tensor add_relu_cuda(torch::Tensor x, torch::Tensor y) {\n    TORCH_CHECK(x.is_cuda(), \"x must be a CUDA tensor\");\n    TORCH_CHECK(y.is_cuda(), \"y must be a CUDA tensor\");\n    TORCH_CHECK(x.is_contiguous(), \"x must be contiguous\");\n    TORCH_CHECK(y.is_contiguous(), \"y must be contiguous\");\n    TORCH_CHECK(x.dtype() == torch::kFloat32, \"x must be float32\");\n    TORCH_CHECK(y.dtype() == torch::kFloat32, \"y must be float32\");\n    TORCH_CHECK(x.sizes() == y.sizes(), \"x and y must have the same shape\");\n\n    auto out = torch::empty_like(x);\n    int64_t n = x.numel();\n\n    const int threads = 256;\n    const int blocks = (int)((n + threads - 1) / threads);\n\n    add_relu_kernel<<<blocks, threads>>>(\n        x.data_ptr<float>(),\n        y.data_ptr<float>(),\n        out.data_ptr<float>(),\n        n\n    );\n\n    return out;\n}\n\nPYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {\n    m.def(\"add_relu\", &add_relu_cuda, \"ReLU(x + y) CUDA implementation\");\n}\n```\n\n```python\n# setup.py\nfrom setuptools import setup\nfrom torch.utils.cpp_extension import BuildExtension, CUDAExtension\n\nsetup(\n    name=\"elementwise_add_relu_cuda\",\n    ext_modules=[\n        CUDAExtension(\n            name=\"elementwise_add_relu_cuda\",\n            sources=[\"add_relu.cu\"],\n        )\n    ],\n    cmdclass={\"build_ext\": BuildExtension},\n)\n```\n\n```python\n# solution.py\n\"\"\"CUDA extension wrapper matching the harness interface.\"\"\"\n\nfrom __future__ import annotations\n\nimport os\nimport torch\nfrom torch import Tensor\nfrom torch.utils.cpp_extension import load\n\n_ext = None\n\ndef _get_ext():\n    global _ext\n    if _ext is None:\n        src_dir = os.path.dirname(os.path.abspath(__file__))\n        _ext = load(\n            name=\"elementwise_add_relu_cuda\",\n            sources=[os.path.join(src_dir, \"add_relu.cu\")],\n            verbose=False,\n        )\n    return _ext\n\n\ndef forward(x: Tensor, y: Tensor) -> Tensor:\n    \"\"\"Compute relu(x + y) using CUDA kernel.\"\"\"\n    if not x.is_cuda:\n        x = x.cuda()\n    if not y.is_cuda:\n        y = y.cuda()\n    x = x.contiguous()\n    y = y.contiguous()\n    ext = _get_ext()\n    return ext.add_relu(x, y)\n```",
+      "type": "text"
+    }
+  ],
+  "id": "msg_01Vy3eDW3Tb2JHJKZ1Nh9fH5",
+  "model": "claude-sonnet-4-6",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1092,
+    "output_tokens": 894,
+    "service_tier": "standard"
+  }
+}
