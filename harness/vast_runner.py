@@ -100,6 +100,7 @@ def create_instance(config: VastRunConfig) -> int:
             str(config.disk_gb),
             "--ssh",
             "--direct",
+            "--cancel-unavail",
             "--raw",
         ],
         cwd=config.project_root,
@@ -116,8 +117,15 @@ def wait_for_ssh(instance_id: int, *, poll_seconds: int, max_wait_seconds: int) 
             try:
                 instance = _parse_cli_object(status.stdout)
                 actual_status = instance.get("actual_status") or instance.get("cur_state")
+                intended_status = instance.get("intended_status")
+                status_msg = instance.get("status_msg")
             except ValueError:
                 actual_status = None
+                intended_status = None
+                status_msg = None
+            if intended_status == "stopped" and actual_status in {"loading", "stopped"}:
+                detail = status_msg or "instance intended status became stopped before SSH was ready"
+                raise RuntimeError(f"Vast instance {instance_id} is not starting: {detail}")
             ssh_url = _run(["vastai", "ssh-url", str(instance_id)])
             if ssh_url.returncode == 0 and ssh_url.stdout.strip():
                 ssh_args = parse_ssh_args(ssh_url.stdout)
@@ -211,7 +219,7 @@ def download_results(config: VastRunConfig, ssh_args: list[str], local_run_dir: 
 
 
 def destroy_instance(instance_id: int) -> None:
-    _run(["vastai", "destroy", "instance", str(instance_id), "--raw"], timeout=120)
+    _run(["vastai", "destroy", "instance", str(instance_id), "--yes", "--raw"], timeout=120)
 
 
 def build_remote_eval_script(config: VastRunConfig) -> str:

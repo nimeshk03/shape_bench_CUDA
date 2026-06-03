@@ -4,7 +4,15 @@ from pathlib import Path
 
 import pytest
 
-from harness.vast_runner import VastRunConfig, build_remote_eval_script, parse_instance_id, parse_ssh_args
+from harness import vast_runner
+from harness.vast_runner import (
+    VastRunConfig,
+    build_remote_eval_script,
+    create_instance,
+    destroy_instance,
+    parse_instance_id,
+    parse_ssh_args,
+)
 
 
 def test_parse_instance_id_accepts_raw_json() -> None:
@@ -51,3 +59,42 @@ def test_build_remote_eval_script_can_skip_tests() -> None:
 
     assert "python -m pytest -q" not in script
     assert "python scripts/run_gpu_eval_batch.py" in script
+
+
+def test_create_instance_asks_vast_to_cancel_unavailable(monkeypatch, tmp_path) -> None:
+    commands: list[list[str]] = []
+
+    def fake_run_checked(command, *, cwd=None):
+        commands.append(command)
+
+        class Result:
+            stdout = '{"success": true, "new_contract": 123}'
+
+        return Result()
+
+    monkeypatch.setattr(vast_runner, "_run_checked", fake_run_checked)
+
+    instance_id = create_instance(VastRunConfig(offer_id=99, project_root=tmp_path))
+
+    assert instance_id == 123
+    assert "--cancel-unavail" in commands[0]
+
+
+def test_destroy_instance_skips_confirmation(monkeypatch) -> None:
+    commands: list[list[str]] = []
+
+    def fake_run(command, *, cwd=None, timeout=60):
+        commands.append(command)
+
+        class Result:
+            returncode = 0
+            stdout = ""
+            stderr = ""
+
+        return Result()
+
+    monkeypatch.setattr(vast_runner, "_run", fake_run)
+
+    destroy_instance(123)
+
+    assert commands == [["vastai", "destroy", "instance", "123", "--yes", "--raw"]]
