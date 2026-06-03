@@ -201,12 +201,14 @@ python scripts/run_vast_eval.py --offer-id <offer_id>
 The Vast runner:
 
 - creates an SSH-enabled direct Vast instance,
+- uses noninteractive SSH options, including automatic first-use host-key acceptance,
 - uploads a committed `git archive` of this repo,
 - installs Python requirements,
 - runs CUDA preflight checks,
 - runs `pytest -q`,
 - runs `python scripts/run_gpu_eval_batch.py`,
 - downloads result files and logs to `results/vast_runs/<timestamp>/`,
+- streams remote output to the terminal and saves it as `remote_eval.log`,
 - destroys the Vast instance automatically unless `--keep-instance` is passed.
 
 Default Vast image:

@@ -797,3 +797,29 @@ python scripts/run_gpu_eval_batch.py --allow-cpu --device auto --summary-output 
 ```
 
 The local smoke command recorded the expected CPU-only `compilation_failure=6` for baseline attempt 3 and shape-aware attempt 2.
+
+### Vast.ai Runner Hardening
+
+Observation:
+
+```text
+The first manual Vast run exposed two practical issues: SSH could prompt for
+host-key confirmation, and the runner stayed mostly silent while waiting or
+running remote commands. A failed or interrupted setup can waste paid GPU time.
+```
+
+Implementation:
+
+- Normalized Vast `ssh://user@host:port` outputs into explicit SSH arguments.
+- Added noninteractive SSH options, including batch mode, automatic first-use host-key acceptance, and connection/server keepalive timeouts.
+- Added timestamped runner progress logs for instance creation, SSH polling, upload, remote execution, result download, and destroy.
+- Streamed remote command output live to the terminal while saving it to `results/vast_runs/<timestamp>/remote_eval.log`.
+- Made automatic destroy ignore Ctrl-C during the destroy request, reducing the chance of leaving an instance running after a local interruption.
+- Made destroy fail loudly if the Vast CLI does not accept the destroy request.
+
+Validation result:
+
+```text
+conda run -n shapebench-cuda pytest -q
+72 passed in 2.14s
+```

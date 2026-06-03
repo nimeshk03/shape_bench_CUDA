@@ -12,6 +12,7 @@ from harness.vast_runner import (
     destroy_instance,
     parse_instance_id,
     parse_ssh_args,
+    ssh_command,
 )
 
 
@@ -31,6 +32,20 @@ def test_parse_instance_id_rejects_missing_id() -> None:
 def test_parse_ssh_args_accepts_args_or_full_command() -> None:
     assert parse_ssh_args("-p 1234 root@example.com") == ["-p", "1234", "root@example.com"]
     assert parse_ssh_args("ssh -p 1234 root@example.com") == ["-p", "1234", "root@example.com"]
+
+
+def test_parse_ssh_args_accepts_vast_ssh_url() -> None:
+    assert parse_ssh_args("ssh://root@79.117.120.96:20182") == ["-p", "20182", "root@79.117.120.96"]
+
+
+def test_ssh_command_disables_interactive_prompts() -> None:
+    command = ssh_command(["-p", "20182", "root@79.117.120.96"], "echo ok")
+
+    assert command[:2] == ["ssh", "-o"]
+    assert "BatchMode=yes" in command
+    assert "StrictHostKeyChecking=accept-new" in command
+    assert "ConnectTimeout=10" in command
+    assert command[-4:] == ["-p", "20182", "root@79.117.120.96", "echo ok"]
 
 
 def test_build_remote_eval_script_runs_gpu_batch_and_tests() -> None:
@@ -98,3 +113,18 @@ def test_destroy_instance_skips_confirmation(monkeypatch) -> None:
     destroy_instance(123)
 
     assert commands == [["vastai", "destroy", "instance", "123", "--yes", "--raw"]]
+
+
+def test_destroy_instance_raises_when_cli_fails(monkeypatch) -> None:
+    def fake_run(command, *, cwd=None, timeout=60):
+        class Result:
+            returncode = 1
+            stdout = ""
+            stderr = "cannot destroy"
+
+        return Result()
+
+    monkeypatch.setattr(vast_runner, "_run", fake_run)
+
+    with pytest.raises(RuntimeError, match="cannot destroy"):
+        destroy_instance(123)
