@@ -1,25 +1,32 @@
-# solution.py  (harness entry-point)
-import torch
-from torch import Tensor
-import os
-import sys
+"""Fallback generated-attempt entrypoint.
 
-# Build and load the extension inline so the harness can import this file directly.
-from torch.utils.cpp_extension import load
+This file was created by ShapeBench-CUDA because the generated attempt did not
+provide an extracted solution.py. It loads the extracted CUDA source and exposes
+forward(*inputs) for the evaluator contract.
+"""
+
+from __future__ import annotations
+
 import pathlib
 
-_dir = pathlib.Path(__file__).parent
-_ext = load(
-    name="rowwise_sum_ext",
-    sources=[str(_dir / "rowwise_sum.cu")],
-    verbose=False,
-)
+from torch import Tensor
+from torch.utils.cpp_extension import load
 
 
-def forward(x: Tensor) -> Tensor:
-    """Drop-in replacement for Model.forward / reference."""
-    if not x.is_cuda:
-        x = x.cuda()
-    if not x.is_contiguous():
-        x = x.contiguous()
-    return _ext.rowwise_sum(x)
+_EXT = None
+
+
+def _load_ext():
+    global _EXT
+    if _EXT is None:
+        source = pathlib.Path(__file__).parent / "rowwise_sum.cu"
+        _EXT = load(
+            name="shapebench_task_002_shape_aware_attempt_003",
+            sources=[str(source)],
+            verbose=False,
+        )
+    return _EXT
+
+
+def forward(x) -> Tensor:
+    return getattr(_load_ext(), "rowwise_sum")(x)

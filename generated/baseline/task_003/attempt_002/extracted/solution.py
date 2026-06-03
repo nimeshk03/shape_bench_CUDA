@@ -19,9 +19,9 @@ _EXT = None
 def _load_ext():
     global _EXT
     if _EXT is None:
-        source = pathlib.Path(__file__).parent / "rowwise_sum.cu"
+        source = pathlib.Path(__file__).parent / "matrix_transpose.cu"
         _EXT = load(
-            name="shapebench_task_002_shape_aware_attempt_002",
+            name="shapebench_task_003_baseline_attempt_002",
             sources=[str(source)],
             verbose=False,
         )
@@ -29,4 +29,4 @@ def _load_ext():
 
 
 def forward(x) -> Tensor:
-    return getattr(_load_ext(), "rowwise_sum")(x)
+    return getattr(_load_ext(), "forward")(x)

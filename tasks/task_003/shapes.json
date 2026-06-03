@@ -1,0 +1,8 @@
+{
+  "original": [1024, 2048],
+  "smaller": [512, 1024],
+  "larger": [2048, 4096],
+  "odd": [1007, 1013],
+  "batch_variant": [256, 4096],
+  "non_power_of_two": [1000, 1007]
+}

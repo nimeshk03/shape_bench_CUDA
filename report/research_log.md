@@ -1340,3 +1340,71 @@ Run a guarded Vast.ai GPU evaluation for these six task_002 attempts with
 correctness and timing enabled. Treat compilation/correctness failures as
 research data unless the harness itself is at fault.
 ```
+
+## 2026-06-04 - Task 002 Contract Cleanup and Task 003 Transpose Setup
+
+Task 002 cleanup:
+
+```text
+The first task_002 GPU run passed correctness, but shape_aware attempts 002 and
+003 used the same generated extension name while their CUDA sources differed.
+To keep timing and per-attempt attribution clean, both were converted to the
+standard fallback wrapper with unique extension names:
+
+shape_aware attempt_002: shapebench_task_002_shape_aware_attempt_002
+shape_aware attempt_003: shapebench_task_002_shape_aware_attempt_003
+```
+
+Decision:
+
+```text
+Add task_003 as a rectangular 2D transpose benchmark. This is harder than
+elementwise add and different from row-wise reduction because generated kernels
+must map row/column indices correctly and write an output tensor with swapped
+dimensions. The original shape is rectangular rather than square so transposed
+indexing mistakes are easier to detect.
+```
+
+Task definition:
+
+```text
+task_id: task_003
+name: matrix_transpose
+operation: torch.transpose(x, 0, 1).contiguous()
+input: one float32 2D tensor
+output: one float32 2D tensor with rows and columns swapped
+shape variants: original, smaller, larger, odd, batch_variant, non_power_of_two
+```
+
+Generation batch:
+
+```text
+baseline attempt_001: model=claude-sonnet-4-6, temperature=0.1, input_tokens=956, output_tokens=976
+baseline attempt_002: model=claude-sonnet-4-6, temperature=0.1, input_tokens=956, output_tokens=1007
+baseline attempt_003: model=claude-sonnet-4-6, temperature=0.1, input_tokens=956, output_tokens=1055
+shape_aware attempt_001: model=claude-sonnet-4-6, temperature=0.1, input_tokens=1116, output_tokens=2054
+shape_aware attempt_002: model=claude-sonnet-4-6, temperature=0.1, input_tokens=1116, output_tokens=1108
+shape_aware attempt_003: model=claude-sonnet-4-6, temperature=0.1, input_tokens=1116, output_tokens=1099
+```
+
+Extraction and contract prep:
+
+```text
+All six task_003 attempts produced one CUDA source. All six were prepared with
+the standard fallback wrapper so each attempt has a unique extension name before
+GPU benchmarking.
+```
+
+Local validation:
+
+```text
+conda run -n shapebench-cuda pytest -q
+87 passed in 2.48s
+```
+
+Open next step:
+
+```text
+Run a guarded GPU evaluation for task_002 and task_003 together after committing
+the setup, then compare correctness and timing across the two harder tasks.
+```

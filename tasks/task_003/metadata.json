@@ -1,0 +1,14 @@
+{
+  "task_id": "task_003",
+  "name": "matrix_transpose",
+  "description": "Transpose a 2D float32 tensor from shape [rows, cols] to [cols, rows].",
+  "category": "layout",
+  "input_kind": "matrix",
+  "input_names": ["x"],
+  "original_shape": [1024, 2048],
+  "dtype": "float32",
+  "atol": 0.0,
+  "rtol": 0.0,
+  "expected_output": "2D tensor with rows and columns swapped",
+  "notes": "Layout task intended to expose row/column indexing mistakes, square-shape assumptions, odd dimensions, and non-power-of-two boundary errors."
+}

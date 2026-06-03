@@ -1,0 +1,16 @@
+{
+  "attempt": 1,
+  "attempt_dir": "generated/shape_aware/task_003/attempt_001",
+  "created_fallback_solution": true,
+  "cuda_source": "matrix_transpose.cu",
+  "entrypoint_file": "solution.py",
+  "entrypoint_function": "forward",
+  "extension_function": "matrix_transpose",
+  "extension_name": "shapebench_task_003_shape_aware_attempt_001",
+  "extracted_dir": "extracted",
+  "input_names": [
+    "x"
+  ],
+  "prompt_mode": "shape_aware",
+  "task_id": "task_003"
+}

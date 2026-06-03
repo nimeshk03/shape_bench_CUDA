@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "text": "```cpp\n#include <torch/extension.h>\n#include <cuda_runtime.h>\n\n#define TILE_DIM 32\n#define BLOCK_ROWS 8\n\n__global__ void transpose_kernel(\n    const float* __restrict__ input,\n    float* __restrict__ output,\n    int rows,\n    int cols\n) {\n    __shared__ float tile[TILE_DIM][TILE_DIM + 1]; // +1 to avoid bank conflicts\n\n    int x = blockIdx.x * TILE_DIM + threadIdx.x;\n    int y = blockIdx.y * TILE_DIM + threadIdx.y;\n\n    // Load tile from input (rows x cols) into shared memory\n    for (int j = 0; j < TILE_DIM; j += BLOCK_ROWS) {\n        if (x < cols && (y + j) < rows) {\n            tile[threadIdx.y + j][threadIdx.x] = input[(y + j) * cols + x];\n        }\n    }\n\n    __syncthreads();\n\n    // Write transposed tile to output (cols x rows)\n    // Output shape: [cols, rows]\n    // x_out = blockIdx.y * TILE_DIM + threadIdx.x (column index in output = row index in input)\n    // y_out = blockIdx.x * TILE_DIM + threadIdx.y (row index in output = col index in input)\n    int x_out = blockIdx.y * TILE_DIM + threadIdx.x;\n    int y_out = blockIdx.x * TILE_DIM + threadIdx.y;\n\n    for (int j = 0; j < TILE_DIM; j += BLOCK_ROWS) {\n        if (x_out < rows && (y_out + j) < cols) {\n            output[(y_out + j) * rows + x_out] = tile[threadIdx.x][threadIdx.y + j];\n        }\n    }\n}\n\ntorch::Tensor matrix_transpose_cuda(torch::Tensor x) {\n    TORCH_CHECK(x.dim() == 2, \"Input must be 2D\");\n    TORCH_CHECK(x.dtype() == torch::kFloat32, \"Input must be float32\");\n    TORCH_CHECK(x.is_cuda(), \"Input must be on CUDA\");\n\n    int rows = x.size(0);\n    int cols = x.size(1);\n\n    auto output = torch::empty({cols, rows}, x.options());\n\n    dim3 block(TILE_DIM, BLOCK_ROWS);\n    dim3 grid(\n        (cols + TILE_DIM - 1) / TILE_DIM,\n        (rows + TILE_DIM - 1) / TILE_DIM\n    );\n\n    transpose_kernel<<<grid, block>>>(\n        x.data_ptr<float>(),\n        output.data_ptr<float>(),\n        rows,\n        cols\n    );\n\n    return output;\n}\n\nPYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {\n    m.def(\"forward\", &matrix_transpose_cuda, \"Matrix transpose CUDA\");\n}\n```\n\n```python\n# setup.py / build glue\nimport os\nimport torch\nfrom torch.utils.cpp_extension import load\n\n_ext = None\n\ndef _load_ext():\n    global _ext\n    if _ext is None:\n        src_dir = os.path.dirname(os.path.abspath(__file__))\n        _ext = load(\n            name=\"matrix_transpose_ext\",\n            sources=[os.path.join(src_dir, \"matrix_transpose.cu\")],\n            extra_cuda_cflags=[\"-O3\", \"--use_fast_math\"],\n            verbose=False,\n        )\n    return _ext\n\nimport torch\nfrom torch import Tensor, nn\n\nclass Model(nn.Module):\n    def forward(self, x: Tensor) -> Tensor:\n        if x.is_cuda:\n            ext = _load_ext()\n            return ext.forward(x)\n        return torch.transpose(x, 0, 1).contiguous()\n```",
+      "type": "text"
+    }
+  ],
+  "id": "msg_01XjSidXg4hiD5cpFRuVdf4L",
+  "model": "claude-sonnet-4-6",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 956,
+    "output_tokens": 1007,
+    "service_tier": "standard"
+  }
+}
