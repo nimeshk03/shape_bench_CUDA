@@ -1216,3 +1216,68 @@ Open next step:
 Run the six-attempt task_001 batch again on a GPU worker with timing enabled,
 then compare correctness and speedup across baseline and shape-aware attempts.
 ```
+
+### Task 001 Six-Attempt GPU Timing Result
+
+Validated run:
+
+```text
+Commit: 96d2cb2 Add evaluator timing measurements
+Run artifacts: results/vast_runs/20260603T182712Z
+GPU: NVIDIA GeForce RTX 4090
+PyTorch: 2.2.0
+Benchmark settings: warmup=10, iterations=50
+Remote tests: 78 passed
+Evaluator exit code: 0
+```
+
+Correctness:
+
+```text
+baseline attempts 004, 005, 006: 18/18 shape rows passed
+shape-aware attempts 003, 004, 005: 18/18 shape rows passed
+total: 36/36 shape rows passed
+```
+
+Timing summary:
+
+```text
+baseline mean generated_ms: 0.01791
+baseline mean pytorch_eager_ms: 0.02585
+baseline mean speedup_vs_eager: 1.543x
+
+shape-aware mean generated_ms: 0.02153
+shape-aware mean pytorch_eager_ms: 0.02481
+shape-aware mean speedup_vs_eager: 1.165x
+```
+
+Attempt-level speedup:
+
+```text
+baseline attempt_004: mean 2.096x, min 1.520x, max 2.351x
+baseline attempt_005: mean 1.305x, min 1.120x, max 1.614x
+baseline attempt_006: mean 1.229x, min 1.102x, max 1.420x
+shape-aware attempt_003: mean 1.200x, min 1.116x, max 1.259x
+shape-aware attempt_004: mean 1.215x, min 1.124x, max 1.274x
+shape-aware attempt_005: mean 1.080x, min 0.916x, max 1.454x
+```
+
+Interpretation:
+
+```text
+For this simple elementwise task, all attempts generalized correctly across the
+configured shape variants. The baseline group was faster on average in this
+single timed run, mainly because baseline attempt_004 was substantially faster
+than the other attempts. This is not enough evidence for prompt-mode
+superiority because task_001 is simple, the sample is small, and there is only
+one timed run on one GPU host.
+```
+
+Open next step:
+
+```text
+Add a harder task where shape assumptions are more likely to matter, such as a
+reduction, transpose, tiled matmul-like operation, or non-contiguous/batched
+case, then repeat the same baseline versus shape-aware generation and timed
+GPU evaluation flow.
+```
