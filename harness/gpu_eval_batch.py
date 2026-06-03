@@ -6,7 +6,7 @@ import json
 import subprocess
 import sys
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -99,7 +99,7 @@ def run_gpu_eval_batch(
 
     destination = Path(summary_output) if summary_output else root / "results" / "tables" / "gpu_eval_batch_summary.json"
     batch = GpuEvalBatchRun(
-        created_at=datetime.now(UTC).isoformat(),
+        created_at=datetime.now(timezone.utc).isoformat(),
         device=device,
         seed=seed,
         require_cuda=require_cuda,

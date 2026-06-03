@@ -11,4 +11,3 @@ tabulate
 jsonlines
 orjson
 python-dotenv
-vastai

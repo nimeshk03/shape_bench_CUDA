@@ -9,7 +9,7 @@ import signal
 import subprocess
 import time
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
@@ -104,7 +104,7 @@ def run_vast_eval(config: VastRunConfig) -> VastRunResult:
                 _log(f"destroy request failed for Vast instance {instance_id}: {_shorten(str(exc))}")
         if instance_id is not None:
             metadata = {
-                "created_at": datetime.now(UTC).isoformat(),
+                "created_at": datetime.now(timezone.utc).isoformat(),
                 "instance_id": instance_id,
                 "offer_id": config.offer_id,
                 "image": config.image,
@@ -421,7 +421,7 @@ def _ensure_clean_repo(project_root: Path, *, allow_dirty: bool) -> None:
 
 
 def _local_run_dir(project_root: Path, local_runs_dir: str) -> Path:
-    timestamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     return project_root / local_runs_dir / timestamp
 
 

@@ -192,6 +192,8 @@ Before renting an instance, verify the CLI key setup without spending GPU time:
 python scripts/check_vast_setup.py
 ```
 
+The Vast CLI is intentionally installed separately from `requirements.txt` because GPU workers do not need the CLI package.
+
 If RTX 4090 offers are too expensive, search RTX 3090:
 
 ```bash

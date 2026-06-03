@@ -932,3 +932,41 @@ Validation result:
 conda run -n shapebench-cuda pytest -q
 76 passed in 2.28s
 ```
+
+### Vast.ai Python 3.10 Compatibility Fix
+
+Observation:
+
+```text
+The devel template successfully passed `nvidia-smi`, `nvcc --version`, and
+`torch.cuda.is_available()`. The run then failed during pytest collection
+because the Vast template uses Python 3.10 and the harness imported
+`datetime.UTC`, which was introduced in Python 3.11.
+```
+
+Result:
+
+```text
+Template: e4c5e88bc289f4eecb0c955c4fe7430d
+GPU: NVIDIA GeForce RTX 4090
+nvcc: CUDA compilation tools 12.1, V12.1.105
+PyTorch: 2.2.0
+CUDA available: True
+Failure: ImportError: cannot import name 'UTC' from 'datetime'
+Remote exit code: 2
+Destroyed: True
+Active Vast instances after run: 0
+```
+
+Implementation:
+
+- Replaced `datetime.UTC` with `datetime.timezone.utc` in GPU/Vast harness code so it works on Python 3.10 and 3.11.
+- Removed `vastai` from project `requirements.txt` and `environment.yml`; the CLI remains a local setup dependency but GPU workers do not need it.
+- This should also avoid remote dependency churn from installing the Vast CLI package on the CUDA worker.
+
+Validation result:
+
+```text
+conda run -n shapebench-cuda pytest -q
+76 passed in 2.32s
+```
