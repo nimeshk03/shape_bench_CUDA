@@ -16,7 +16,7 @@ from urllib.parse import urlparse
 
 
 DEFAULT_IMAGE = "pytorch/pytorch:2.4.0-cuda12.4-cudnn9-devel"
-DEFAULT_TEMPLATE_HASH = "3ba4addf2b917a405583ebb21dfd3f72"
+DEFAULT_TEMPLATE_HASH = "e4c5e88bc289f4eecb0c955c4fe7430d"
 DEFAULT_DISK_GB = 40
 DEFAULT_REMOTE_DIR = "/root/shape_bench_CUDA"
 DEFAULT_LOCAL_RUNS_DIR = "results/vast_runs"
@@ -332,10 +332,17 @@ if ! command -v git >/dev/null 2>&1; then
   apt-get update
   apt-get install -y git
 fi
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
 nvidia-smi
 nvcc --version
+python - <<'PY'
+import torch
+print("PyTorch:", torch.__version__)
+print("CUDA available:", torch.cuda.is_available())
+print("GPU:", torch.cuda.get_device_name(0) if torch.cuda.is_available() else None)
+raise SystemExit(0 if torch.cuda.is_available() else 1)
+PY
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 python - <<'PY'
 import torch
 print("PyTorch:", torch.__version__)

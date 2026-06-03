@@ -890,3 +890,45 @@ conda run -n shapebench-cuda pytest -q
 conda run -n shapebench-cuda python scripts/check_vast_setup.py
 Vast setup check passed; active Vast instances: 0.
 ```
+
+### Vast.ai First Successful SSH Run
+
+Observation:
+
+```text
+The template-mode Vast runner successfully created instance 39251492, waited
+for SSH, uploaded the committed archive, streamed remote logs, downloaded
+artifacts, and destroyed the instance. The run failed during CUDA preflight
+because `nvidia-smi` worked but `nvcc` was missing.
+```
+
+Result:
+
+```text
+GPU: NVIDIA GeForce RTX 4090
+Driver: 590.48.01
+CUDA reported by driver: 13.1
+Failure: bash: line 13: nvcc: command not found
+Remote exit code: 127
+Destroyed: True
+Active Vast instances after run: 0
+```
+
+Implementation:
+
+- Changed the default Vast template hash to `e4c5e88bc289f4eecb0c955c4fe7430d`, a PyTorch CUDA devel template tagged `2.2.0-cuda12.1-cudnn8-devel`.
+- Moved remote CUDA preflight checks before `pip install` so missing `nvcc` fails before spending time installing dependencies.
+
+Open question:
+
+```text
+Need to retry with the devel template and confirm `nvcc --version` succeeds
+before running the full GPU batch.
+```
+
+Validation result:
+
+```text
+conda run -n shapebench-cuda pytest -q
+76 passed in 2.28s
+```

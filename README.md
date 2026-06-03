@@ -207,7 +207,7 @@ python scripts/run_vast_eval.py --offer-id <offer_id>
 By default this uses the Vast.ai `PyTorch (cuDNN Devel)` template instead of raw image mode:
 
 ```text
-3ba4addf2b917a405583ebb21dfd3f72
+e4c5e88bc289f4eecb0c955c4fe7430d
 ```
 
 The Vast runner:

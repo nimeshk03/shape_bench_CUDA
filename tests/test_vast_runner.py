@@ -66,6 +66,18 @@ def test_build_remote_eval_script_runs_gpu_batch_and_tests() -> None:
     assert "torch.cuda.is_available()" in script
 
 
+def test_build_remote_eval_script_runs_cuda_preflight_before_pip_install() -> None:
+    script = build_remote_eval_script(
+        VastRunConfig(
+            offer_id=1,
+            project_root=Path("/tmp/project"),
+        )
+    )
+
+    assert script.index("nvidia-smi") < script.index("python -m pip install --upgrade pip")
+    assert script.index("nvcc --version") < script.index("python -m pip install --upgrade pip")
+
+
 def test_build_remote_eval_script_can_skip_tests() -> None:
     script = build_remote_eval_script(
         VastRunConfig(
