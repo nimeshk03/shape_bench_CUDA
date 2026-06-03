@@ -62,6 +62,8 @@ The initial prompt modes are:
 - `prompts/baseline_prompt.md`: asks for a fast correct CUDA implementation without special shape-generalization emphasis.
 - `prompts/shape_aware_prompt.md`: asks for a fast correct CUDA implementation that explicitly handles shape variants, odd dimensions, non-power-of-two sizes, and batch changes.
 
+Rendered baseline prompts include only the original task shape. Shape variants are included only in rendered shape-aware prompts, so the baseline-vs-shape-aware comparison stays clean.
+
 Render a concrete prompt for a task:
 
 ```bash
@@ -109,6 +111,22 @@ python scripts/extract_generated_code.py generated/shape_aware/task_001/attempt_
 ```
 
 Extracted files are written to the attempt's `extracted/` directory with a `manifest.json`.
+
+Prepare an extracted attempt for evaluation:
+
+```bash
+python scripts/prepare_attempt_contract.py generated/baseline/task_001/attempt_003
+python scripts/prepare_attempt_contract.py generated/shape_aware/task_001/attempt_002
+```
+
+The evaluation contract is:
+
+```text
+extracted/solution.py exposes forward(*inputs)
+```
+
+If an attempt has CUDA code but no `solution.py`, the prep step creates a fallback wrapper.
+The contract records `task_id`, `prompt_mode`, `attempt`, `input_names`, `cuda_source`, `extension_function`, and a unique extension name.
 
 ## Current Phase
 

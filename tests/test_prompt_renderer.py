@@ -17,10 +17,12 @@ def test_render_baseline_prompt_includes_task_context() -> None:
     assert "elementwise_add_relu" in rendered
     assert "class Model" in rendered
     assert '"original"' in rendered
+    assert "## Original Shape" in rendered
+    assert "## Shape Variants" not in rendered
+    assert '"odd"' not in rendered
+    assert '"larger"' not in rendered
+    assert '"non_power_of_two"' not in rendered
     assert "create_inputs` is included only to show how local tests create inputs" in rendered
-    assert "shape variants" not in rendered.split("## Generation Instructions", 1)[1].split(
-        "## Task Metadata", 1
-    )[0].lower()
 
 
 def test_render_shape_aware_prompt_includes_shape_robustness_instructions() -> None:

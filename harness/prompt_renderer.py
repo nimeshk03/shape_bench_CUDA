@@ -47,12 +47,7 @@ def render_prompt(
             json.dumps(task.metadata, indent=2, sort_keys=True),
             "```",
             "",
-            "## Shape Variants",
-            "",
-            "```json",
-            _shape_registry_json(task),
-            "```",
-            "",
+            _shape_context_section(task, prompt_mode),
             "## PyTorch Reference Model",
             "",
             "The generated CUDA implementation should match `Model.forward` and `reference`.",
@@ -125,3 +120,31 @@ def _prompt_path(prompt_mode: PromptMode, prompts_dir: str | Path | None) -> Pat
 def _shape_registry_json(task: TaskDefinition) -> str:
     shapes = {name: list(shape) for name, shape in task.shapes.items()}
     return json.dumps(shapes, indent=2, sort_keys=True)
+
+
+def _shape_context_section(task: TaskDefinition, prompt_mode: PromptMode) -> str:
+    if prompt_mode == "baseline":
+        original_shape = {"original": list(task.shapes["original"])}
+        return "\n".join(
+            [
+                "## Original Shape",
+                "",
+                "Baseline generation should optimize for this original shape.",
+                "",
+                "```json",
+                json.dumps(original_shape, indent=2, sort_keys=True),
+                "```",
+                "",
+            ]
+        )
+
+    return "\n".join(
+        [
+            "## Shape Variants",
+            "",
+            "```json",
+            _shape_registry_json(task),
+            "```",
+            "",
+        ]
+    )

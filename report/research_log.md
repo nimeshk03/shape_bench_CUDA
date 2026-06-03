@@ -457,3 +457,174 @@ shape-aware attempt 2:
   extracted/solution.py
   extracted/manifest.json
 ```
+
+### Evaluation Contract Decision
+
+Decision:
+
+```text
+Use extracted/solution.py:forward as the generated-attempt evaluation entrypoint.
+```
+
+Contract:
+
+```text
+attempt/extracted/eval_contract.json
+attempt/extracted/solution.py
+entrypoint function: forward(*inputs)
+```
+
+Implementation:
+
+- Added `harness/attempt_contract.py`.
+- Added `scripts/prepare_attempt_contract.py`.
+- Added `tests/test_attempt_contract.py`.
+
+Fallback behavior:
+
+- If an extracted attempt already has `solution.py`, keep it.
+- If an extracted attempt has a single CUDA source but no `solution.py`, create a fallback wrapper that loads the CUDA source with `torch.utils.cpp_extension.load` and exposes `forward(x, y)`.
+
+Commands run:
+
+```bash
+python scripts/prepare_attempt_contract.py generated/baseline/task_001/attempt_002
+python scripts/prepare_attempt_contract.py generated/shape_aware/task_001/attempt_002
+```
+
+Results:
+
+```text
+baseline attempt 2:
+  entrypoint: extracted/solution.py:forward
+  cuda_source: add_relu.cu
+  fallback solution created: true
+
+shape-aware attempt 2:
+  entrypoint: extracted/solution.py:forward
+  cuda_source: add_relu.cu
+  fallback solution created: false
+```
+
+Status:
+
+- Contract prepared locally.
+- No CUDA compilation yet.
+
+### Evaluation Contract Review Cleanup
+
+Addressed follow-up concerns from review:
+
+- Fallback `solution.py` now uses a unique extension name derived from task id, prompt mode, and attempt number.
+- `eval_contract.json` now records `task_id`, `prompt_mode`, `attempt`, `input_names`, `cuda_source`, and `extension_name`.
+
+Updated baseline attempt 2 contract:
+
+```text
+entrypoint: solution.py:forward
+input_names: x, y
+extension_name: shapebench_task_001_baseline_attempt_002
+created_fallback_solution: true
+```
+
+Updated shape-aware attempt 2 contract:
+
+```text
+entrypoint: solution.py:forward
+input_names: x, y
+extension_name: shapebench_task_001_shape_aware_attempt_002
+created_fallback_solution: false
+```
+
+Remaining concern:
+
+- Generated `solution.py` files can still compile at import time or at `forward()` time depending on the LLM response. The evaluator should catch both import-time and runtime failures.
+
+### Evaluation Contract Design Fixes
+
+Addressed review feedback that found two evaluation-contract risks and one research-design blocker.
+
+Prompt contamination fix:
+
+- Baseline rendered prompts now include only the original shape.
+- Shape variants are shown only in shape-aware prompts.
+- Previously generated baseline attempts 1 and 2 were produced from prompts that included shape variants, so they should not be treated as clean baseline evidence.
+
+Evaluation contract fixes:
+
+- Existing extracted `solution.py` files must define a top-level `forward` function before a contract is written.
+- Fallback wrappers now derive `forward(*inputs)` from task metadata instead of hardcoding `forward(x, y)`.
+- Fallback wrappers now infer the CUDA extension function from a single `m.def("...")` binding in the extracted `.cu` file.
+- `eval_contract.json` now records `extension_function`.
+
+Clean baseline regeneration:
+
+```bash
+python scripts/render_prompt.py --task-dir tasks/task_001 --mode baseline
+python scripts/render_prompt.py --task-dir tasks/task_001 --mode shape_aware
+python scripts/generate_with_anthropic.py --task-dir tasks/task_001 --mode baseline --attempt 3 --temperature 0.1
+python scripts/extract_generated_code.py generated/baseline/task_001/attempt_003
+python scripts/prepare_attempt_contract.py generated/baseline/task_001/attempt_003
+```
+
+Baseline attempt 3 metadata:
+
+```text
+model: claude-sonnet-4-6
+temperature: 0.1
+response_id: msg_01W2aw8X2DoNbs4zoG3JvLfd
+input_tokens: 932
+output_tokens: 1245
+stop_reason: end_turn
+```
+
+Baseline attempt 3 contract:
+
+```text
+entrypoint: solution.py:forward
+input_names: x, y
+cuda_source: add_relu.cu
+extension_function: add_relu
+extension_name: shapebench_task_001_baseline_attempt_003
+created_fallback_solution: true
+```
+
+Validation result:
+
+```text
+pytest -q
+53 passed in 2.37s
+```
+
+### Evaluation Contract Idempotency Fix
+
+Addressed another review pass on the contract-preparation flow.
+
+Issues fixed:
+
+- Re-running `prepare_attempt_contract.py` on an existing fallback wrapper now preserves `created_fallback_solution: true`.
+- Contracts for LLM-provided `solution.py` files now record the extension name actually used by the entrypoint, when it can be inferred from `load(name=...)`.
+- Fallback wrapper generation now rejects Python keywords such as `class` or `from` before writing `solution.py`.
+
+Updated artifact check:
+
+```text
+baseline attempt 2:
+  created_fallback_solution: true
+  extension_name: shapebench_task_001_baseline_attempt_002
+
+baseline attempt 3:
+  created_fallback_solution: true
+  extension_name: shapebench_task_001_baseline_attempt_003
+
+shape-aware attempt 2:
+  created_fallback_solution: false
+  extension_name: elementwise_add_relu_ext
+```
+
+Validation result:
+
+```text
+pytest -q
+55 passed in 2.42s
+```
