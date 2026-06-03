@@ -11,3 +11,4 @@ tabulate
 jsonlines
 orjson
 python-dotenv
+ninja

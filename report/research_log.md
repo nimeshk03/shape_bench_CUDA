@@ -970,3 +970,54 @@ Validation result:
 conda run -n shapebench-cuda pytest -q
 76 passed in 2.32s
 ```
+
+### Vast.ai First Full Evaluator Run
+
+Observation:
+
+```text
+The Vast runner completed a full remote evaluation cycle on instance 39253518.
+The instance passed CUDA preflight, installed project requirements, ran the
+test suite, ran `scripts/run_gpu_eval_batch.py`, downloaded result artifacts,
+and destroyed the instance.
+```
+
+Result:
+
+```text
+Remote exit code: 0
+Destroyed: True
+Active Vast instances after run: 0
+Remote pytest: 76 passed in 4.24s
+GPU: NVIDIA GeForce RTX 4090
+Python: 3.10.13
+PyTorch: 2.2.0
+CUDA available: True
+nvcc: CUDA compilation tools 12.1, V12.1.105
+```
+
+Evaluation result:
+
+```text
+baseline attempt_003: 0/6 shapes passed; original_passed=False; failures={'compilation_failure': 6}
+shape_aware attempt_002: 0/6 shapes passed; original_passed=False; failures={'compilation_failure': 6}
+```
+
+Root cause:
+
+```text
+The first shape in each attempt failed with `Ninja is required to load C++
+extensions`, so PyTorch extension compilation could not start. Later shapes
+then failed because the compiled extension shared object did not exist.
+```
+
+Implementation:
+
+- Added `ninja` to project requirements and environment files so CUDA extension compilation can run on the GPU worker.
+
+Validation result:
+
+```text
+conda run -n shapebench-cuda pytest -q
+76 passed in 2.26s
+```
