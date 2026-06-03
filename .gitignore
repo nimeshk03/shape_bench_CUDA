@@ -24,7 +24,9 @@ generated/**/*.o
 generated/**/*.cu.o
 results/raw/*.jsonl
 results/tables/*.csv
+results/tables/*.json
 results/figures/*.png
+results/vast_runs/
 paper/*.pdf
 
 # Local planning notes

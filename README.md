@@ -2,7 +2,7 @@
 
 ShapeBench-CUDA is a lightweight research project for evaluating whether LLM-generated CUDA kernels remain correct and performant across input shape variations.
 
-The Phase 1 goal is a local, CPU-compatible harness plus AWS-ready CUDA scripts. Local development should not require an NVIDIA GPU.
+The Phase 1 goal is a local, CPU-compatible harness plus GPU-ready CUDA scripts. Local development should not require an NVIDIA GPU.
 
 ## Research Question
 
@@ -45,7 +45,7 @@ The local harness currently includes:
 - `harness/compare_outputs.py`: tensor-like output comparison.
 - `harness/run_benchmark.py`: simple callable timing helper.
 
-These pieces are intentionally CPU-compatible. CUDA compilation and benchmarking are expected to run later on an AWS GPU instance.
+These pieces are intentionally CPU-compatible. CUDA compilation and benchmarking are expected to run later on a rented GPU instance.
 
 ## Initial Benchmark Task
 
@@ -127,6 +127,95 @@ extracted/solution.py exposes forward(*inputs)
 
 If an attempt has CUDA code but no `solution.py`, the prep step creates a fallback wrapper.
 The contract records `task_id`, `prompt_mode`, `attempt`, `input_names`, `cuda_source`, `extension_function`, and a unique extension name.
+
+Evaluate a prepared attempt:
+
+```bash
+python scripts/evaluate_attempt.py generated/baseline/task_001/attempt_003
+python scripts/evaluate_attempt.py generated/shape_aware/task_001/attempt_002
+```
+
+The evaluator writes per-shape correctness records to `results/raw/`. On a CPU-only local machine, generated CUDA attempts are expected to record compilation failures instead of passing. On a GPU instance, the same command should compile and run the generated CUDA entrypoint.
+
+If `TORCH_EXTENSIONS_DIR` is not set, the evaluator uses `/tmp/shape_bench_torch_extensions` for PyTorch extension build artifacts.
+
+## GPU Evaluation
+
+On a GPU instance, first verify the CUDA environment:
+
+```bash
+nvidia-smi
+nvcc --version
+python - <<'PY'
+import torch
+print("PyTorch:", torch.__version__)
+print("CUDA available:", torch.cuda.is_available())
+print("GPU:", torch.cuda.get_device_name(0) if torch.cuda.is_available() else None)
+PY
+```
+
+Run the first prepared evaluation batch on any CUDA GPU machine:
+
+```bash
+python scripts/run_gpu_eval_batch.py
+```
+
+The GPU batch script requires CUDA by default. For a local CPU-only smoke test, use:
+
+```bash
+python scripts/run_gpu_eval_batch.py --allow-cpu --device auto --summary-output /tmp/shapebench_gpu_eval_batch_summary.json
+```
+
+The default GPU batch evaluates:
+
+- `generated/baseline/task_001/attempt_003`
+- `generated/shape_aware/task_001/attempt_002`
+
+It writes per-shape JSONL results under `results/raw/` and a summary JSON under `results/tables/`.
+
+## Vast.ai Manual-Offer Automation
+
+For cheaper early GPU experiments, use Vast.ai with a manually selected offer.
+
+Local setup:
+
+```bash
+python -m pip install --upgrade vastai
+vastai set api-key <your_vast_api_key>
+vastai create ssh-key "$(cat ~/.ssh/id_ed25519.pub)"
+vastai search offers 'gpu_name=RTX_4090 num_gpus=1' --limit 10
+```
+
+If RTX 4090 offers are too expensive, search RTX 3090:
+
+```bash
+vastai search offers 'gpu_name=RTX_3090 num_gpus=1' --limit 10
+```
+
+After choosing an `offer_id`, commit the local repo first, then run:
+
+```bash
+python scripts/run_vast_eval.py --offer-id <offer_id>
+```
+
+The Vast runner:
+
+- creates an SSH-enabled direct Vast instance,
+- uploads a committed `git archive` of this repo,
+- installs Python requirements,
+- runs CUDA preflight checks,
+- runs `pytest -q`,
+- runs `python scripts/run_gpu_eval_batch.py`,
+- downloads result files and logs to `results/vast_runs/<timestamp>/`,
+- destroys the Vast instance automatically unless `--keep-instance` is passed.
+
+Default Vast image:
+
+```text
+pytorch/pytorch:2.4.0-cuda12.4-cudnn9-devel
+```
+
+Use `--keep-instance` only for debugging. Otherwise the script destroys the instance to control cost.
 
 ## Current Phase
 

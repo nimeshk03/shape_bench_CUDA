@@ -628,3 +628,172 @@ Validation result:
 pytest -q
 55 passed in 2.42s
 ```
+
+### Correctness Evaluator Milestone
+
+Implemented the first evaluation runner for prepared generated attempts.
+
+Files added:
+
+- `harness/evaluator.py`
+- `scripts/evaluate_attempt.py`
+- `tests/test_evaluator.py`
+
+Evaluator behavior:
+
+- Reads `attempt/extracted/eval_contract.json`.
+- Loads the matching task metadata, shape variants, and reference model.
+- Imports `extracted/solution.py` and calls the configured `forward` entrypoint.
+- Allows generated Python entrypoints to import helper files from their `extracted/` directory.
+- Uses `/tmp/shape_bench_torch_extensions` as the default PyTorch extension build cache when `TORCH_EXTENSIONS_DIR` is not already set.
+- Runs deterministic correctness checks for every shape variant.
+- Records one `ShapeBenchResult` per shape in JSONL format under `results/raw/`.
+- Converts import-time compile failures and forward-time runtime failures into structured failed results instead of crashing the run.
+
+Local validation:
+
+```text
+pytest -q
+60 passed in 2.49s
+```
+
+Local generated-attempt smoke tests:
+
+```bash
+python scripts/evaluate_attempt.py generated/baseline/task_001/attempt_003 --device auto
+python scripts/evaluate_attempt.py generated/shape_aware/task_001/attempt_002 --device auto
+```
+
+Results on the local CPU-only machine:
+
+```text
+baseline attempt 3:
+  passed shapes: 0/6
+  original passed: false
+  failure reasons: compilation_failure=6
+
+shape-aware attempt 2:
+  passed shapes: 0/6
+  original passed: false
+  failure reasons: compilation_failure=6
+```
+
+Interpretation:
+
+- These local failures are expected because CUDA compilation is not available locally.
+- The important Phase 1 result is that the evaluator produces structured failure records instead of crashing.
+- The same evaluator command is now ready for rented GPU correctness runs.
+
+### GPU Evaluation Batch Script
+
+Implemented the first GPU-ready batch command for the prepared generated attempts.
+
+Files added:
+
+- `harness/gpu_eval_batch.py`
+- `scripts/run_gpu_eval_batch.py`
+- `tests/test_gpu_eval_batch.py`
+
+Batch behavior:
+
+- Runs preflight checks for `nvidia-smi`, `nvcc --version`, and `torch.cuda.is_available()`.
+- Requires CUDA by default, so a misconfigured GPU instance fails before running experiments.
+- Evaluates the first clean task pair:
+  - `generated/baseline/task_001/attempt_003`
+  - `generated/shape_aware/task_001/attempt_002`
+- Writes per-shape JSONL results under `results/raw/`.
+- Writes a batch summary JSON under `results/tables/`.
+- Supports local smoke testing with `--allow-cpu`.
+
+GPU command:
+
+```bash
+python scripts/run_gpu_eval_batch.py
+```
+
+Local smoke command:
+
+```bash
+python scripts/run_gpu_eval_batch.py --allow-cpu --device auto --summary-output /tmp/shapebench_gpu_eval_batch_summary.json
+```
+
+Local smoke result:
+
+```text
+baseline attempt 3:
+  passed shapes: 0/6
+  failure reasons: compilation_failure=6
+
+shape-aware attempt 2:
+  passed shapes: 0/6
+  failure reasons: compilation_failure=6
+```
+
+Strict local preflight result:
+
+```text
+GPU preflight failed: nvidia-smi is not available; nvcc is not available; torch.cuda.is_available() is false
+```
+
+Validation result:
+
+```text
+pytest -q
+61 passed in 2.37s
+```
+
+### Vast.ai Manual-Offer Automation
+
+Decision:
+
+```text
+Use Vast.ai for early CUDA experiments to reduce GPU cost, with manual offer selection for cost control.
+```
+
+Implementation:
+
+- Added provider-neutral GPU batch helpers in `harness/gpu_eval_batch.py`.
+- Added `scripts/run_gpu_eval_batch.py` as the primary CUDA-machine batch command.
+- Added `harness/vast_runner.py` and `scripts/run_vast_eval.py` for one-shot Vast runs.
+- Added `tests/test_vast_runner.py`.
+- Installed the `vastai` CLI in the local `shapebench-cuda` environment and added it to `requirements.txt` and `environment.yml`.
+
+Vast runner behavior:
+
+- User manually searches Vast offers and chooses an `offer_id`.
+- The script creates an SSH/direct Vast instance using a PyTorch CUDA devel image.
+- The script uploads a committed `git archive` of the repo instead of cloning from GitHub, avoiding GitHub credentials on the rented machine.
+- The remote machine installs requirements, checks CUDA, runs `pytest -q`, then runs `scripts/run_gpu_eval_batch.py`.
+- Results and logs are downloaded to `results/vast_runs/<timestamp>/`.
+- The Vast instance is destroyed automatically unless `--keep-instance` is passed.
+
+Command:
+
+```bash
+python scripts/run_vast_eval.py --offer-id <offer_id>
+```
+
+Default image:
+
+```text
+pytorch/pytorch:2.4.0-cuda12.4-cudnn9-devel
+```
+
+Open requirement:
+
+- The local repo must be committed before running the Vast script because the uploaded archive uses committed Git content.
+
+Validation result:
+
+```text
+pytest -q
+67 passed in 2.37s
+```
+
+Local smoke results:
+
+```bash
+python scripts/run_gpu_eval_batch.py --allow-cpu --device auto --summary-output /tmp/shapebench_gpu_eval_batch_summary.json
+```
+
+The local smoke command recorded the expected CPU-only `compilation_failure=6` for baseline attempt 3 and shape-aware attempt 2.
