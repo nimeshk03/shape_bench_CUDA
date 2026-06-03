@@ -858,3 +858,35 @@ Validation result:
 conda run -n shapebench-cuda pytest -q
 74 passed in 2.30s
 ```
+
+### Vast.ai SSH Setup Check
+
+Observation:
+
+```text
+The local SSH public key and the key registered in Vast.ai matched by fingerprint:
+SHA256:bQ+ktm7AgBCvBeyBwA4+B14pIadMLtNgTFjGiwQ7z+0.
+The interrupted template-mode run showed `Connection refused` while the instance
+was still booting, not a public-key rejection.
+```
+
+Implementation:
+
+- Added `scripts/check_vast_setup.py` to verify Vast CLI availability, local SSH key fingerprint, registered Vast key fingerprints, and active instance count without launching an instance.
+- Improved Vast runner SSH readiness messages so boot-time `Connection refused` is reported separately from `Permission denied (publickey)`.
+
+Validation target:
+
+```text
+Run `python scripts/check_vast_setup.py` before the next paid Vast launch.
+```
+
+Validation result:
+
+```text
+conda run -n shapebench-cuda pytest -q
+75 passed in 2.44s
+
+conda run -n shapebench-cuda python scripts/check_vast_setup.py
+Vast setup check passed; active Vast instances: 0.
+```

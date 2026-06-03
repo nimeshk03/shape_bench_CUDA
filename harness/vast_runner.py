@@ -211,7 +211,7 @@ def wait_for_ssh(
         else:
             last_error = status.stderr.strip()
         if last_error:
-            _log(f"SSH not ready yet: {_shorten(last_error)}")
+            _log(f"SSH not ready yet: {describe_ssh_probe_failure(last_error)}")
         time.sleep(poll_seconds)
     raise TimeoutError(f"Vast instance {instance_id} did not become SSH-ready: {last_error}")
 
@@ -372,6 +372,17 @@ def parse_ssh_args(output: str) -> list[str]:
 
 def ssh_command(ssh_args: list[str], remote_command: str) -> list[str]:
     return ["ssh", *SSH_OPTIONS, *ssh_args, remote_command]
+
+
+def describe_ssh_probe_failure(error: str) -> str:
+    compact = " ".join(error.split())
+    if "Permission denied (publickey)" in compact:
+        return "SSH key was rejected by the instance"
+    if "Connection refused" in compact:
+        return "SSH route exists, but the remote SSH service is not open yet"
+    if "Connection timed out" in compact or "Operation timed out" in compact:
+        return "SSH route timed out while the instance was booting"
+    return _shorten(compact)
 
 
 def _parse_cli_object(output: str) -> dict[str, Any]:

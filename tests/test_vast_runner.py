@@ -9,6 +9,7 @@ from harness.vast_runner import (
     VastRunConfig,
     build_remote_eval_script,
     create_instance,
+    describe_ssh_probe_failure,
     destroy_instance,
     parse_instance_id,
     parse_ssh_args,
@@ -153,6 +154,15 @@ def test_wait_for_ssh_fails_fast_on_repeated_publickey_denials(monkeypatch) -> N
 
     with pytest.raises(RuntimeError, match="public-key authentication failed"):
         wait_for_ssh(123, poll_seconds=0, max_wait_seconds=60, max_auth_failures=2)
+
+
+def test_describe_ssh_probe_failure_classifies_boot_and_key_errors() -> None:
+    assert describe_ssh_probe_failure("ssh: connect to host x port 1: Connection refused") == (
+        "SSH route exists, but the remote SSH service is not open yet"
+    )
+    assert describe_ssh_probe_failure("root@x: Permission denied (publickey).") == (
+        "SSH key was rejected by the instance"
+    )
 
 
 def test_destroy_instance_skips_confirmation(monkeypatch) -> None:

@@ -186,6 +186,12 @@ vastai create ssh-key "$(cat ~/.ssh/id_ed25519.pub)"
 vastai search offers 'gpu_name=RTX_4090 num_gpus=1' --limit 10
 ```
 
+Before renting an instance, verify the CLI key setup without spending GPU time:
+
+```bash
+python scripts/check_vast_setup.py
+```
+
 If RTX 4090 offers are too expensive, search RTX 3090:
 
 ```bash
@@ -209,6 +215,7 @@ The Vast runner:
 - creates an SSH-capable Vast instance from the template,
 - uses noninteractive SSH options, including automatic first-use host-key acceptance,
 - aborts after repeated SSH public-key failures instead of waiting until the full timeout,
+- labels normal boot-time SSH `Connection refused` separately from key rejection,
 - uploads a committed `git archive` of this repo,
 - installs Python requirements,
 - runs CUDA preflight checks,
