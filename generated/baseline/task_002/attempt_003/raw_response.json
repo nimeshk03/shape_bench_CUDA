@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "text": "```cpp\n#include <torch/extension.h>\n#include <cuda.h>\n#include <cuda_runtime.h>\n\n// Each block handles one row. Threads cooperatively sum elements in the row.\ntemplate <int BLOCK_SIZE>\n__global__ void rowwise_sum_kernel(\n    const float* __restrict__ input,\n    float* __restrict__ output,\n    int rows,\n    int cols\n) {\n    int row = blockIdx.x;\n    if (row >= rows) return;\n\n    const float* row_ptr = input + row * cols;\n\n    float sum = 0.0f;\n\n    // Each thread sums a strided portion of the row\n    for (int col = threadIdx.x; col < cols; col += BLOCK_SIZE) {\n        sum += row_ptr[col];\n    }\n\n    // Shared memory reduction\n    __shared__ float smem[BLOCK_SIZE];\n    smem[threadIdx.x] = sum;\n    __syncthreads();\n\n    // Tree reduction in shared memory\n    if (BLOCK_SIZE >= 512) {\n        if (threadIdx.x < 256) smem[threadIdx.x] += smem[threadIdx.x + 256];\n        __syncthreads();\n    }\n    if (BLOCK_SIZE >= 256) {\n        if (threadIdx.x < 128) smem[threadIdx.x] += smem[threadIdx.x + 128];\n        __syncthreads();\n    }\n    if (BLOCK_SIZE >= 128) {\n        if (threadIdx.x < 64) smem[threadIdx.x] += smem[threadIdx.x + 64];\n        __syncthreads();\n    }\n    // Warp-level reduction (no sync needed within a warp)\n    if (threadIdx.x < 32) {\n        volatile float* vsmem = smem;\n        if (BLOCK_SIZE >= 64) vsmem[threadIdx.x] += vsmem[threadIdx.x + 32];\n        vsmem[threadIdx.x] += vsmem[threadIdx.x + 16];\n        vsmem[threadIdx.x] += vsmem[threadIdx.x + 8];\n        vsmem[threadIdx.x] += vsmem[threadIdx.x + 4];\n        vsmem[threadIdx.x] += vsmem[threadIdx.x + 2];\n        vsmem[threadIdx.x] += vsmem[threadIdx.x + 1];\n    }\n\n    if (threadIdx.x == 0) {\n        output[row] = smem[0];\n    }\n}\n\ntorch::Tensor rowwise_sum_cuda(torch::Tensor x) {\n    TORCH_CHECK(x.is_cuda(), \"Input must be a CUDA tensor\");\n    TORCH_CHECK(x.dim() == 2, \"Input must be 2D\");\n    TORCH_CHECK(x.scalar_type() == torch::kFloat32, \"Input must be float32\");\n    TORCH_CHECK(x.is_contiguous(), \"Input must be contiguous\");\n\n    int rows = x.size(0);\n    int cols = x.size(1);\n\n    auto output = torch::empty({rows}, x.options());\n\n    if (rows == 0) return output;\n\n    // Choose block size based on cols\n    const int BLOCK_SIZE = 256;\n    dim3 grid(rows);\n    dim3 block(BLOCK_SIZE);\n\n    rowwise_sum_kernel<BLOCK_SIZE><<<grid, block>>>(\n        x.data_ptr<float>(),\n        output.data_ptr<float>(),\n        rows,\n        cols\n    );\n\n    return output;\n}\n\nPYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {\n    m.def(\"rowwise_sum\", &rowwise_sum_cuda, \"Row-wise sum (CUDA)\");\n}\n```\n\n```python\n# setup.py / build glue\nimport os\nimport torch\nfrom torch.utils.cpp_extension import load\n\n_ext = None\n\ndef _load_ext():\n    global _ext\n    if _ext is None:\n        src_dir = os.path.dirname(os.path.abspath(__file__))\n        _ext = load(\n            name=\"rowwise_sum_ext\",\n            sources=[os.path.join(src_dir, \"rowwise_sum.cu\")],\n            extra_cuda_cflags=[\"-O3\", \"--use_fast_math\"],\n            verbose=False,\n        )\n    return _ext\n\n\nimport torch\nfrom torch import Tensor, nn\n\n\nclass Model(nn.Module):\n    \"\"\"CUDA-accelerated row-wise sum.\"\"\"\n\n    def forward(self, x: Tensor) -> Tensor:\n        if x.is_cuda:\n            ext = _load_ext()\n            if not x.is_contiguous():\n                x = x.contiguous()\n            return ext.rowwise_sum(x)\n        # CPU fallback\n        return torch.sum(x, dim=1)\n\n\ndef reference(x: Tensor) -> Tensor:\n    return torch.sum(x, dim=1)\n```",
+      "type": "text"
+    }
+  ],
+  "id": "msg_0162M5y1qC5x7Z9p957L3NsT",
+  "model": "claude-sonnet-4-6",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 940,
+    "output_tokens": 1260,
+    "service_tier": "standard"
+  }
+}

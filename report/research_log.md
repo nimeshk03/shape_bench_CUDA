@@ -1281,3 +1281,62 @@ reduction, transpose, tiled matmul-like operation, or non-contiguous/batched
 case, then repeat the same baseline versus shape-aware generation and timed
 GPU evaluation flow.
 ```
+
+## 2026-06-04 - Task 002 Reduction Benchmark Setup
+
+Decision:
+
+```text
+Add task_002 as a row-wise sum reduction benchmark. This is harder than the
+elementwise add+ReLU task because generated kernels must reduce across a row
+dimension and handle odd/non-power-of-two row widths without assuming a fixed
+block-aligned size.
+```
+
+Task definition:
+
+```text
+task_id: task_002
+name: rowwise_sum
+operation: torch.sum(x, dim=1)
+input: one float32 2D tensor
+output: one float32 1D tensor with one sum per input row
+shape variants: original, smaller, larger, odd, batch_variant, non_power_of_two
+```
+
+Generation batch:
+
+```text
+baseline attempt_001: model=claude-sonnet-4-6, temperature=0.1, input_tokens=940, output_tokens=1260
+baseline attempt_002: model=claude-sonnet-4-6, temperature=0.1, input_tokens=940, output_tokens=1239
+baseline attempt_003: model=claude-sonnet-4-6, temperature=0.1, input_tokens=940, output_tokens=1260
+shape_aware attempt_001: model=claude-sonnet-4-6, temperature=0.1, input_tokens=1100, output_tokens=944
+shape_aware attempt_002: model=claude-sonnet-4-6, temperature=0.1, input_tokens=1100, output_tokens=1077
+shape_aware attempt_003: model=claude-sonnet-4-6, temperature=0.1, input_tokens=1100, output_tokens=1097
+```
+
+Extraction and contract prep:
+
+```text
+baseline attempt_001: solution.py:forward, cuda=rowwise_sum.cu, function=rowwise_sum, fallback=true
+baseline attempt_002: solution.py:forward, cuda=rowwise_sum.cu, function=rowwise_sum, fallback=true
+baseline attempt_003: solution.py:forward, cuda=rowwise_sum.cu, function=rowwise_sum, fallback=true
+shape_aware attempt_001: solution.py:forward, cuda=rowwise_sum.cu, function=rowwise_sum, fallback=true
+shape_aware attempt_002: solution.py:forward, cuda=rowwise_sum.cu, function=rowwise_sum, fallback=false
+shape_aware attempt_003: solution.py:forward, cuda=rowwise_sum.cu, function=rowwise_sum, fallback=false
+```
+
+Local validation:
+
+```text
+conda run -n shapebench-cuda pytest -q
+83 passed in 2.61s
+```
+
+Open next step:
+
+```text
+Run a guarded Vast.ai GPU evaluation for these six task_002 attempts with
+correctness and timing enabled. Treat compilation/correctness failures as
+research data unless the harness itself is at fault.
+```

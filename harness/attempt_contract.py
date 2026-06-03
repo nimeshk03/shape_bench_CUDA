@@ -53,6 +53,7 @@ def prepare_attempt_contract(
     attempt_dir: str | Path,
     *,
     overwrite: bool = False,
+    force_fallback: bool = False,
 ) -> AttemptContract:
     """Ensure an extracted attempt has a solution.py evaluation entrypoint."""
     attempt_path = Path(attempt_dir)
@@ -71,7 +72,16 @@ def prepare_attempt_contract(
     is_fallback_solution = solution_path.exists() and _is_generated_fallback(solution_path)
     created_fallback = is_fallback_solution
 
-    if solution_path.exists():
+    if force_fallback:
+        _write_fallback_solution(
+            solution_path,
+            cuda_source,
+            extension_function,
+            generated_extension_name,
+            task_metadata["input_names"],
+        )
+        created_fallback = True
+    elif solution_path.exists():
         if overwrite and is_fallback_solution:
             _write_fallback_solution(
                 solution_path,

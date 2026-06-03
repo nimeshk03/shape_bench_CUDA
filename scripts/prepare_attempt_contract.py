@@ -19,12 +19,21 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("attempt_dir", help="Attempt directory containing extracted/manifest.json")
     parser.add_argument("--overwrite", action="store_true", help="Regenerate existing fallback solution.py")
+    parser.add_argument(
+        "--force-fallback",
+        action="store_true",
+        help="Replace any existing solution.py with the standard fallback wrapper.",
+    )
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    contract = prepare_attempt_contract(args.attempt_dir, overwrite=args.overwrite)
+    contract = prepare_attempt_contract(
+        args.attempt_dir,
+        overwrite=args.overwrite,
+        force_fallback=args.force_fallback,
+    )
     print(f"Prepared evaluation contract: {contract.extracted_dir / contract.entrypoint_file}")
     print(f"Entrypoint: {contract.entrypoint_file}:{contract.entrypoint_function}")
     print(f"CUDA source: {contract.cuda_source}")

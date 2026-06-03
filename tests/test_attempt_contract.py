@@ -75,6 +75,43 @@ def test_prepare_attempt_contract_creates_fallback_solution(tmp_path) -> None:
     assert contract_json["extension_name"] == "shapebench_task_001_shape_aware_attempt_002"
 
 
+def test_prepare_attempt_contract_can_force_fallback_over_existing_solution(tmp_path) -> None:
+    root = _make_project_root(tmp_path)
+    attempt_dir = root / "generated" / "shape_aware" / "task_001" / "attempt_006"
+    _write_attempt_metadata(attempt_dir, prompt_mode="shape_aware", attempt=6)
+    extracted_dir = attempt_dir / "extracted"
+    extracted_dir.mkdir(parents=True)
+    (extracted_dir / "solution.py").write_text(
+        "import missing_prebuilt_ext\n\n"
+        "def forward(x, y):\n"
+        "    return missing_prebuilt_ext.add_relu(x, y)\n",
+        encoding="utf-8",
+    )
+    _write_cuda_source(extracted_dir / "add_relu.cu", extension_function="add_relu")
+    (extracted_dir / "manifest.json").write_text(
+        json.dumps(
+            {
+                "files": [
+                    {"filename": "add_relu.cu"},
+                    {"filename": "solution.py"},
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    contract = prepare_attempt_contract(attempt_dir, force_fallback=True)
+
+    solution = (extracted_dir / "solution.py").read_text(encoding="utf-8")
+    contract_json = json.loads((extracted_dir / "eval_contract.json").read_text(encoding="utf-8"))
+    assert contract.created_fallback_solution is True
+    assert "missing_prebuilt_ext" not in solution
+    assert "Fallback generated-attempt entrypoint" in solution
+    assert 'name="shapebench_task_001_shape_aware_attempt_006"' in solution
+    assert contract_json["created_fallback_solution"] is True
+    assert contract_json["extension_name"] == "shapebench_task_001_shape_aware_attempt_006"
+
+
 def test_prepare_attempt_contract_preserves_fallback_status_when_rerun(tmp_path) -> None:
     root = _make_project_root(tmp_path)
     attempt_dir = root / "generated" / "baseline" / "task_001" / "attempt_003"

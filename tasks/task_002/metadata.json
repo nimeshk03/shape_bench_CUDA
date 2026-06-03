@@ -1,0 +1,14 @@
+{
+  "task_id": "task_002",
+  "name": "rowwise_sum",
+  "description": "Compute the sum of each row in a 2D float32 tensor.",
+  "category": "reduction",
+  "input_kind": "matrix",
+  "input_names": ["x"],
+  "original_shape": [1024, 1024],
+  "dtype": "float32",
+  "atol": 0.001,
+  "rtol": 0.001,
+  "expected_output": "1D tensor with one sum per input row",
+  "notes": "Reduction task intended to expose shape assumptions around row length, odd widths, and non-power-of-two dimensions."
+}

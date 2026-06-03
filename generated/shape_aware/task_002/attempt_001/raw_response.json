@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "text": "```cpp\n#include <torch/extension.h>\n#include <cuda.h>\n#include <cuda_runtime.h>\n\n// Each block handles one row. Threads cooperatively sum elements in that row.\n__global__ void rowwise_sum_kernel(\n    const float* __restrict__ x,\n    float* __restrict__ out,\n    int rows,\n    int cols\n) {\n    int row = blockIdx.x;\n    if (row >= rows) return;\n\n    const float* row_ptr = x + (long long)row * cols;\n\n    // Shared memory for partial sums\n    extern __shared__ float sdata[];\n\n    float partial = 0.0f;\n    // Each thread accumulates over its strided portion of the row\n    for (int col = threadIdx.x; col < cols; col += blockDim.x) {\n        partial += row_ptr[col];\n    }\n    sdata[threadIdx.x] = partial;\n    __syncthreads();\n\n    // Tree reduction in shared memory\n    for (int stride = blockDim.x / 2; stride > 0; stride >>= 1) {\n        if (threadIdx.x < stride) {\n            sdata[threadIdx.x] += sdata[threadIdx.x + stride];\n        }\n        __syncthreads();\n    }\n\n    if (threadIdx.x == 0) {\n        out[row] = sdata[0];\n    }\n}\n\ntorch::Tensor rowwise_sum_cuda(torch::Tensor x) {\n    TORCH_CHECK(x.is_cuda(), \"x must be a CUDA tensor\");\n    TORCH_CHECK(x.dim() == 2, \"x must be 2D\");\n    TORCH_CHECK(x.scalar_type() == torch::kFloat32, \"x must be float32\");\n\n    x = x.contiguous();\n\n    int rows = x.size(0);\n    int cols = x.size(1);\n\n    auto out = torch::empty({rows}, x.options());\n\n    if (rows == 0) return out;\n\n    // Choose block size: next power of two >= min(cols, 1024), capped at 1024\n    int block_size = 1;\n    while (block_size < cols && block_size < 1024) block_size <<= 1;\n    if (block_size > 1024) block_size = 1024;\n    // Ensure block_size is at least 1\n    if (block_size < 1) block_size = 1;\n\n    dim3 grid(rows);\n    dim3 block(block_size);\n    size_t shared_mem = block_size * sizeof(float);\n\n    rowwise_sum_kernel<<<grid, block, shared_mem>>>(\n        x.data_ptr<float>(),\n        out.data_ptr<float>(),\n        rows,\n        cols\n    );\n\n    return out;\n}\n\nPYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {\n    m.def(\"rowwise_sum\", &rowwise_sum_cuda, \"Row-wise sum (CUDA)\");\n}\n```\n\n```python\n# setup.py  (build glue)\nfrom setuptools import setup\nfrom torch.utils.cpp_extension import BuildExtension, CUDAExtension\n\nsetup(\n    name=\"rowwise_sum_ext\",\n    ext_modules=[\n        CUDAExtension(\n            name=\"rowwise_sum_ext\",\n            sources=[\"rowwise_sum.cu\"],\n        )\n    ],\n    cmdclass={\"build_ext\": BuildExtension},\n)\n```\n\n```python\n# rowwise_sum_impl.py  (harness entry-point)\nimport torch\nfrom torch import Tensor\nimport rowwise_sum_ext\n\n\ndef forward(x: Tensor) -> Tensor:\n    return rowwise_sum_ext.rowwise_sum(x)\n```",
+      "type": "text"
+    }
+  ],
+  "id": "msg_016qBG83r25zy1crPFCvzREk",
+  "model": "claude-sonnet-4-6",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1100,
+    "output_tokens": 944,
+    "service_tier": "standard"
+  }
+}
