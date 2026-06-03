@@ -1,0 +1,17 @@
+{
+  "attempt": 4,
+  "attempt_dir": "generated/baseline/task_001/attempt_004",
+  "created_fallback_solution": false,
+  "cuda_source": "add_relu_cuda.cu",
+  "entrypoint_file": "solution.py",
+  "entrypoint_function": "forward",
+  "extension_function": "add_relu",
+  "extension_name": "add_relu_cuda_ext",
+  "extracted_dir": "extracted",
+  "input_names": [
+    "x",
+    "y"
+  ],
+  "prompt_mode": "baseline",
+  "task_id": "task_001"
+}

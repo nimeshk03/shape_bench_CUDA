@@ -38,6 +38,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--disk", type=int, default=DEFAULT_DISK_GB, help="Disk size in GB.")
     parser.add_argument("--repo-ref", default="HEAD", help="Git ref to archive and upload.")
     parser.add_argument("--remote-dir", default="/root/shape_bench_CUDA", help="Remote project directory.")
+    parser.add_argument(
+        "--attempt",
+        action="append",
+        dest="attempts",
+        help="Attempt directory to evaluate on the GPU worker. Can be passed multiple times.",
+    )
     parser.add_argument("--poll-seconds", type=int, default=10, help="Seconds between SSH readiness checks.")
     parser.add_argument("--max-wait-seconds", type=int, default=600, help="Maximum wait for SSH readiness.")
     parser.add_argument(
@@ -75,6 +81,7 @@ def main() -> int:
         keep_instance=args.keep_instance,
         allow_dirty=args.allow_dirty,
         skip_tests=args.skip_tests,
+        attempt_dirs=tuple(args.attempts or ()),
         max_ssh_auth_failures=args.max_ssh_auth_failures,
     )
     try:

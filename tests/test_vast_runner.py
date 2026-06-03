@@ -91,6 +91,25 @@ def test_build_remote_eval_script_can_skip_tests() -> None:
     assert "python scripts/run_gpu_eval_batch.py" in script
 
 
+def test_build_remote_eval_script_passes_explicit_attempts() -> None:
+    script = build_remote_eval_script(
+        VastRunConfig(
+            offer_id=1,
+            project_root=Path("/tmp/project"),
+            attempt_dirs=(
+                "generated/baseline/task_001/attempt_004",
+                "generated/shape_aware/task_001/attempt_003",
+            ),
+        )
+    )
+
+    assert (
+        "python scripts/run_gpu_eval_batch.py "
+        "--attempt generated/baseline/task_001/attempt_004 "
+        "--attempt generated/shape_aware/task_001/attempt_003"
+    ) in script
+
+
 def test_create_instance_uses_vast_template_by_default(monkeypatch, tmp_path) -> None:
     commands: list[list[str]] = []
 

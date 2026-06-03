@@ -1,0 +1,17 @@
+{
+  "attempt": 5,
+  "attempt_dir": "generated/shape_aware/task_001/attempt_005",
+  "created_fallback_solution": false,
+  "cuda_source": "elementwise_add_relu.cu",
+  "entrypoint_file": "solution.py",
+  "entrypoint_function": "forward",
+  "extension_function": "elementwise_add_relu",
+  "extension_name": null,
+  "extracted_dir": "extracted",
+  "input_names": [
+    "x",
+    "y"
+  ],
+  "prompt_mode": "shape_aware",
+  "task_id": "task_001"
+}

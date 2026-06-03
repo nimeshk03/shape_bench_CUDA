@@ -52,6 +52,7 @@ class VastRunConfig:
     keep_instance: bool = False
     allow_dirty: bool = False
     skip_tests: bool = False
+    attempt_dirs: tuple[str, ...] = ()
     max_ssh_auth_failures: int = DEFAULT_MAX_SSH_AUTH_FAILURES
 
 
@@ -111,6 +112,7 @@ def run_vast_eval(config: VastRunConfig) -> VastRunResult:
                 "template_hash": config.template_hash,
                 "disk_gb": config.disk_gb,
                 "repo_ref": config.repo_ref,
+                "attempt_dirs": list(config.attempt_dirs),
                 "remote_exit_code": remote_exit_code,
                 "destroyed": destroyed,
                 "cleanup_error": str(cleanup_error) if cleanup_error is not None else None,
@@ -323,6 +325,10 @@ def _destroy_instance_uninterruptible(instance_id: int) -> None:
 
 def build_remote_eval_script(config: VastRunConfig) -> str:
     test_command = "" if config.skip_tests else "python -m pytest -q\n"
+    eval_command = shlex.join(
+        ["python", "scripts/run_gpu_eval_batch.py"]
+        + [arg for attempt_dir in config.attempt_dirs for arg in ("--attempt", attempt_dir)]
+    )
     return f"""
 set -euo pipefail
 export DEBIAN_FRONTEND=noninteractive
@@ -350,7 +356,7 @@ print("CUDA available:", torch.cuda.is_available())
 print("GPU:", torch.cuda.get_device_name(0) if torch.cuda.is_available() else None)
 raise SystemExit(0 if torch.cuda.is_available() else 1)
 PY
-{test_command}python scripts/run_gpu_eval_batch.py
+{test_command}{eval_command}
 """
 
 

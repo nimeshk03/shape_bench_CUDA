@@ -1072,3 +1072,60 @@ batch. The result should be treated as a first infrastructure smoke run, not a
 final research conclusion, because only one task and one attempt per prompt
 mode were evaluated.
 ```
+
+## 2026-06-03 - Task 001 First Experiment Generation Batch
+
+Decision:
+
+```text
+Begin the first real comparison batch with three new baseline attempts and
+three new shape-aware attempts for task_001. Use Anthropic generation with
+temperature 0.1 to reduce unnecessary sampling variance while still allowing
+different attempts.
+```
+
+Generated attempts:
+
+```text
+baseline attempt_004: model=claude-sonnet-4-6, temperature=0.1, input_tokens=932, output_tokens=1402, stop=end_turn
+baseline attempt_005: model=claude-sonnet-4-6, temperature=0.1, input_tokens=932, output_tokens=1250, stop=end_turn
+baseline attempt_006: model=claude-sonnet-4-6, temperature=0.1, input_tokens=932, output_tokens=1309, stop=end_turn
+shape_aware attempt_003: model=claude-sonnet-4-6, temperature=0.1, input_tokens=1092, output_tokens=806, stop=end_turn
+shape_aware attempt_004: model=claude-sonnet-4-6, temperature=0.1, input_tokens=1092, output_tokens=995, stop=end_turn
+shape_aware attempt_005: model=claude-sonnet-4-6, temperature=0.1, input_tokens=1092, output_tokens=799, stop=end_turn
+```
+
+Extraction and evaluation-contract prep:
+
+```text
+generated/baseline/task_001/attempt_004: solution.py:forward, cuda=add_relu_cuda.cu, function=add_relu, extension=add_relu_cuda_ext, fallback=false
+generated/baseline/task_001/attempt_005: solution.py:forward, cuda=add_relu.cu, function=add_relu, extension=shapebench_task_001_baseline_attempt_005, fallback=true
+generated/baseline/task_001/attempt_006: solution.py:forward, cuda=add_relu_cuda.cu, function=add_relu, extension=shapebench_task_001_baseline_attempt_006, fallback=true
+generated/shape_aware/task_001/attempt_003: solution.py:forward, cuda=elementwise_add_relu.cu, function=elementwise_add_relu, extension=shapebench_task_001_shape_aware_attempt_003, fallback=true
+generated/shape_aware/task_001/attempt_004: solution.py:forward, cuda=elementwise_add_relu.cu, function=elementwise_add_relu, extension=shapebench_task_001_shape_aware_attempt_004, fallback=true
+generated/shape_aware/task_001/attempt_005: solution.py:forward, cuda=elementwise_add_relu.cu, function=elementwise_add_relu, extension=null, fallback=false
+```
+
+Tooling update before GPU run:
+
+```text
+The Vast runner now supports repeated --attempt arguments. This is required
+because the old Vast flow ran only the default smoke-test pair, while this
+experiment needs to evaluate the six newly generated attempts exactly.
+```
+
+Local validation:
+
+```text
+conda run -n shapebench-cuda pytest -q
+77 passed in 2.25s
+```
+
+Open next step:
+
+```text
+Commit and push this batch, then run one guarded Vast.ai evaluation over the
+six explicit attempts. The generated CUDA should be treated as experiment
+data; GPU correctness/performance failures should be recorded, not patched
+away, unless the failure comes from the harness itself.
+```
