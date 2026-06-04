@@ -1,20 +1,18 @@
 from __future__ import annotations
 
-import json
 import hashlib
+import json
+
+import pytest
 
 from harness.experiment_artifact import export_experiment_artifact
 
 
-def test_export_experiment_artifact_writes_versionable_summary(tmp_path) -> None:
-    run_dir = tmp_path / "results" / "vast_runs" / "run_001"
+def _write_minimal_run(run_dir) -> None:
     raw_dir = run_dir / "results" / "raw"
     tables_dir = run_dir / "results" / "tables"
     raw_dir.mkdir(parents=True)
     tables_dir.mkdir(parents=True)
-    (tmp_path / "tasks").mkdir()
-    (tmp_path / "generated").mkdir()
-
     (run_dir / "vast_run_metadata.json").write_text(
         json.dumps({"repo_ref": "HEAD", "remote_exit_code": 0}),
         encoding="utf-8",
@@ -23,10 +21,21 @@ def test_export_experiment_artifact_writes_versionable_summary(tmp_path) -> None
         json.dumps({"attempts": [], "benchmark": {"enabled": True}}),
         encoding="utf-8",
     )
+
+
+def test_export_experiment_artifact_writes_versionable_summary(tmp_path) -> None:
+    run_dir = tmp_path / "results" / "vast_runs" / "run_001"
+    raw_dir = run_dir / "results" / "raw"
+    (tmp_path / "tasks").mkdir()
+    (tmp_path / "generated").mkdir()
+    _write_minimal_run(run_dir)
+
     records = [
         {
             "task_id": "task_003",
             "prompt_mode": "baseline",
+            "shape_category": "original",
+            "shape": [1024, 1024],
             "correct": True,
             "generated_ms": 2.0,
             "pytorch_eager_ms": 4.0,
@@ -36,6 +45,8 @@ def test_export_experiment_artifact_writes_versionable_summary(tmp_path) -> None
         {
             "task_id": "task_003",
             "prompt_mode": "baseline",
+            "shape_category": "odd",
+            "shape": [1007, 1013],
             "correct": False,
             "generated_ms": None,
             "pytorch_eager_ms": None,
@@ -92,7 +103,16 @@ def test_export_experiment_artifact_requires_source_commit_for_legacy_metadata(t
     (run_dir / "vast_run_metadata.json").write_text(json.dumps({"repo_ref": "HEAD"}), encoding="utf-8")
     (tables_dir / "gpu_eval_batch_summary.json").write_text(json.dumps({}), encoding="utf-8")
     (raw_dir / "x_correctness.jsonl").write_text(
-        json.dumps({"task_id": "task_001", "prompt_mode": "baseline", "correct": True}) + "\n",
+        json.dumps(
+            {
+                "task_id": "task_001",
+                "prompt_mode": "baseline",
+                "shape_category": "original",
+                "shape": [1024, 1024],
+                "correct": True,
+            }
+        )
+        + "\n",
         encoding="utf-8",
     )
 
@@ -102,3 +122,75 @@ def test_export_experiment_artifact_requires_source_commit_for_legacy_metadata(t
         assert "source_commit is required" in str(exc)
     else:
         raise AssertionError("expected legacy metadata without source commit to be rejected")
+
+
+def test_export_experiment_artifact_rejects_missing_required_raw_field(tmp_path) -> None:
+    run_dir = tmp_path / "results" / "vast_runs" / "run_001"
+    raw_dir = run_dir / "results" / "raw"
+    (tmp_path / "tasks").mkdir()
+    (tmp_path / "generated").mkdir()
+    _write_minimal_run(run_dir)
+    (raw_dir / "x_correctness.jsonl").write_text(
+        json.dumps(
+            {
+                "task_id": "task_001",
+                "shape_category": "original",
+                "shape": [1024, 1024],
+                "correct": True,
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match=r"x_correctness\.jsonl:1: missing field 'prompt_mode'"):
+        export_experiment_artifact(run_dir, source_commit="abc123")
+
+
+def test_export_experiment_artifact_rejects_invalid_raw_shape(tmp_path) -> None:
+    run_dir = tmp_path / "results" / "vast_runs" / "run_001"
+    raw_dir = run_dir / "results" / "raw"
+    (tmp_path / "tasks").mkdir()
+    (tmp_path / "generated").mkdir()
+    _write_minimal_run(run_dir)
+    (raw_dir / "x_correctness.jsonl").write_text(
+        json.dumps(
+            {
+                "task_id": "task_001",
+                "prompt_mode": "baseline",
+                "shape_category": "original",
+                "shape": [1024, 0],
+                "correct": True,
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match=r"field 'shape' must be a non-empty list of positive integers"):
+        export_experiment_artifact(run_dir, source_commit="abc123")
+
+
+def test_export_experiment_artifact_rejects_invalid_raw_timing_type(tmp_path) -> None:
+    run_dir = tmp_path / "results" / "vast_runs" / "run_001"
+    raw_dir = run_dir / "results" / "raw"
+    (tmp_path / "tasks").mkdir()
+    (tmp_path / "generated").mkdir()
+    _write_minimal_run(run_dir)
+    (raw_dir / "x_correctness.jsonl").write_text(
+        json.dumps(
+            {
+                "task_id": "task_001",
+                "prompt_mode": "baseline",
+                "shape_category": "original",
+                "shape": [1024, 1024],
+                "correct": True,
+                "generated_ms": "fast",
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match=r"field 'generated_ms' must be a number or null"):
+        export_experiment_artifact(run_dir, source_commit="abc123")

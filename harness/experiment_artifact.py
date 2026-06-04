@@ -11,6 +11,13 @@ from typing import Any
 SCHEMA_VERSION = 2
 SUMMARY_FILENAME = "summary.json"
 RAW_RESULTS_FILENAME = "raw_results.jsonl"
+REQUIRED_RAW_STRING_FIELDS = ("task_id", "prompt_mode", "shape_category")
+OPTIONAL_RAW_NUMERIC_FIELDS = (
+    "generated_ms",
+    "pytorch_eager_ms",
+    "speedup_vs_eager",
+    "max_abs_error",
+)
 
 
 def export_experiment_artifact(
@@ -91,15 +98,49 @@ def _read_raw_results(raw_dir: Path) -> list[dict[str, Any]]:
         raise FileNotFoundError(f"missing raw results directory: {raw_dir}")
     records: list[dict[str, Any]] = []
     for path in sorted(raw_dir.glob("*_correctness.jsonl")):
-        for line in path.read_text(encoding="utf-8").splitlines():
+        for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
             if line.strip():
                 record = json.loads(line)
                 if not isinstance(record, dict):
-                    raise ValueError(f"expected JSON object line in {path}")
+                    raise ValueError(f"invalid raw result in {path}:{line_number}: expected JSON object")
+                _validate_raw_record(record, path, line_number)
                 records.append(record)
     if not records:
         raise ValueError(f"no correctness JSONL records found in {raw_dir}")
     return records
+
+
+def _validate_raw_record(record: dict[str, Any], path: Path, line_number: int) -> None:
+    for field in REQUIRED_RAW_STRING_FIELDS:
+        if field not in record:
+            _raise_invalid_raw_result(path, line_number, f"missing field '{field}'")
+        value = record.get(field)
+        if not isinstance(value, str) or not value.strip():
+            _raise_invalid_raw_result(path, line_number, f"field '{field}' must be a non-empty string")
+
+    if "shape" not in record:
+        _raise_invalid_raw_result(path, line_number, "missing field 'shape'")
+    shape = record.get("shape")
+    if (
+        not isinstance(shape, list)
+        or not shape
+        or any(not isinstance(dimension, int) or isinstance(dimension, bool) or dimension <= 0 for dimension in shape)
+    ):
+        _raise_invalid_raw_result(path, line_number, "field 'shape' must be a non-empty list of positive integers")
+
+    if "correct" not in record:
+        _raise_invalid_raw_result(path, line_number, "missing field 'correct'")
+    if not isinstance(record["correct"], bool):
+        _raise_invalid_raw_result(path, line_number, "field 'correct' must be a boolean")
+
+    for field in OPTIONAL_RAW_NUMERIC_FIELDS:
+        value = record.get(field)
+        if value is not None and (not isinstance(value, (int, float)) or isinstance(value, bool)):
+            _raise_invalid_raw_result(path, line_number, f"field '{field}' must be a number or null")
+
+
+def _raise_invalid_raw_result(path: Path, line_number: int, message: str) -> None:
+    raise ValueError(f"invalid raw result in {path}:{line_number}: {message}")
 
 
 def _jsonl_payload(records: list[dict[str, Any]]) -> str:
