@@ -41,6 +41,7 @@ SSH_OPTIONS = [
 class VastRunConfig:
     offer_id: int
     project_root: Path
+    experiment_name: str | None = None
     image: str | None = None
     template_hash: str | None = DEFAULT_TEMPLATE_HASH
     disk_gb: int = DEFAULT_DISK_GB
@@ -70,6 +71,8 @@ def run_vast_eval(config: VastRunConfig) -> VastRunResult:
     _ensure_clean_repo(config.project_root, allow_dirty=config.allow_dirty)
     source_commit = resolve_git_commit(config.project_root, config.repo_ref)
     _log(f"source commit: {source_commit}")
+    if config.experiment_name:
+        _log(f"experiment: {config.experiment_name}")
     local_run_dir = _local_run_dir(config.project_root, config.local_runs_dir)
     local_run_dir.mkdir(parents=True, exist_ok=True)
     _log(f"local run directory: {local_run_dir}")
@@ -110,6 +113,7 @@ def run_vast_eval(config: VastRunConfig) -> VastRunResult:
                 "created_at": datetime.now(timezone.utc).isoformat(),
                 "instance_id": instance_id,
                 "offer_id": config.offer_id,
+                "experiment_name": config.experiment_name,
                 "image": config.image,
                 "template_hash": config.template_hash,
                 "disk_gb": config.disk_gb,

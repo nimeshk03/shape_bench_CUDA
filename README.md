@@ -206,6 +206,20 @@ After choosing an `offer_id`, commit the local repo first, then run:
 python scripts/run_vast_eval.py --offer-id <offer_id>
 ```
 
+For repeatable multi-attempt batches, use an experiment config:
+
+```bash
+python scripts/run_vast_eval.py \
+  --offer-id <offer_id> \
+  --experiment configs/phase1_task002_003.json \
+  --max-wait-seconds 180 \
+  --poll-seconds 10 \
+  --max-ssh-auth-failures 2
+```
+
+Experiment configs must use repo-relative attempt paths. Before the Vast instance is created, the runner validates
+that every listed attempt has an evaluation contract in the same `--repo-ref` that will be archived and uploaded.
+
 By default this uses the Vast.ai `PyTorch (cuDNN Devel)` template instead of raw image mode:
 
 ```text

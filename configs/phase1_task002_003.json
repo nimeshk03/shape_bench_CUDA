@@ -1,0 +1,18 @@
+{
+  "name": "phase1_task002_003",
+  "description": "Balanced Phase 1 GPU batch for row-wise reduction and matrix transpose tasks.",
+  "attempts": [
+    "generated/baseline/task_002/attempt_001",
+    "generated/baseline/task_002/attempt_002",
+    "generated/baseline/task_002/attempt_003",
+    "generated/shape_aware/task_002/attempt_001",
+    "generated/shape_aware/task_002/attempt_002",
+    "generated/shape_aware/task_002/attempt_003",
+    "generated/baseline/task_003/attempt_001",
+    "generated/baseline/task_003/attempt_002",
+    "generated/baseline/task_003/attempt_003",
+    "generated/shape_aware/task_003/attempt_001",
+    "generated/shape_aware/task_003/attempt_002",
+    "generated/shape_aware/task_003/attempt_003"
+  ]
+}

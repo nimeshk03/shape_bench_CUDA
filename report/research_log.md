@@ -1489,3 +1489,24 @@ such as tiled matrix multiplication or non-contiguous/batched inputs. Also add
 per-attempt progress logging to the remote evaluator so long CUDA compilation
 phases are easier to monitor during larger batches.
 ```
+
+## 2026-06-04 - Repeatable Batch Experiment Configs
+
+Implemented named experiment configs so larger GPU batches can be launched from a
+reviewed JSON file instead of a long command-line attempt list.
+
+Initial config:
+
+```text
+configs/phase1_task002_003.json
+```
+
+This config encodes the balanced task_002/task_003 batch: three baseline
+attempts and three shape-aware attempts for each task. The runner validates that
+each configured attempt has an evaluation contract before creating a Vast.ai
+instance, reducing the chance of wasting GPU time on incomplete generated
+artifacts.
+
+Follow-up validation tightened this guarantee so configs must use repo-relative
+attempt paths and each evaluation contract must exist in the exact git ref that
+will be archived for the GPU worker.

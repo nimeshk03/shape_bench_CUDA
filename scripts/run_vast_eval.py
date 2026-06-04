@@ -20,6 +20,7 @@ from harness.vast_runner import (  # noqa: E402
     VastRunConfig,
     run_vast_eval,
 )
+from harness.experiment_config import load_experiment_config, validate_experiment_config_in_git  # noqa: E402
 
 
 def parse_args() -> argparse.Namespace:
@@ -43,6 +44,10 @@ def parse_args() -> argparse.Namespace:
         action="append",
         dest="attempts",
         help="Attempt directory to evaluate on the GPU worker. Can be passed multiple times.",
+    )
+    parser.add_argument(
+        "--experiment",
+        help="Experiment config JSON with a named attempt batch. Cannot be combined with --attempt.",
     )
     parser.add_argument("--poll-seconds", type=int, default=10, help="Seconds between SSH readiness checks.")
     parser.add_argument("--max-wait-seconds", type=int, default=600, help="Maximum wait for SSH readiness.")
@@ -68,9 +73,22 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+    experiment_name = None
+    attempt_dirs = tuple(args.attempts or ())
+    if args.experiment:
+        if args.attempts:
+            print("--experiment cannot be combined with --attempt", file=sys.stderr)
+            return 2
+        experiment = load_experiment_config(args.experiment, project_root=ROOT)
+        validate_experiment_config_in_git(experiment, project_root=ROOT, repo_ref=args.repo_ref)
+        experiment_name = experiment.name
+        attempt_dirs = experiment.attempts
+        print(f"Loaded experiment: {experiment.name} ({len(experiment.attempts)} attempts)")
+
     config = VastRunConfig(
         offer_id=args.offer_id,
         project_root=ROOT,
+        experiment_name=experiment_name,
         image=args.image or (DEFAULT_IMAGE if not args.template_hash else None),
         template_hash=args.template_hash or None,
         disk_gb=args.disk,
@@ -81,7 +99,7 @@ def main() -> int:
         keep_instance=args.keep_instance,
         allow_dirty=args.allow_dirty,
         skip_tests=args.skip_tests,
-        attempt_dirs=tuple(args.attempts or ()),
+        attempt_dirs=attempt_dirs,
         max_ssh_auth_failures=args.max_ssh_auth_failures,
     )
     try:

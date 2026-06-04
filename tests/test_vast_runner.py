@@ -97,6 +97,7 @@ def test_build_remote_eval_script_passes_explicit_attempts() -> None:
         VastRunConfig(
             offer_id=1,
             project_root=Path("/tmp/project"),
+            experiment_name="phase1_task001",
             attempt_dirs=(
                 "generated/baseline/task_001/attempt_004",
                 "generated/shape_aware/task_001/attempt_003",
