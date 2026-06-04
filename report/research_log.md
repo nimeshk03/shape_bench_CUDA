@@ -1674,3 +1674,67 @@ evaluations. The key interpretation remains that current results do not show a
 shape-aware robustness advantage: baseline attempts passed all exported shape
 evaluations, while the observed shape-aware failures failed the original shape
 as well as shape variants.
+
+## 2026-06-04 - Harder Layout And Reduction Batch
+
+Added and evaluated four harder task families:
+
+```text
+task_013 diagnostic_batched_transpose
+task_014 tile_aligned_to_irregular_transpose
+task_015 offset_strided_affine_relu
+task_016 irregular_lastdim_layer_norm
+```
+
+Experiment design:
+
+```text
+4 tasks
+2 prompt modes: baseline and shape_aware
+3 generated attempts per task/mode
+6 shape categories per attempt
+Total: 24 attempts, 144 shape evaluations
+```
+
+Validated GPU run:
+
+```text
+run: results/experiments/20260604T132953Z
+source commit: fa80988537dae9b5ded8350bea2794ed5754bf12
+remote tests: 172 passed
+overall correctness: 108/144 shape evaluations passed
+attempts passing all shapes: 18/24
+```
+
+Correctness by task and prompt mode:
+
+```text
+task_013 baseline:    18/18 passed
+task_013 shape_aware: 18/18 passed
+task_014 baseline:    18/18 passed
+task_014 shape_aware: 18/18 passed
+task_015 baseline:     6/18 passed
+task_015 shape_aware:  0/18 passed
+task_016 baseline:    18/18 passed
+task_016 shape_aware: 12/18 passed
+```
+
+Interpretation:
+
+```text
+The diagnostic and shape-variant transpose tasks did not produce
+shape-variant-only failures; all attempts passed all shapes.
+
+The stronger offset/stride task was much harder: five of six generated attempts
+failed at CUDA extension compilation time, so this task currently measures
+generation/build robustness more than shape generalization.
+
+The irregular last-dimension layer-norm task produced one shape-aware attempt
+that failed the original shape and every variant. The other five attempts passed
+all shapes, and several passing kernels were materially faster than PyTorch
+eager.
+
+This batch still does not provide evidence that shape-aware prompting improves
+shape robustness. It does show that stronger stride/layout and reduction tasks
+are useful for exposing generated-code failures.
+```

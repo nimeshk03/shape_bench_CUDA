@@ -13,13 +13,14 @@ Exported experiment artifacts included in this report:
 - `20260603T191105Z`: 12 attempts, 72/72 shape checks passed, tasks `task_002, task_003`, commit `63f68d4`
 - `20260604T035522Z`: 30 attempts, 174/180 shape checks passed, tasks `task_004, task_005, task_006, task_007, task_008`, commit `da7385a`
 - `20260604T081929Z`: 24 attempts, 138/144 shape checks passed, tasks `task_009, task_010, task_011, task_012`, commit `d2caa64`
+- `20260604T132953Z`: 24 attempts, 108/144 shape checks passed, tasks `task_013, task_014, task_015, task_016`, commit `fa80988`
 
 Aggregate scope:
 
 ```text
-Tasks analyzed: 11 (task_002, task_003, task_004, task_005, task_006, task_007, task_008, task_009, task_010, task_011, task_012)
-Generated attempts: 66
-Shape evaluations: 384/396 passed
+Tasks analyzed: 15 (task_002, task_003, task_004, task_005, task_006, task_007, task_008, task_009, task_010, task_011, task_012, task_013, task_014, task_015, task_016)
+Generated attempts: 90
+Shape evaluations: 492/540 passed
 Shape categories: original, smaller, larger, odd, batch_variant, non_power_of_two
 GPU platform: Vast.ai RTX 4090 runs
 ```
@@ -39,6 +40,10 @@ GPU platform: Vast.ai RTX 4090 runs
 | `task_010` | dynamic_lastdim_sum_squares |
 | `task_011` | batched_matrix_multiply |
 | `task_012` | strided_batched_transpose |
+| `task_013` | diagnostic_batched_transpose |
+| `task_014` | tile_aligned_to_irregular_transpose |
+| `task_015` | offset_strided_affine_relu |
+| `task_016` | irregular_lastdim_layer_norm |
 
 ## Metrics
 
@@ -54,8 +59,8 @@ GPU platform: Vast.ai RTX 4090 runs
 
 | Prompt mode | Attempts | Original pass | Multi-shape pass | Robustness | Variant-only failures | Mean speedup | Median speedup |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| `baseline` | 33 | 100.0% | 100.0% | 100.0% | 0 | 1.881 | 1.246 |
-| `shape_aware` | 33 | 93.9% | 93.9% | 93.9% | 0 | 2.267 | 1.027 |
+| `baseline` | 45 | 95.6% | 95.6% | 95.6% | 0 | 2.068 | 1.068 |
+| `shape_aware` | 45 | 86.7% | 86.7% | 86.7% | 0 | 2.339 | 0.984 |
 
 ## Task And Prompt Breakdown
 
@@ -83,6 +88,14 @@ GPU platform: Vast.ai RTX 4090 runs
 | `task_011` | `shape_aware` | 3 | 18/18 | 3/3 | 3/3 | 0.732 | 0.651 | 0.021 |
 | `task_012` | `baseline` | 3 | 18/18 | 3/3 | 3/3 | 0.919 | 0.969 | 0.040 |
 | `task_012` | `shape_aware` | 3 | 12/18 | 2/3 | 2/3 | 1.251 | 1.017 | 0.161 |
+| `task_013` | `baseline` | 3 | 18/18 | 3/3 | 3/3 | 3.157 | 0.966 | 0.014 |
+| `task_013` | `shape_aware` | 3 | 18/18 | 3/3 | 3/3 | 0.841 | 0.891 | 0.108 |
+| `task_014` | `baseline` | 3 | 18/18 | 3/3 | 3/3 | 0.942 | 0.947 | 0.012 |
+| `task_014` | `shape_aware` | 3 | 18/18 | 3/3 | 3/3 | 0.957 | 0.908 | 0.013 |
+| `task_015` | `baseline` | 3 | 6/18 | 1/3 | 1/3 | 2.063 | 2.362 | 0.310 |
+| `task_015` | `shape_aware` | 3 | 0/18 | 0/3 | 0/3 | n/a | n/a | n/a |
+| `task_016` | `baseline` | 3 | 18/18 | 3/3 | 3/3 | 4.160 | 3.800 | 0.039 |
+| `task_016` | `shape_aware` | 3 | 12/18 | 2/3 | 2/3 | 7.775 | 7.719 | 0.011 |
 
 ## Failure Cases
 
@@ -90,6 +103,12 @@ GPU platform: Vast.ai RTX 4090 runs
 |---|---|---|---:|---|---:|---|---|---:|
 | `20260604T035522Z` | `task_008` | `shape_aware` | 1 | no | 0/6 | original_shape_correctness_failure: 1, shape_variant_correctness_failure: 5 | original, smaller, larger, odd, batch_variant, non_power_of_two | 8.475 |
 | `20260604T081929Z` | `task_012` | `shape_aware` | 1 | no | 0/6 | original_shape_correctness_failure: 1, shape_variant_correctness_failure: 5 | original, smaller, larger, odd, batch_variant, non_power_of_two | 7.904 |
+| `20260604T132953Z` | `task_015` | `baseline` | 2 | no | 0/6 | compilation_failure: 6 | original, smaller, larger, odd, batch_variant, non_power_of_two | n/a |
+| `20260604T132953Z` | `task_015` | `baseline` | 3 | no | 0/6 | compilation_failure: 6 | original, smaller, larger, odd, batch_variant, non_power_of_two | n/a |
+| `20260604T132953Z` | `task_015` | `shape_aware` | 1 | no | 0/6 | compilation_failure: 6 | original, smaller, larger, odd, batch_variant, non_power_of_two | n/a |
+| `20260604T132953Z` | `task_015` | `shape_aware` | 2 | no | 0/6 | compilation_failure: 6 | original, smaller, larger, odd, batch_variant, non_power_of_two | n/a |
+| `20260604T132953Z` | `task_015` | `shape_aware` | 3 | no | 0/6 | compilation_failure: 6 | original, smaller, larger, odd, batch_variant, non_power_of_two | n/a |
+| `20260604T132953Z` | `task_016` | `shape_aware` | 2 | no | 0/6 | original_shape_correctness_failure: 1, shape_variant_correctness_failure: 5 | original, smaller, larger, odd, batch_variant, non_power_of_two | 7.240 |
 
 ## Lessons Learned
 

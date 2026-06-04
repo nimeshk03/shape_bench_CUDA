@@ -1,0 +1,438 @@
+{
+  "aggregates": [
+    {
+      "checks": 18,
+      "max_abs_error": 0.0,
+      "max_speedup_vs_eager": 39.974049734216294,
+      "mean_generated_ms": 0.013823773325485591,
+      "mean_pytorch_eager_ms": 0.04967516999992464,
+      "mean_speedup_vs_eager": 3.1574440918739146,
+      "min_speedup_vs_eager": 0.8725156359196945,
+      "passed": 18,
+      "prompt_mode": "baseline",
+      "task_id": "task_013"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 0.0,
+      "max_speedup_vs_eager": 1.08782607982253,
+      "mean_generated_ms": 0.10837464332629072,
+      "mean_pytorch_eager_ms": 0.013277115556573134,
+      "mean_speedup_vs_eager": 0.840838950324954,
+      "min_speedup_vs_eager": 0.009322140516891281,
+      "passed": 18,
+      "prompt_mode": "shape_aware",
+      "task_id": "task_013"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 0.0,
+      "max_speedup_vs_eager": 0.9835193852567643,
+      "mean_generated_ms": 0.011704633341448951,
+      "mean_pytorch_eager_ms": 0.011030597787693195,
+      "mean_speedup_vs_eager": 0.9423120340944191,
+      "min_speedup_vs_eager": 0.8819693555660642,
+      "passed": 18,
+      "prompt_mode": "baseline",
+      "task_id": "task_014"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 0.0,
+      "max_speedup_vs_eager": 2.199022722537591,
+      "mean_generated_ms": 0.012642656660722828,
+      "mean_pytorch_eager_ms": 0.011496562215648333,
+      "mean_speedup_vs_eager": 0.9566307383575725,
+      "min_speedup_vs_eager": 0.49742775323171,
+      "passed": 18,
+      "prompt_mode": "shape_aware",
+      "task_id": "task_014"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 9.5367431640625e-07,
+      "max_speedup_vs_eager": 2.7649163015125997,
+      "mean_generated_ms": 0.3101894966554634,
+      "mean_pytorch_eager_ms": 0.039959006656620964,
+      "mean_speedup_vs_eager": 2.0633329301698136,
+      "min_speedup_vs_eager": 0.022869105400937315,
+      "passed": 6,
+      "prompt_mode": "baseline",
+      "task_id": "task_015"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": null,
+      "max_speedup_vs_eager": null,
+      "mean_generated_ms": null,
+      "mean_pytorch_eager_ms": null,
+      "mean_speedup_vs_eager": null,
+      "min_speedup_vs_eager": null,
+      "passed": 0,
+      "prompt_mode": "shape_aware",
+      "task_id": "task_015"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 1.9073486328125e-06,
+      "max_speedup_vs_eager": 8.437973967236129,
+      "mean_generated_ms": 0.03909007444033503,
+      "mean_pytorch_eager_ms": 0.08522169888844171,
+      "mean_speedup_vs_eager": 4.160444578051679,
+      "min_speedup_vs_eager": 1.0005005888636445,
+      "passed": 18,
+      "prompt_mode": "baseline",
+      "task_id": "task_016"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 7.239551544189453,
+      "max_speedup_vs_eager": 9.67389169444622,
+      "mean_generated_ms": 0.011219926661093874,
+      "mean_pytorch_eager_ms": 0.0861746249938733,
+      "mean_speedup_vs_eager": 7.774573319089636,
+      "min_speedup_vs_eager": 5.67366724262904,
+      "passed": 12,
+      "prompt_mode": "shape_aware",
+      "task_id": "task_016"
+    }
+  ],
+  "gpu_eval_batch_summary": {
+    "attempts": [
+      {
+        "attempt_dir": "generated/baseline/task_013/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_013_baseline_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_013",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_013/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_013_baseline_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_013",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_013/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_013_baseline_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_013",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_013/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_013_shape_aware_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_013",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_013/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_013_shape_aware_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_013",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_013/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_013_shape_aware_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_013",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_014/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_014_baseline_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_014",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_014/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_014_baseline_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_014",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_014/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_014_baseline_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_014",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_014/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_014_shape_aware_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_014",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_014/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_014_shape_aware_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_014",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_014/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_014_shape_aware_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_014",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_015/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_015_baseline_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_015",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_015/attempt_002",
+        "failure_reasons": {
+          "compilation_failure": 6
+        },
+        "original_passed": false,
+        "output_path": "results/raw/task_015_baseline_attempt_002_correctness.jsonl",
+        "passed_shapes": 0,
+        "prompt_mode": "baseline",
+        "task_id": "task_015",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_015/attempt_003",
+        "failure_reasons": {
+          "compilation_failure": 6
+        },
+        "original_passed": false,
+        "output_path": "results/raw/task_015_baseline_attempt_003_correctness.jsonl",
+        "passed_shapes": 0,
+        "prompt_mode": "baseline",
+        "task_id": "task_015",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_015/attempt_001",
+        "failure_reasons": {
+          "compilation_failure": 6
+        },
+        "original_passed": false,
+        "output_path": "results/raw/task_015_shape_aware_attempt_001_correctness.jsonl",
+        "passed_shapes": 0,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_015",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_015/attempt_002",
+        "failure_reasons": {
+          "compilation_failure": 6
+        },
+        "original_passed": false,
+        "output_path": "results/raw/task_015_shape_aware_attempt_002_correctness.jsonl",
+        "passed_shapes": 0,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_015",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_015/attempt_003",
+        "failure_reasons": {
+          "compilation_failure": 6
+        },
+        "original_passed": false,
+        "output_path": "results/raw/task_015_shape_aware_attempt_003_correctness.jsonl",
+        "passed_shapes": 0,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_015",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_016/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_016_baseline_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_016",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_016/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_016_baseline_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_016",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_016/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_016_baseline_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_016",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_016/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_016_shape_aware_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_016",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_016/attempt_002",
+        "failure_reasons": {
+          "original_shape_correctness_failure": 1,
+          "shape_variant_correctness_failure": 5
+        },
+        "original_passed": false,
+        "output_path": "results/raw/task_016_shape_aware_attempt_002_correctness.jsonl",
+        "passed_shapes": 0,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_016",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_016/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_016_shape_aware_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_016",
+        "total_shapes": 6
+      }
+    ],
+    "benchmark": {
+      "enabled": true,
+      "iterations": 50,
+      "warmup": 10
+    },
+    "created_at": "2026-06-04T13:49:16.414412+00:00",
+    "device": "auto",
+    "preflight": {
+      "failures": [],
+      "nvcc": {
+        "ok": true,
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2023 NVIDIA Corporation\nBuilt on Mon_Apr__3_17:16:06_PDT_2023\nCuda compilation tools, release 12.1, V12.1.105\nBuild cuda_12.1.r12.1/compiler.32688072_0"
+      },
+      "nvidia_smi": {
+        "ok": true,
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "Thu Jun  4 13:31:39 2026       \n+-----------------------------------------------------------------------------------------+\n| NVIDIA-SMI 580.142                Driver Version: 580.142        CUDA Version: 13.0     |\n+-----------------------------------------+------------------------+----------------------+\n| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n|                                         |                        |               MIG M. |\n|=========================================+========================+======================|\n|   0  NVIDIA GeForce RTX 4090        On  |   00000000:A2:00.0 Off |                  Off |\n| 33%   44C    P0             60W /  450W |       0MiB /  49140MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n\n+-----------------------------------------------------------------------------------------+\n| Processes:                                                                              |\n|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n|        ID   ID                                                               Usage      |\n|=========================================================================================|\n|  No running processes found                                                             |\n+-----------------------------------------------------------------------------------------+"
+      },
+      "python": "3.10.13",
+      "torch": {
+        "cuda_available": true,
+        "cuda_version": "12.1",
+        "gpu_name": "NVIDIA GeForce RTX 4090",
+        "installed": true,
+        "version": "2.2.0"
+      }
+    },
+    "require_cuda": true,
+    "seed": 0,
+    "summary_output": "results/tables/gpu_eval_batch_summary.json"
+  },
+  "raw_results": {
+    "path": "raw_results.jsonl",
+    "record_count": 144,
+    "sha256": "75ca5d890ba5d7707098e3195dd2bed8a1bf0dfc02d7d65ea48715a505b6fa9f"
+  },
+  "schema_version": 2,
+  "source_commit": "fa80988537dae9b5ded8350bea2794ed5754bf12",
+  "source_run_dir": "results/vast_runs/20260604T132953Z",
+  "vast_run_metadata": {
+    "attempt_dirs": [
+      "generated/baseline/task_013/attempt_001",
+      "generated/baseline/task_013/attempt_002",
+      "generated/baseline/task_013/attempt_003",
+      "generated/shape_aware/task_013/attempt_001",
+      "generated/shape_aware/task_013/attempt_002",
+      "generated/shape_aware/task_013/attempt_003",
+      "generated/baseline/task_014/attempt_001",
+      "generated/baseline/task_014/attempt_002",
+      "generated/baseline/task_014/attempt_003",
+      "generated/shape_aware/task_014/attempt_001",
+      "generated/shape_aware/task_014/attempt_002",
+      "generated/shape_aware/task_014/attempt_003",
+      "generated/baseline/task_015/attempt_001",
+      "generated/baseline/task_015/attempt_002",
+      "generated/baseline/task_015/attempt_003",
+      "generated/shape_aware/task_015/attempt_001",
+      "generated/shape_aware/task_015/attempt_002",
+      "generated/shape_aware/task_015/attempt_003",
+      "generated/baseline/task_016/attempt_001",
+      "generated/baseline/task_016/attempt_002",
+      "generated/baseline/task_016/attempt_003",
+      "generated/shape_aware/task_016/attempt_001",
+      "generated/shape_aware/task_016/attempt_002",
+      "generated/shape_aware/task_016/attempt_003"
+    ],
+    "cleanup_error": null,
+    "created_at": "2026-06-04T13:49:25.147735+00:00",
+    "destroyed": true,
+    "disk_gb": 40,
+    "experiment_name": "phase1_task013_016",
+    "image": null,
+    "instance_id": 39456373,
+    "offer_id": 39425231,
+    "remote_exit_code": 0,
+    "repo_ref": "HEAD",
+    "source_commit": "fa80988537dae9b5ded8350bea2794ed5754bf12",
+    "template_hash": "e4c5e88bc289f4eecb0c955c4fe7430d"
+  }
+}
