@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "text": "```cpp\n#include <torch/extension.h>\n#include <cuda_runtime.h>\n\n// Kernel: transpose last two dims of a 3D tensor [B, R, C] -> [B, C, R]\n__global__ void batched_transpose_kernel(\n    const float* __restrict__ input,\n    float* __restrict__ output,\n    int B, int R, int C\n) {\n    // Use shared memory tile for coalesced access\n    __shared__ float tile[32][33]; // 33 to avoid bank conflicts\n\n    int b = blockIdx.z;\n    int tile_row = blockIdx.y * 32;\n    int tile_col = blockIdx.x * 32;\n\n    int r = tile_row + threadIdx.y;\n    int c = tile_col + threadIdx.x;\n\n    // Load from input [B, R, C] into shared memory\n    if (b < B && r < R && c < C) {\n        tile[threadIdx.y][threadIdx.x] = input[b * R * C + r * C + c];\n    }\n\n    __syncthreads();\n\n    // Write to output [B, C, R] - transposed\n    // output[b, c, r] = input[b, r, c]\n    // New indices: out_c = tile_col + threadIdx.y, out_r = tile_row + threadIdx.x\n    int out_c = tile_col + threadIdx.y;\n    int out_r = tile_row + threadIdx.x;\n\n    if (b < B && out_r < R && out_c < C) {\n        output[b * C * R + out_c * R + out_r] = tile[threadIdx.x][threadIdx.y];\n    }\n}\n\ntorch::Tensor batched_transpose(torch::Tensor x) {\n    TORCH_CHECK(x.dim() == 3, \"Input must be 3D\");\n    TORCH_CHECK(x.dtype() == torch::kFloat32, \"Input must be float32\");\n    TORCH_CHECK(x.is_cuda(), \"Input must be on CUDA\");\n\n    x = x.contiguous();\n\n    int B = x.size(0);\n    int R = x.size(1);\n    int C = x.size(2);\n\n    auto output = torch::empty({B, C, R}, x.options());\n\n    dim3 block(32, 32, 1);\n    dim3 grid(\n        (C + 31) / 32,\n        (R + 31) / 32,\n        B\n    );\n\n    batched_transpose_kernel<<<grid, block>>>(\n        x.data_ptr<float>(),\n        output.data_ptr<float>(),\n        B, R, C\n    );\n\n    return output;\n}\n\nPYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {\n    m.def(\"batched_transpose\", &batched_transpose, \"Batched transpose last two dims (CUDA)\");\n}\n```\n\n```python\n# setup.py / build glue\nimport os\nimport torch\nfrom torch.utils.cpp_extension import load\n\n_ext = None\n\ndef _load_ext():\n    global _ext\n    if _ext is None:\n        src_dir = os.path.dirname(os.path.abspath(__file__))\n        _ext = load(\n            name=\"task013_ext\",\n            sources=[os.path.join(src_dir, \"solution.cu\")],\n            extra_cuda_cflags=[\"-O3\", \"--use_fast_math\"],\n            verbose=False,\n        )\n    return _ext\n\n\nimport torch\nfrom torch import Tensor, nn\n\n\nclass Model(nn.Module):\n    def forward(self, x: Tensor) -> Tensor:\n        if x.is_cuda:\n            ext = _load_ext()\n            return ext.batched_transpose(x)\n        # Fallback for CPU\n        return torch.transpose(x, 1, 2).contiguous()\n\n\ndef reference(x: Tensor) -> Tensor:\n    return torch.transpose(x, 1, 2).contiguous()\n```",
+      "type": "text"
+    }
+  ],
+  "id": "msg_01FqN7twmnC3QyK8eMTK1i2L",
+  "model": "claude-sonnet-4-6",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1044,
+    "output_tokens": 1007,
+    "service_tier": "standard"
+  }
+}

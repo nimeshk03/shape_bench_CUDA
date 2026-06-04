@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "text": "```cpp\n#include <torch/extension.h>\n#include <cuda.h>\n#include <cuda_runtime.h>\n\n// Tile size for the transpose kernel\n#define TILE_DIM 32\n#define BLOCK_ROWS 8\n\n__global__ void batched_transpose_kernel(\n    const float* __restrict__ input,\n    float* __restrict__ output,\n    int batch,\n    int rows,\n    int cols\n) {\n    // Shared memory with padding to avoid bank conflicts\n    __shared__ float tile[TILE_DIM][TILE_DIM + 1];\n\n    int b = blockIdx.z;\n    if (b >= batch) return;\n\n    int x = blockIdx.x * TILE_DIM + threadIdx.x;\n    int y = blockIdx.y * TILE_DIM + threadIdx.y;\n\n    // Input: [batch, rows, cols], output: [batch, cols, rows]\n    const float* in = input + b * rows * cols;\n    float* out = output + b * cols * rows;\n\n    // Load tile from input (rows x cols) into shared memory\n    for (int j = 0; j < TILE_DIM; j += BLOCK_ROWS) {\n        int row = y + j;\n        int col = x;\n        if (row < rows && col < cols) {\n            tile[threadIdx.y + j][threadIdx.x] = in[row * cols + col];\n        }\n    }\n\n    __syncthreads();\n\n    // Write transposed tile to output (cols x rows)\n    // Now x indexes into cols dimension, y indexes into rows dimension\n    // After transpose: output[col, row] = input[row, col]\n    // Output shape: [cols, rows]\n    // We write: out[col * rows + row]\n    // Transposed block: blockIdx.x * TILE_DIM -> col start, blockIdx.y * TILE_DIM -> row start\n    int out_col = blockIdx.y * TILE_DIM + threadIdx.x;  // was row, now col in output\n    int out_row = blockIdx.x * TILE_DIM + threadIdx.y;  // was col, now row in output\n\n    for (int j = 0; j < TILE_DIM; j += BLOCK_ROWS) {\n        int oc = out_col;\n        int or_ = out_row + j;\n        if (oc < rows && or_ < cols) {\n            // tile[threadIdx.x][threadIdx.y + j] contains input[blockIdx.y*TILE_DIM + threadIdx.x][blockIdx.x*TILE_DIM + threadIdx.y + j]\n            out[or_ * rows + oc] = tile[threadIdx.x][threadIdx.y + j];\n        }\n    }\n}\n\ntorch::Tensor batched_transpose(torch::Tensor x) {\n    TORCH_CHECK(x.dim() == 3, \"Input must be 3D\");\n    TORCH_CHECK(x.dtype() == torch::kFloat32, \"Input must be float32\");\n    TORCH_CHECK(x.is_cuda(), \"Input must be on CUDA\");\n\n    x = x.contiguous();\n\n    int batch = x.size(0);\n    int rows = x.size(1);\n    int cols = x.size(2);\n\n    // Output shape: [batch, cols, rows]\n    auto output = torch::empty({batch, cols, rows}, x.options());\n\n    if (batch == 0 || rows == 0 || cols == 0) {\n        return output;\n    }\n\n    dim3 block(TILE_DIM, BLOCK_ROWS, 1);\n    dim3 grid(\n        (cols + TILE_DIM - 1) / TILE_DIM,\n        (rows + TILE_DIM - 1) / TILE_DIM,\n        batch\n    );\n\n    batched_transpose_kernel<<<grid, block>>>(\n        x.data_ptr<float>(),\n        output.data_ptr<float>(),\n        batch, rows, cols\n    );\n\n    cudaError_t err = cudaGetLastError();\n    TORCH_CHECK(err == cudaSuccess, \"CUDA kernel failed: \", cudaGetErrorString(err));\n\n    return output;\n}\n\nPYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {\n    m.def(\"batched_transpose\", &batched_transpose, \"Batched matrix transpose (CUDA)\");\n}\n```\n\n```python\n# setup.py\nfrom setuptools import setup\nfrom torch.utils.cpp_extension import BuildExtension, CUDAExtension\n\nsetup(\n    name=\"task_014_ext\",\n    ext_modules=[\n        CUDAExtension(\n            name=\"task_014_ext\",\n            sources=[\"task_014_kernel.cu\"],\n        )\n    ],\n    cmdclass={\"build_ext\": BuildExtension},\n)\n```\n\n```python\n# solution.py\n\"\"\"CUDA extension solution for task_014: batched matrix transpose.\"\"\"\n\nfrom __future__ import annotations\n\nimport os\nimport torch\nfrom torch import Tensor\nfrom torch.utils.cpp_extension import load\n\n_ext = None\n\n\ndef _get_ext():\n    global _ext\n    if _ext is None:\n        src_dir = os.path.dirname(os.path.abspath(__file__))\n        _ext = load(\n            name=\"task_014_ext\",\n            sources=[os.path.join(src_dir, \"task_014_kernel.cu\")],\n            verbose=False,\n        )\n    return _ext\n\n\ndef reference(x: Tensor) -> Tensor:\n    \"\"\"CUDA-accelerated batched transpose matching the PyTorch reference.\"\"\"\n    if x.is_cuda:\n        ext = _get_ext()\n        return ext.batched_transpose(x)\n    else:\n        # Fallback for CPU tensors\n        return torch.transpose(x, 1, 2).contiguous()\n```",
+      "type": "text"
+    }
+  ],
+  "id": "msg_01WAZfV9bVBC1jqAsw3BbwrJ",
+  "model": "claude-sonnet-4-6",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1160,
+    "output_tokens": 1465,
+    "service_tier": "standard"
+  }
+}

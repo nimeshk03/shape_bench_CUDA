@@ -1,0 +1,23 @@
+{
+  "attempt_dir": "generated/baseline/task_016/attempt_002",
+  "files": [
+    {
+      "block_index": 1,
+      "confidence": "high",
+      "filename": "layer_norm_cuda.cu",
+      "language": "cpp",
+      "path": "extracted/layer_norm_cuda.cu",
+      "reason": "CUDA filename referenced by generated Python/build block"
+    },
+    {
+      "block_index": 2,
+      "confidence": "high",
+      "filename": "setup.py",
+      "language": "python",
+      "path": "extracted/setup.py",
+      "reason": "filename indicated by leading comment"
+    }
+  ],
+  "output_dir": "extracted",
+  "source_response": "response.md"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "phase1_task013_016",
+  "description": "GPU batch for diagnostic layout, shape-variant traps, stronger non-contiguous strides, and irregular last-dimension reductions.",
+  "attempts": [
+    "generated/baseline/task_013/attempt_001",
+    "generated/baseline/task_013/attempt_002",
+    "generated/baseline/task_013/attempt_003",
+    "generated/shape_aware/task_013/attempt_001",
+    "generated/shape_aware/task_013/attempt_002",
+    "generated/shape_aware/task_013/attempt_003",
+    "generated/baseline/task_014/attempt_001",
+    "generated/baseline/task_014/attempt_002",
+    "generated/baseline/task_014/attempt_003",
+    "generated/shape_aware/task_014/attempt_001",
+    "generated/shape_aware/task_014/attempt_002",
+    "generated/shape_aware/task_014/attempt_003",
+    "generated/baseline/task_015/attempt_001",
+    "generated/baseline/task_015/attempt_002",
+    "generated/baseline/task_015/attempt_003",
+    "generated/shape_aware/task_015/attempt_001",
+    "generated/shape_aware/task_015/attempt_002",
+    "generated/shape_aware/task_015/attempt_003",
+    "generated/baseline/task_016/attempt_001",
+    "generated/baseline/task_016/attempt_002",
+    "generated/baseline/task_016/attempt_003",
+    "generated/shape_aware/task_016/attempt_001",
+    "generated/shape_aware/task_016/attempt_002",
+    "generated/shape_aware/task_016/attempt_003"
+  ]
+}

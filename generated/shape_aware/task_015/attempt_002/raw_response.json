@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "text": "```cpp\n#include <torch/extension.h>\n#include <cuda.h>\n#include <cuda_runtime.h>\n\n__global__ void affine_relu_kernel(\n    const float* __restrict__ data_ptr,\n    const float* __restrict__ scale_ptr,\n    const float* __restrict__ bias_ptr,\n    float* __restrict__ out_ptr,\n    int64_t batch,\n    int64_t rows,\n    int64_t cols,\n    int64_t stride_b,\n    int64_t stride_r,\n    int64_t stride_c,\n    int64_t storage_offset\n) {\n    int64_t idx = blockIdx.x * blockDim.x + threadIdx.x;\n    int64_t total = batch * rows * cols;\n    if (idx >= total) return;\n\n    int64_t b = idx / (rows * cols);\n    int64_t rem = idx % (rows * cols);\n    int64_t r = rem / cols;\n    int64_t c = rem % cols;\n\n    int64_t src_idx = storage_offset + b * stride_b + r * stride_r + c * stride_c;\n    float val = data_ptr[src_idx];\n    float result = val * scale_ptr[c] + bias_ptr[r];\n    out_ptr[idx] = result > 0.0f ? result : 0.0f;\n}\n\ntorch::Tensor affine_relu_cuda(\n    torch::Tensor x,\n    torch::Tensor scale,\n    torch::Tensor bias\n) {\n    TORCH_CHECK(x.is_cuda(), \"x must be a CUDA tensor\");\n    TORCH_CHECK(scale.is_cuda(), \"scale must be a CUDA tensor\");\n    TORCH_CHECK(bias.is_cuda(), \"bias must be a CUDA tensor\");\n    TORCH_CHECK(x.scalar_type() == torch::kFloat32, \"x must be float32\");\n    TORCH_CHECK(x.dim() == 3, \"x must be 3D\");\n\n    int64_t batch = x.size(0);\n    int64_t rows = x.size(1);\n    int64_t cols = x.size(2);\n\n    int64_t stride_b = x.stride(0);\n    int64_t stride_r = x.stride(1);\n    int64_t stride_c = x.stride(2);\n    int64_t storage_offset = x.storage_offset();\n\n    auto out = torch::empty({batch, rows, cols}, x.options().memory_format(torch::MemoryFormat::Contiguous));\n\n    int64_t total = batch * rows * cols;\n    int threads = 256;\n    int blocks = (total + threads - 1) / threads;\n\n    const float* data_ptr = x.storage().data_ptr().get<float>();\n\n    affine_relu_kernel<<<blocks, threads>>>(\n        data_ptr,\n        scale.data_ptr<float>(),\n        bias.data_ptr<float>(),\n        out.data_ptr<float>(),\n        batch, rows, cols,\n        stride_b, stride_r, stride_c,\n        storage_offset\n    );\n\n    return out;\n}\n\nPYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {\n    m.def(\"affine_relu_cuda\", &affine_relu_cuda, \"Affine ReLU with stride-aware CUDA kernel\");\n}\n```\n\n```python\n# setup.py\nfrom setuptools import setup\nfrom torch.utils.cpp_extension import BuildExtension, CUDAExtension\n\nsetup(\n    name=\"task015_ext\",\n    ext_modules=[\n        CUDAExtension(\n            name=\"task015_ext\",\n            sources=[\"task015_kernel.cu\"],\n        )\n    ],\n    cmdclass={\"build_ext\": BuildExtension},\n)\n```\n\n```python\n# solution.py\n\"\"\"Task 015 CUDA extension solution.\"\"\"\n\nfrom __future__ import annotations\n\nimport os\nimport torch\nfrom torch import Tensor\nfrom torch.utils.cpp_extension import load\n\n_ext = None\n\ndef _get_ext():\n    global _ext\n    if _ext is None:\n        src_dir = os.path.dirname(os.path.abspath(__file__))\n        _ext = load(\n            name=\"task015_ext\",\n            sources=[os.path.join(src_dir, \"task015_kernel.cu\")],\n            verbose=False,\n        )\n    return _ext\n\n\ndef reference(x: Tensor, scale: Tensor, bias: Tensor) -> Tensor:\n    ext = _get_ext()\n    if x.is_cuda():\n        return ext.affine_relu_cuda(x, scale, bias)\n    else:\n        # Fallback for CPU (shouldn't happen in benchmark but just in case)\n        return torch.relu(x * scale.view(1, 1, -1) + bias.view(1, -1, 1)).contiguous()\n```",
+      "type": "text"
+    }
+  ],
+  "id": "msg_01CCedvgFR5pSDW8ycGVZDjd",
+  "model": "claude-sonnet-4-6",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1375,
+    "output_tokens": 1229,
+    "service_tier": "standard"
+  }
+}

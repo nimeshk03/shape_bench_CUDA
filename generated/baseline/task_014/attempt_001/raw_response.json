@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "text": "```cpp\n#include <torch/extension.h>\n#include <cuda_runtime.h>\n\n// Tiled transpose kernel for batched matrices\n// Transposes dims 1 and 2 of a 3D tensor [B, M, N] -> [B, N, M]\n#define TILE_DIM 32\n#define BLOCK_ROWS 8\n\n__global__ void batched_transpose_kernel(\n    const float* __restrict__ input,\n    float* __restrict__ output,\n    int B, int M, int N\n) {\n    // Shared memory with padding to avoid bank conflicts\n    __shared__ float tile[TILE_DIM][TILE_DIM + 1];\n\n    int batch = blockIdx.z;\n    if (batch >= B) return;\n\n    // Input: [B, M, N], output: [B, N, M]\n    // We read a tile from input at (row_in, col_in) and write transposed to output\n\n    int col_in = blockIdx.x * TILE_DIM + threadIdx.x;\n    int row_in = blockIdx.y * TILE_DIM + threadIdx.y;\n\n    const float* in_batch = input + batch * M * N;\n    float* out_batch = output + batch * N * M;\n\n    // Load tile from input (row_in, col_in) with bounds check\n    for (int i = 0; i < TILE_DIM; i += BLOCK_ROWS) {\n        int r = row_in + i;\n        int c = col_in;\n        if (r < M && c < N) {\n            tile[threadIdx.y + i][threadIdx.x] = in_batch[r * N + c];\n        }\n    }\n\n    __syncthreads();\n\n    // Write transposed tile to output\n    // Output shape: [N, M]\n    // The tile block covers input rows [blockIdx.y*TILE_DIM, ...) and cols [blockIdx.x*TILE_DIM, ...)\n    // In output, rows correspond to input cols, cols correspond to input rows\n    int col_out = blockIdx.y * TILE_DIM + threadIdx.x;  // input row -> output col\n    int row_out = blockIdx.x * TILE_DIM + threadIdx.y;  // input col -> output row\n\n    for (int i = 0; i < TILE_DIM; i += BLOCK_ROWS) {\n        int r = row_out + i;\n        int c = col_out;\n        if (r < N && c < M) {\n            out_batch[r * M + c] = tile[threadIdx.x][threadIdx.y + i];\n        }\n    }\n}\n\ntorch::Tensor batched_transpose(torch::Tensor x) {\n    TORCH_CHECK(x.dim() == 3, \"Input must be 3D\");\n    TORCH_CHECK(x.dtype() == torch::kFloat32, \"Input must be float32\");\n    TORCH_CHECK(x.is_cuda(), \"Input must be on CUDA\");\n\n    x = x.contiguous();\n\n    int B = x.size(0);\n    int M = x.size(1);\n    int N = x.size(2);\n\n    auto output = torch::empty({B, N, M}, x.options());\n\n    if (B == 0 || M == 0 || N == 0) {\n        return output;\n    }\n\n    dim3 block(TILE_DIM, BLOCK_ROWS, 1);\n    dim3 grid(\n        (N + TILE_DIM - 1) / TILE_DIM,\n        (M + TILE_DIM - 1) / TILE_DIM,\n        B\n    );\n\n    batched_transpose_kernel<<<grid, block>>>(\n        x.data_ptr<float>(),\n        output.data_ptr<float>(),\n        B, M, N\n    );\n\n    return output;\n}\n\nPYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {\n    m.def(\"batched_transpose\", &batched_transpose, \"Batched matrix transpose (CUDA)\");\n}\n```\n\n```python\n# setup.py / build glue\nimport os\nimport torch\nfrom torch.utils.cpp_extension import load\n\n_ext = None\n\ndef _load_ext():\n    global _ext\n    if _ext is None:\n        src_dir = os.path.dirname(os.path.abspath(__file__))\n        _ext = load(\n            name=\"transpose_ext\",\n            sources=[os.path.join(src_dir, \"transpose_kernel.cu\")],\n            extra_cuda_cflags=[\"-O3\", \"--use_fast_math\"],\n            verbose=False,\n        )\n    return _ext\n\n\nimport torch\nfrom torch import Tensor, nn\n\n\nclass Model(nn.Module):\n    \"\"\"CUDA-optimized batched matrix transpose.\"\"\"\n\n    def forward(self, x: Tensor) -> Tensor:\n        if x.is_cuda:\n            ext = _load_ext()\n            return ext.batched_transpose(x)\n        # Fallback for CPU\n        return torch.transpose(x, 1, 2).contiguous()\n```",
+      "type": "text"
+    }
+  ],
+  "id": "msg_01XzDDGdV55FhfmXXNhAkG9S",
+  "model": "claude-sonnet-4-6",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 988,
+    "output_tokens": 1278,
+    "service_tier": "standard"
+  }
+}

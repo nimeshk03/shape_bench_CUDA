@@ -1,0 +1,14 @@
+{
+  "task_id": "task_014",
+  "name": "tile_aligned_to_irregular_transpose",
+  "description": "Transpose the last two dimensions of a 3D float32 tensor where the original shape is square and tile-aligned but variants are rectangular, odd, and non-power-of-two.",
+  "category": "shape_variant_trap",
+  "input_kind": "batched_matrix",
+  "input_names": ["x"],
+  "original_shape": [8, 128, 128],
+  "dtype": "float32",
+  "atol": 0.0,
+  "rtol": 0.0,
+  "expected_output": "3D contiguous tensor with shape [batch, cols, rows]",
+  "notes": "Shape-variant trap intended to expose kernels that overfit a square tile-aligned original shape."
+}

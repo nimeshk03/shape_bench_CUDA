@@ -1,0 +1,25 @@
+{
+  "anthropic_version": "2023-06-01",
+  "attempt": 1,
+  "created_at": "2026-06-04T13:23:39.196901+00:00",
+  "max_tokens": 4096,
+  "model": "claude-sonnet-4-6",
+  "prompt_mode": "shape_aware",
+  "provider": "anthropic",
+  "response_id": "msg_01Bp29i3njMevNNNwBD1ypTn",
+  "stop_reason": "end_turn",
+  "task_id": "task_015",
+  "temperature": 0.1,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1375,
+    "output_tokens": 1743,
+    "service_tier": "standard"
+  }
+}

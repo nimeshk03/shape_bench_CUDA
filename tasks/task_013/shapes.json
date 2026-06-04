@@ -1,0 +1,8 @@
+{
+  "original": [4, 64, 96],
+  "smaller": [2, 32, 96],
+  "larger": [8, 128, 192],
+  "odd": [3, 63, 95],
+  "batch_variant": [1, 64, 128],
+  "non_power_of_two": [5, 65, 97]
+}

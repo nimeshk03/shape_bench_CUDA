@@ -1,0 +1,18 @@
+{
+  "attempt": 2,
+  "attempt_dir": "generated/baseline/task_015/attempt_002",
+  "created_fallback_solution": true,
+  "cuda_source": "task015.cu",
+  "entrypoint_file": "solution.py",
+  "entrypoint_function": "forward",
+  "extension_function": "forward",
+  "extension_name": "shapebench_task_015_baseline_attempt_002",
+  "extracted_dir": "extracted",
+  "input_names": [
+    "x",
+    "scale",
+    "bias"
+  ],
+  "prompt_mode": "baseline",
+  "task_id": "task_015"
+}

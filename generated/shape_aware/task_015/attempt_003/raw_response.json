@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "text": "```cpp\n#include <torch/extension.h>\n#include <cuda.h>\n#include <cuda_runtime.h>\n\n__global__ void affine_relu_kernel(\n    const float* __restrict__ data,\n    const float* __restrict__ scale,\n    const float* __restrict__ bias,\n    float* __restrict__ output,\n    // Storage offset\n    int64_t storage_offset,\n    // Strides for x (in elements)\n    int64_t stride_batch,\n    int64_t stride_row,\n    int64_t stride_col,\n    // Output dimensions\n    int batch,\n    int rows,\n    int cols\n) {\n    int col = blockIdx.x * blockDim.x + threadIdx.x;\n    int row = blockIdx.y * blockDim.y + threadIdx.y;\n    int b   = blockIdx.z;\n\n    if (b >= batch || row >= rows || col >= cols) return;\n\n    // Compute input index using strides + storage offset\n    int64_t in_idx = storage_offset\n                   + (int64_t)b   * stride_batch\n                   + (int64_t)row * stride_row\n                   + (int64_t)col * stride_col;\n\n    float val = data[in_idx];\n    float s   = scale[col];\n    float bi  = bias[row];\n\n    float result = val * s + bi;\n    if (result < 0.0f) result = 0.0f;\n\n    // Output is contiguous [batch, rows, cols]\n    int64_t out_idx = (int64_t)b * rows * cols + (int64_t)row * cols + col;\n    output[out_idx] = result;\n}\n\ntorch::Tensor affine_relu_cuda(\n    torch::Tensor x,\n    torch::Tensor scale,\n    torch::Tensor bias\n) {\n    TORCH_CHECK(x.is_cuda(), \"x must be a CUDA tensor\");\n    TORCH_CHECK(scale.is_cuda(), \"scale must be a CUDA tensor\");\n    TORCH_CHECK(bias.is_cuda(), \"bias must be a CUDA tensor\");\n    TORCH_CHECK(x.scalar_type() == torch::kFloat32, \"x must be float32\");\n    TORCH_CHECK(x.dim() == 3, \"x must be 3D\");\n\n    int batch = x.size(0);\n    int rows  = x.size(1);\n    int cols  = x.size(2);\n\n    // Get strides (in elements, not bytes)\n    int64_t stride_batch = x.stride(0);\n    int64_t stride_row   = x.stride(1);\n    int64_t stride_col   = x.stride(2);\n    int64_t storage_offset = x.storage_offset();\n\n    // Allocate contiguous output\n    auto output = torch::empty({batch, rows, cols}, x.options().memory_format(torch::MemoryFormat::Contiguous));\n\n    // Get raw data pointer from storage\n    const float* data_ptr = x.storage().data_ptr<float>();\n\n    dim3 block(32, 8, 1);\n    dim3 grid(\n        (cols  + block.x - 1) / block.x,\n        (rows  + block.y - 1) / block.y,\n        batch\n    );\n\n    affine_relu_kernel<<<grid, block>>>(\n        data_ptr,\n        scale.data_ptr<float>(),\n        bias.data_ptr<float>(),\n        output.data_ptr<float>(),\n        storage_offset,\n        stride_batch,\n        stride_row,\n        stride_col,\n        batch,\n        rows,\n        cols\n    );\n\n    return output;\n}\n\nPYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {\n    m.def(\"affine_relu_cuda\", &affine_relu_cuda, \"Affine ReLU with stride-aware CUDA kernel\");\n}\n```\n\n```python\n# setup.py  (build glue)\nfrom setuptools import setup\nfrom torch.utils.cpp_extension import BuildExtension, CUDAExtension\n\nsetup(\n    name=\"task015_ext\",\n    ext_modules=[\n        CUDAExtension(\n            name=\"task015_ext\",\n            sources=[\"task015_kernel.cu\"],\n        )\n    ],\n    cmdclass={\"build_ext\": BuildExtension},\n)\n```\n\n```python\n# solution.py  \u2013 drop-in replacement for the harness\n\"\"\"Task 015 CUDA solution: affine ReLU over offset/strided 3D view.\"\"\"\n\nfrom __future__ import annotations\n\nimport os\nimport torch\nfrom torch import Tensor\n\n# ---------------------------------------------------------------------------\n# Build / load the extension once\n# ---------------------------------------------------------------------------\nimport torch.utils.cpp_extension as _ext\n\n_SRC_DIR = os.path.dirname(os.path.abspath(__file__))\n_EXT = _ext.load(\n    name=\"task015_ext\",\n    sources=[os.path.join(_SRC_DIR, \"task015_kernel.cu\")],\n    verbose=False,\n)\n\n\n# ---------------------------------------------------------------------------\n# Public API expected by the harness\n# ---------------------------------------------------------------------------\n\ndef forward(x: Tensor, scale: Tensor, bias: Tensor) -> Tensor:\n    \"\"\"CUDA implementation matching Model.forward / reference.\"\"\"\n    if x.is_cuda:\n        return _EXT.affine_relu_cuda(x, scale, bias)\n    # Fallback for CPU tensors (shouldn't happen in normal harness usage)\n    return torch.relu(x * scale.view(1, 1, -1) + bias.view(1, -1, 1)).contiguous()\n```",
+      "type": "text"
+    }
+  ],
+  "id": "msg_016NWBCZQ3UqKpxrUcURyGD3",
+  "model": "claude-sonnet-4-6",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1375,
+    "output_tokens": 1406,
+    "service_tier": "standard"
+  }
+}

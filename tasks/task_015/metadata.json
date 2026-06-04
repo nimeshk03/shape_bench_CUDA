@@ -1,0 +1,14 @@
+{
+  "task_id": "task_015",
+  "name": "offset_strided_affine_relu",
+  "description": "Apply relu(x * scale + bias) to a 3D float32 tensor where x is a non-contiguous view with storage offset and irregular row/column strides.",
+  "category": "strong_non_contiguous",
+  "input_kind": "offset_strided_batched_matrix",
+  "input_names": ["x", "scale", "bias"],
+  "original_shape": [8, 128, 192],
+  "dtype": "float32",
+  "atol": 0.000001,
+  "rtol": 0.000001,
+  "expected_output": "3D contiguous tensor with shape [batch, rows, cols]",
+  "notes": "Stronger non-contiguous task intended to expose kernels that ignore storage offset or tensor strides."
+}

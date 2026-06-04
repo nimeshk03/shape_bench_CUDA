@@ -1,0 +1,14 @@
+{
+  "task_id": "task_016",
+  "name": "irregular_lastdim_layer_norm",
+  "description": "Apply layer normalization over the last dimension of a 3D float32 tensor with dynamic and irregular feature sizes.",
+  "category": "irregular_reduction",
+  "input_kind": "batched_matrix_with_feature_vectors",
+  "input_names": ["x", "weight", "bias"],
+  "original_shape": [8, 128, 512],
+  "dtype": "float32",
+  "atol": 0.0001,
+  "rtol": 0.0001,
+  "expected_output": "3D contiguous tensor with shape [batch, rows, cols]",
+  "notes": "Harder reduction task intended to expose hardcoded last-dimension sizes and boundary mistakes on irregular feature counts."
+}

@@ -1,0 +1,16 @@
+{
+  "attempt": 2,
+  "attempt_dir": "generated/shape_aware/task_013/attempt_002",
+  "created_fallback_solution": true,
+  "cuda_source": "batched_transpose.cu",
+  "entrypoint_file": "solution.py",
+  "entrypoint_function": "forward",
+  "extension_function": "batched_transpose",
+  "extension_name": "shapebench_task_013_shape_aware_attempt_002",
+  "extracted_dir": "extracted",
+  "input_names": [
+    "x"
+  ],
+  "prompt_mode": "shape_aware",
+  "task_id": "task_013"
+}

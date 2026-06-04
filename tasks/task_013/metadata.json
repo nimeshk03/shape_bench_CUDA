@@ -1,0 +1,14 @@
+{
+  "task_id": "task_013",
+  "name": "diagnostic_batched_transpose",
+  "description": "Transpose the last two dimensions of a 3D float32 tensor whose values encode their original batch, row, and column indices.",
+  "category": "diagnostic_layout",
+  "input_kind": "encoded_batched_matrix",
+  "input_names": ["x"],
+  "original_shape": [4, 64, 96],
+  "dtype": "float32",
+  "atol": 0.0,
+  "rtol": 0.0,
+  "expected_output": "3D contiguous tensor with shape [batch, cols, rows]",
+  "notes": "Diagnostic layout task intended to make wrong transpose/indexing bugs easier to identify than with random inputs."
+}
