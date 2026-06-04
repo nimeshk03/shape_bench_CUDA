@@ -1,0 +1,3985 @@
+{
+  "aggregates": [
+    {
+      "checks": 18,
+      "max_abs_error": 1.52587890625e-05,
+      "max_speedup_vs_eager": 1.0943623007126064,
+      "mean_generated_ms": 0.0073497142228815295,
+      "mean_pytorch_eager_ms": 0.006827859001027213,
+      "mean_speedup_vs_eager": 0.9304671880740316,
+      "min_speedup_vs_eager": 0.879292586730977,
+      "passed": 18,
+      "prompt_mode": "baseline",
+      "task_id": "task_002"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 1.52587890625e-05,
+      "max_speedup_vs_eager": 0.957019411544917,
+      "mean_generated_ms": 0.012253274520238241,
+      "mean_pytorch_eager_ms": 0.00819695285624928,
+      "mean_speedup_vs_eager": 0.7402702062538944,
+      "min_speedup_vs_eager": 0.38768876246714434,
+      "passed": 18,
+      "prompt_mode": "shape_aware",
+      "task_id": "task_002"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 0.0,
+      "max_speedup_vs_eager": 6.431198386884316,
+      "mean_generated_ms": 0.009079846656984754,
+      "mean_pytorch_eager_ms": 0.03383180954390102,
+      "mean_speedup_vs_eager": 3.0668906010909858,
+      "min_speedup_vs_eager": 1.0884010955407237,
+      "passed": 18,
+      "prompt_mode": "baseline",
+      "task_id": "task_003"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 0.0,
+      "max_speedup_vs_eager": 6.661293805870587,
+      "mean_generated_ms": 0.008581003381146325,
+      "mean_pytorch_eager_ms": 0.03376577877336078,
+      "mean_speedup_vs_eager": 3.1748434635276213,
+      "min_speedup_vs_eager": 1.20285047096202,
+      "passed": 18,
+      "prompt_mode": "shape_aware",
+      "task_id": "task_003"
+    }
+  ],
+  "exported_at": "2026-06-03T19:35:30.424251+00:00",
+  "gpu_eval_batch_summary": {
+    "attempts": [
+      {
+        "attempt_dir": "generated/baseline/task_002/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_002_baseline_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_002",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_002/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_002_baseline_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_002",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_002/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_002_baseline_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_002",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_002/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_002_shape_aware_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_002",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_002/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_002_shape_aware_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_002",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_002/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_002_shape_aware_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_002",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_003/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_003_baseline_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_003",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_003/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_003_baseline_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_003",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_003/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_003_baseline_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_003",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_003/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_003_shape_aware_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_003",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_003/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_003_shape_aware_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_003",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_003/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_003_shape_aware_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_003",
+        "total_shapes": 6
+      }
+    ],
+    "benchmark": {
+      "enabled": true,
+      "iterations": 50,
+      "warmup": 10
+    },
+    "created_at": "2026-06-03T19:21:18.013839+00:00",
+    "device": "auto",
+    "preflight": {
+      "failures": [],
+      "nvcc": {
+        "ok": true,
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2023 NVIDIA Corporation\nBuilt on Mon_Apr__3_17:16:06_PDT_2023\nCuda compilation tools, release 12.1, V12.1.105\nBuild cuda_12.1.r12.1/compiler.32688072_0"
+      },
+      "nvidia_smi": {
+        "ok": true,
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "Wed Jun  3 19:12:15 2026       \n+-----------------------------------------------------------------------------------------+\n| NVIDIA-SMI 580.126.09             Driver Version: 580.126.09     CUDA Version: 13.0     |\n+-----------------------------------------+------------------------+----------------------+\n| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n|                                         |                        |               MIG M. |\n|=========================================+========================+======================|\n|   0  NVIDIA GeForce RTX 4090        On  |   00000000:C1:00.0 Off |                  Off |\n|  0%   34C    P0             67W /  450W |       0MiB /  24564MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n\n+-----------------------------------------------------------------------------------------+\n| Processes:                                                                              |\n|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n|        ID   ID                                                               Usage      |\n|=========================================================================================|\n|  No running processes found                                                             |\n+-----------------------------------------------------------------------------------------+"
+      },
+      "python": "3.10.13",
+      "torch": {
+        "cuda_available": true,
+        "cuda_version": "12.1",
+        "gpu_name": "NVIDIA GeForce RTX 4090",
+        "installed": true,
+        "version": "2.2.0"
+      }
+    },
+    "require_cuda": true,
+    "seed": 0,
+    "summary_output": "results/tables/gpu_eval_batch_summary.json"
+  },
+  "raw_results": [
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.287102535367012,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.26377663016319275,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_baseline_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.0057420507073402405,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.057532012462616e-06,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.005275532603263855,
+      "shape": [
+        1024,
+        1024
+      ],
+      "shape_category": "original",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.918754095382679,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.27995556592941284,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.2705659717321396,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_baseline_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.005599111318588257,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.02167609333992e-06,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.005411319434642792,
+      "shape": [
+        512,
+        1024
+      ],
+      "shape_category": "smaller",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.9664604125083167,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.28673186898231506,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.27231499552726746,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_baseline_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.005734637379646301,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.0100345611572266e-06,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.005446299910545349,
+      "shape": [
+        2048,
+        1024
+      ],
+      "shape_category": "larger",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.9497200171497616,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.2835039049386978,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.26926398277282715,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_baseline_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.005670078098773956,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 2.976325731651741e-06,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.005385279655456543,
+      "shape": [
+        1007,
+        1013
+      ],
+      "shape_category": "odd",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.9497716894977168,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.283634290099144,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.2588648349046707,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_baseline_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.00567268580198288,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.368593752384186e-06,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.005177296698093414,
+      "shape": [
+        256,
+        1024
+      ],
+      "shape_category": "batch_variant",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.9126711541618782,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.2858247607946396,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.2608448266983032,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_baseline_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.005716495215892792,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.1444091796875e-05,
+      "mean_abs_error": 2.9919146982138045e-06,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.0052168965339660645,
+      "shape": [
+        1000,
+        1007
+      ],
+      "shape_category": "non_power_of_two",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.9126040234341907,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.28385594487190247,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.26971474289894104,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_baseline_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.005677118897438049,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.057532012462616e-06,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.005394294857978821,
+      "shape": [
+        1024,
+        1024
+      ],
+      "shape_category": "original",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.9501817656863131,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.28003379702568054,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.2561751753091812,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_baseline_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.005600675940513611,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.02167609333992e-06,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.005123503506183624,
+      "shape": [
+        512,
+        1024
+      ],
+      "shape_category": "smaller",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.9148009205677722,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.28303079307079315,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.255463644862175,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_baseline_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.005660615861415863,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.0100345611572266e-06,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.0051092728972435,
+      "shape": [
+        2048,
+        1024
+      ],
+      "shape_category": "larger",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.9026001803212877,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.2833753824234009,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.2690870314836502,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_baseline_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.005667507648468018,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 2.976325731651741e-06,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.005381740629673004,
+      "shape": [
+        1007,
+        1013
+      ],
+      "shape_category": "odd",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.9495780091497081,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.2823043614625931,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.2682562917470932,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_baseline_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.005646087229251862,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.368593752384186e-06,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.005365125834941864,
+      "shape": [
+        256,
+        1024
+      ],
+      "shape_category": "batch_variant",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.9502378580241619,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.2965852618217468,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.26078522205352783,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_baseline_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.0059317052364349365,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.1444091796875e-05,
+      "mean_abs_error": 2.9919146982138045e-06,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.005215704441070557,
+      "shape": [
+        1000,
+        1007
+      ],
+      "shape_category": "non_power_of_two",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.879292586730977,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.6866157054901123,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.6307680159807205,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_baseline_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.013732314109802246,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.057532012462616e-06,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.01261536031961441,
+      "shape": [
+        1024,
+        1024
+      ],
+      "shape_category": "original",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.9186623768392725,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.7066633552312851,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.6271973252296448,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_baseline_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.014133267104625702,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.02167609333992e-06,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.012543946504592896,
+      "shape": [
+        512,
+        1024
+      ],
+      "shape_category": "smaller",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.8875475438009209,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.7020160555839539,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.6338562816381454,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_baseline_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.014040321111679077,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.0100345611572266e-06,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.012677125632762909,
+      "shape": [
+        2048,
+        1024
+      ],
+      "shape_category": "larger",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.9029085255192469,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.4571620374917984,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.5003008991479874,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_baseline_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.009143240749835968,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 2.976325731651741e-06,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.010006017982959747,
+      "shape": [
+        1007,
+        1013
+      ],
+      "shape_category": "odd",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 1.0943623007126064,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.32712332904338837,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.289183109998703,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_baseline_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006542466580867767,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.368593752384186e-06,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.00578366219997406,
+      "shape": [
+        256,
+        1024
+      ],
+      "shape_category": "batch_variant",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.884018608041088,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.3192238509654999,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.2886541187763214,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_baseline_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.0063844770193099976,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.1444091796875e-05,
+      "mean_abs_error": 2.9919146982138045e-06,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.005773082375526428,
+      "shape": [
+        1000,
+        1007
+      ],
+      "shape_category": "non_power_of_two",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.9042373178046703,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.7011964917182922,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.6250683218240738,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_shape_aware_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.014023929834365845,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.2195821404457092e-06,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.012501366436481476,
+      "shape": [
+        1024,
+        1024
+      ],
+      "shape_category": "original",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.8914310456578793,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.7130373269319534,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.6288271397352219,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_shape_aware_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.014260746538639069,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.1189993023872375e-06,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.012576542794704437,
+      "shape": [
+        512,
+        1024
+      ],
+      "shape_category": "smaller",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.8818993283856963,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 1.318054273724556,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.6236955523490906,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_shape_aware_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.02636108547449112,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.095250576734543e-06,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.012473911046981812,
+      "shape": [
+        2048,
+        1024
+      ],
+      "shape_category": "larger",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.4731941353117824,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.6930772215127945,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.2952534705400467,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_shape_aware_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.01386154443025589,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 2.9921886834927136e-06,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.005905069410800934,
+      "shape": [
+        1007,
+        1013
+      ],
+      "shape_category": "odd",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.42600371412523214,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.33437274396419525,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.2869032323360443,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_shape_aware_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006687454879283905,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.2605603337287903e-06,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.005738064646720886,
+      "shape": [
+        256,
+        1024
+      ],
+      "shape_category": "batch_variant",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.8580341475642704,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.6872657686471939,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.28976425528526306,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_shape_aware_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.013745315372943878,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 2.9296875254658516e-06,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.005795285105705261,
+      "shape": [
+        1000,
+        1007
+      ],
+      "shape_category": "non_power_of_two",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.42161892604607926,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.6987955421209335,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.5279704928398132,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_shape_aware_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.01397591084241867,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.2195821404457092e-06,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.010559409856796265,
+      "shape": [
+        1024,
+        1024
+      ],
+      "shape_category": "original",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.7555435903860456,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.5561299622058868,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.5049519240856171,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_shape_aware_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.011122599244117737,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.1189993023872375e-06,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.010099038481712341,
+      "shape": [
+        512,
+        1024
+      ],
+      "shape_category": "smaller",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.9079746793046857,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 1.2932810932397842,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.5013905465602875,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_shape_aware_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.025865621864795685,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.095250576734543e-06,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.01002781093120575,
+      "shape": [
+        2048,
+        1024
+      ],
+      "shape_category": "larger",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.38768876246714434,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.6883963942527771,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.49914978444576263,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_shape_aware_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.013767927885055542,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 2.9921886834927136e-06,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.009982995688915253,
+      "shape": [
+        1007,
+        1013
+      ],
+      "shape_category": "odd",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.7250906434330862,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.564849004149437,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.499967485666275,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_shape_aware_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.011296980082988739,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.2605603337287903e-06,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.0099993497133255,
+      "shape": [
+        256,
+        1024
+      ],
+      "shape_category": "batch_variant",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.8851347563569453,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.6757769733667374,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.28802454471588135,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_shape_aware_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.013515539467334747,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 2.9296875254658516e-06,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.005760490894317627,
+      "shape": [
+        1000,
+        1007
+      ],
+      "shape_category": "non_power_of_two",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.4262124281638897,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.32531097531318665,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.3004539757966995,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_shape_aware_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006506219506263733,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.2195821404457092e-06,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.0060090795159339905,
+      "shape": [
+        1024,
+        1024
+      ],
+      "shape_category": "original",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.9235900372172917,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.3140624612569809,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.30056387186050415,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_shape_aware_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006281249225139618,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.1189993023872375e-06,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.006011277437210083,
+      "shape": [
+        512,
+        1024
+      ],
+      "shape_category": "smaller",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.957019411544917,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.5001798272132874,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.31139329075813293,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_shape_aware_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.010003596544265747,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.095250576734543e-06,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.006227865815162659,
+      "shape": [
+        2048,
+        1024
+      ],
+      "shape_category": "larger",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.6225626740947076,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.319894403219223,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.3055911511182785,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_shape_aware_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.0063978880643844604,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 2.9921886834927136e-06,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.00611182302236557,
+      "shape": [
+        1007,
+        1013
+      ],
+      "shape_category": "odd",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.9552875825365956,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.3272220492362976,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.29521435499191284,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_shape_aware_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006544440984725952,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 3.2605603337287903e-06,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.005904287099838257,
+      "shape": [
+        256,
+        1024
+      ],
+      "shape_category": "batch_variant",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.902183565199572,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.31704455614089966,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.29307417571544647,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "rowwise_sum.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "rowwise_sum",
+        "extension_name": "shapebench_task_002_shape_aware_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006340891122817993,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 1.52587890625e-05,
+      "mean_abs_error": 2.9296875254658516e-06,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.0058614835143089294,
+      "shape": [
+        1000,
+        1007
+      ],
+      "shape_category": "non_power_of_two",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 0.9243942847742815,
+      "task_id": "task_002",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.32148323953151703,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 1.5878472477197647,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "forward",
+        "extension_name": "shapebench_task_003_baseline_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006429664790630341,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.031756944954395294,
+      "shape": [
+        1024,
+        2048
+      ],
+      "shape_category": "original",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 4.939129175236826,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.3163237124681473,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.3982130438089371,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "forward",
+        "extension_name": "shapebench_task_003_baseline_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.0063264742493629456,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.007964260876178741,
+      "shape": [
+        512,
+        1024
+      ],
+      "shape_category": "smaller",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 1.258878257029295,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.9191315621137619,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 5.911117419600487,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "forward",
+        "extension_name": "shapebench_task_003_baseline_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.018382631242275238,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.11822234839200974,
+      "shape": [
+        2048,
+        4096
+      ],
+      "shape_category": "larger",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 6.431198386884316,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.3367327153682709,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.8102841675281525,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "forward",
+        "extension_name": "shapebench_task_003_baseline_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.0067346543073654175,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.01620568335056305,
+      "shape": [
+        1007,
+        1013
+      ],
+      "shape_category": "odd",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 2.4063125753670165,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.33216364681720734,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.5993489176034927,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "forward",
+        "extension_name": "shapebench_task_003_baseline_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006643272936344147,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.011986978352069855,
+      "shape": [
+        256,
+        4096
+      ],
+      "shape_category": "batch_variant",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 1.8043784241486243,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.3247912973165512,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.8191429078578949,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "forward",
+        "extension_name": "shapebench_task_003_baseline_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006495825946331024,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.016382858157157898,
+      "shape": [
+        1000,
+        1007
+      ],
+      "shape_category": "non_power_of_two",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 2.5220592873815026,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.5778688937425613,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 1.5313699841499329,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "forward",
+        "extension_name": "shapebench_task_003_baseline_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.011557377874851227,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.030627399682998657,
+      "shape": [
+        1024,
+        2048
+      ],
+      "shape_category": "original",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 2.6500301378605666,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.5603879690170288,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.6099268794059753,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "forward",
+        "extension_name": "shapebench_task_003_baseline_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.011207759380340576,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.012198537588119507,
+      "shape": [
+        512,
+        1024
+      ],
+      "shape_category": "smaller",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 1.0884010955407237,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.9170230478048325,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 5.891779437661171,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "forward",
+        "extension_name": "shapebench_task_003_baseline_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.01834046095609665,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.11783558875322342,
+      "shape": [
+        2048,
+        4096
+      ],
+      "shape_category": "larger",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 6.424897882081479,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.3379303961992264,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.8193161338567734,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "forward",
+        "extension_name": "shapebench_task_003_baseline_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006758607923984528,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.016386322677135468,
+      "shape": [
+        1007,
+        1013
+      ],
+      "shape_category": "odd",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 2.4245115061320104,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.32728351652622223,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.5992557853460312,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "forward",
+        "extension_name": "shapebench_task_003_baseline_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006545670330524445,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.011985115706920624,
+      "shape": [
+        256,
+        4096
+      ],
+      "shape_category": "batch_variant",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 1.8309989812701684,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.3304816782474518,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.8170530200004578,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "forward",
+        "extension_name": "shapebench_task_003_baseline_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006609633564949036,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.016341060400009155,
+      "shape": [
+        1000,
+        1007
+      ],
+      "shape_category": "non_power_of_two",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 2.472309582586543,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.3356318920850754,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 1.5292782336473465,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "solution.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_baseline_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006712637841701508,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.03058556467294693,
+      "shape": [
+        1024,
+        2048
+      ],
+      "shape_category": "original",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 4.556415137271006,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.3281049430370331,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.4007909446954727,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "solution.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_baseline_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006562098860740662,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.008015818893909454,
+      "shape": [
+        512,
+        1024
+      ],
+      "shape_category": "smaller",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 1.2215327845586148,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.9208209812641144,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 5.899209529161453,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "solution.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_baseline_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.018416419625282288,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.11798419058322906,
+      "shape": [
+        2048,
+        4096
+      ],
+      "shape_category": "larger",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 6.406467325563049,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.32999366521835327,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.8099526166915894,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "solution.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_baseline_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006599873304367065,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.016199052333831787,
+      "shape": [
+        1007,
+        1013
+      ],
+      "shape_category": "odd",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 2.4544489851211306,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.32628513872623444,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.5980674177408218,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "solution.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_baseline_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006525702774524689,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.011961348354816437,
+      "shape": [
+        256,
+        4096
+      ],
+      "shape_category": "batch_variant",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 1.8329594172617927,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.3294236958026886,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.8166749030351639,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "solution.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_baseline_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006588473916053772,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "baseline",
+      "pytorch_eager_ms": 0.016333498060703278,
+      "shape": [
+        1000,
+        1007
+      ],
+      "shape_category": "non_power_of_two",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 2.4791018783430774,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.3168229013681412,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 1.5307683497667313,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_shape_aware_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.0063364580273628235,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.030615366995334625,
+      "shape": [
+        1024,
+        2048
+      ],
+      "shape_category": "original",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 4.831621524695314,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.30760467052459717,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.39827078580856323,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_shape_aware_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006152093410491943,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.007965415716171265,
+      "shape": [
+        512,
+        1024
+      ],
+      "shape_category": "smaller",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 1.2947488252676451,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.9228531271219254,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 6.147395819425583,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_shape_aware_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.018457062542438507,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.12294791638851166,
+      "shape": [
+        2048,
+        4096
+      ],
+      "shape_category": "larger",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 6.661293805870587,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.33496320247650146,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.8079726248979568,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_shape_aware_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006699264049530029,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.016159452497959137,
+      "shape": [
+        1007,
+        1013
+      ],
+      "shape_category": "odd",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 2.4121235375239114,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.34176185727119446,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.5988776683807373,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_shape_aware_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006835237145423889,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.011977553367614746,
+      "shape": [
+        256,
+        4096
+      ],
+      "shape_category": "batch_variant",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 1.752324478695458,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 1,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.33064186573028564,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.817934051156044,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_shape_aware_attempt_001",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006612837314605713,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.01635868102312088,
+      "shape": [
+        1000,
+        1007
+      ],
+      "shape_category": "non_power_of_two",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 2.4737764207490196,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.33064186573028564,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 1.5256274491548538,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_shape_aware_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006612837314605713,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.030512548983097076,
+      "shape": [
+        1024,
+        2048
+      ],
+      "shape_category": "original",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 4.614138762449863,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.32763369381427765,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.39730221033096313,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_shape_aware_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006552673876285553,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.007946044206619263,
+      "shape": [
+        512,
+        1024
+      ],
+      "shape_category": "smaller",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 1.2126414890532529,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.9199231863021851,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 5.900491029024124,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_shape_aware_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.0183984637260437,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.11800982058048248,
+      "shape": [
+        2048,
+        4096
+      ],
+      "shape_category": "larger",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 6.414112739936827,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.33198297023773193,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.8091330528259277,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_shape_aware_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006639659404754639,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.016182661056518555,
+      "shape": [
+        1007,
+        1013
+      ],
+      "shape_category": "odd",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 2.4372727680775617,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.33136457204818726,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.5995072424411774,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_shape_aware_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006627291440963745,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.011990144848823547,
+      "shape": [
+        256,
+        4096
+      ],
+      "shape_category": "batch_variant",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 1.8092074198988195,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 2,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.3340523689985275,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.8179023861885071,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_shape_aware_attempt_002",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.0066810473799705505,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.01635804772377014,
+      "shape": [
+        1000,
+        1007
+      ],
+      "shape_category": "non_power_of_two",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 2.4484256424839552,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.3358926624059677,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 1.5244390815496445,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_shape_aware_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006717853248119354,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.03048878163099289,
+      "shape": [
+        1024,
+        2048
+      ],
+      "shape_category": "original",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 4.538470922913975,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.33182278275489807,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.39913319051265717,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_shape_aware_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006636455655097961,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.007982663810253143,
+      "shape": [
+        512,
+        1024
+      ],
+      "shape_category": "smaller",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 1.20285047096202,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.9179394692182541,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 5.891319364309311,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_shape_aware_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.018358789384365082,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.11782638728618622,
+      "shape": [
+        2048,
+        4096
+      ],
+      "shape_category": "larger",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 6.41798240719134,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.3383755683898926,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.8067749440670013,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_shape_aware_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.0067675113677978516,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.016135498881340027,
+      "shape": [
+        1007,
+        1013
+      ],
+      "shape_category": "odd",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 2.384258851506077,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.3369040787220001,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.5987007170915604,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_shape_aware_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.0067380815744400024,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.011974014341831207,
+      "shape": [
+        256,
+        4096
+      ],
+      "shape_category": "batch_variant",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 1.7770658027134911,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    },
+    {
+      "correct": true,
+      "cuda_version": "12.1",
+      "extra": {
+        "attempt": 3,
+        "benchmark": {
+          "enabled": true,
+          "generated_total_ms": 0.3317221999168396,
+          "iterations": 50,
+          "pytorch_eager_total_ms": 0.8176509290933609,
+          "warmup": 10
+        },
+        "comparison": "passed",
+        "created_fallback_solution": true,
+        "cuda_source": "matrix_transpose.cu",
+        "device": "cuda",
+        "entrypoint": "solution.py:forward",
+        "environment": {
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "device_count": 1,
+          "gpu_name": "NVIDIA GeForce RTX 4090",
+          "requested_device": "cuda",
+          "torch_extensions_dir": "/tmp/shape_bench_torch_extensions",
+          "torch_version": "2.2.0"
+        },
+        "extension_function": "matrix_transpose",
+        "extension_name": "shapebench_task_003_shape_aware_attempt_003",
+        "input_names": [
+          "x"
+        ],
+        "phase": "shape_evaluation",
+        "seed": 0
+      },
+      "failure_reason": null,
+      "generated_ms": 0.006634443998336792,
+      "gpu_name": "NVIDIA GeForce RTX 4090",
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0,
+      "prompt_mode": "shape_aware",
+      "pytorch_eager_ms": 0.016353018581867218,
+      "shape": [
+        1000,
+        1007
+      ],
+      "shape_category": "non_power_of_two",
+      "speedup_vs_compile": null,
+      "speedup_vs_eager": 2.4648664735080743,
+      "task_id": "task_003",
+      "torch_compile_ms": null,
+      "torch_version": "2.2.0"
+    }
+  ],
+  "schema_version": 1,
+  "source_commit": "63f68d4aa06f5936573b135e0412d15b997d5561",
+  "source_run_dir": "results/vast_runs/20260603T191105Z",
+  "vast_run_metadata": {
+    "attempt_dirs": [
+      "generated/baseline/task_002/attempt_001",
+      "generated/baseline/task_002/attempt_002",
+      "generated/baseline/task_002/attempt_003",
+      "generated/shape_aware/task_002/attempt_001",
+      "generated/shape_aware/task_002/attempt_002",
+      "generated/shape_aware/task_002/attempt_003",
+      "generated/baseline/task_003/attempt_001",
+      "generated/baseline/task_003/attempt_002",
+      "generated/baseline/task_003/attempt_003",
+      "generated/shape_aware/task_003/attempt_001",
+      "generated/shape_aware/task_003/attempt_002",
+      "generated/shape_aware/task_003/attempt_003"
+    ],
+    "cleanup_error": null,
+    "created_at": "2026-06-03T19:21:24.265317+00:00",
+    "destroyed": true,
+    "disk_gb": 40,
+    "image": null,
+    "instance_id": 39338113,
+    "offer_id": 32539128,
+    "remote_exit_code": 0,
+    "repo_ref": "HEAD",
+    "template_hash": "e4c5e88bc289f4eecb0c955c4fe7430d"
+  }
+}

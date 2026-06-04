@@ -8,7 +8,7 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from harness.evaluator import (
     DEFAULT_BENCHMARK_ITERS,
@@ -22,6 +22,7 @@ DEFAULT_ATTEMPTS = (
     "generated/baseline/task_001/attempt_003",
     "generated/shape_aware/task_001/attempt_002",
 )
+LogFn = Callable[[str], None]
 
 
 @dataclass(frozen=True)
@@ -84,15 +85,23 @@ def run_gpu_eval_batch(
     benchmark: bool = True,
     benchmark_warmup: int = DEFAULT_BENCHMARK_WARMUP,
     benchmark_iters: int = DEFAULT_BENCHMARK_ITERS,
+    log: LogFn | None = None,
 ) -> GpuEvalBatchRun:
     """Run a small GPU correctness batch and write a summary JSON file."""
     root = Path(project_root)
     attempts = [_resolve_attempt(root, attempt) for attempt in (attempt_dirs or list(DEFAULT_ATTEMPTS))]
+    _log(log, f"batch start: attempts={len(attempts)} device={device} benchmark={benchmark}")
+    if attempts:
+        for index, attempt in enumerate(attempts, start=1):
+            _log(log, f"batch attempt {index}/{len(attempts)} queued: {_display_path(attempt, root)}")
+    _log(log, "preflight start" if run_preflight else "preflight skipped")
     preflight = collect_preflight(require_cuda=require_cuda) if run_preflight else {"skipped": True}
+    _log(log, "preflight complete")
     summaries: list[BatchAttemptSummary] = []
 
-    for attempt_dir in attempts:
+    for index, attempt_dir in enumerate(attempts, start=1):
         output_path = default_output_path(attempt_dir)
+        _log(log, f"attempt {index}/{len(attempts)} start: {_display_path(attempt_dir, root)}")
         run = evaluate_attempt(
             attempt_dir,
             output_path=output_path,
@@ -101,6 +110,15 @@ def run_gpu_eval_batch(
             benchmark=benchmark,
             benchmark_warmup=benchmark_warmup,
             benchmark_iters=benchmark_iters,
+            log=log,
+        )
+        _log(
+            log,
+            (
+                f"attempt {index}/{len(attempts)} done: "
+                f"{run.summary.passed_shapes}/{run.summary.total_shapes} shapes passed; "
+                f"failures={run.summary.failure_reasons}"
+            ),
         )
         summaries.append(
             BatchAttemptSummary(
@@ -116,6 +134,7 @@ def run_gpu_eval_batch(
         )
 
     destination = Path(summary_output) if summary_output else root / "results" / "tables" / "gpu_eval_batch_summary.json"
+    _log(log, f"writing batch summary: {_display_path(destination, root)}")
     batch = GpuEvalBatchRun(
         created_at=datetime.now(timezone.utc).isoformat(),
         device=device,
@@ -132,6 +151,7 @@ def run_gpu_eval_batch(
     )
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(json.dumps(batch.to_dict(), indent=2, sort_keys=True), encoding="utf-8")
+    _log(log, "batch complete")
     return batch
 
 
@@ -216,3 +236,8 @@ def _display_path(path: Path, root: Path) -> Path:
         return path.relative_to(root)
     except ValueError:
         return path
+
+
+def _log(log: LogFn | None, message: str) -> None:
+    if log is not None:
+        log(message)

@@ -68,6 +68,8 @@ def run_vast_eval(config: VastRunConfig) -> VastRunResult:
     """Launch a Vast.ai instance, run the GPU batch, fetch results, and destroy it."""
     _log("checking local git tree")
     _ensure_clean_repo(config.project_root, allow_dirty=config.allow_dirty)
+    source_commit = resolve_git_commit(config.project_root, config.repo_ref)
+    _log(f"source commit: {source_commit}")
     local_run_dir = _local_run_dir(config.project_root, config.local_runs_dir)
     local_run_dir.mkdir(parents=True, exist_ok=True)
     _log(f"local run directory: {local_run_dir}")
@@ -112,6 +114,7 @@ def run_vast_eval(config: VastRunConfig) -> VastRunResult:
                 "template_hash": config.template_hash,
                 "disk_gb": config.disk_gb,
                 "repo_ref": config.repo_ref,
+                "source_commit": source_commit,
                 "attempt_dirs": list(config.attempt_dirs),
                 "remote_exit_code": remote_exit_code,
                 "destroyed": destroyed,
@@ -396,6 +399,12 @@ def describe_ssh_probe_failure(error: str) -> str:
     if "Connection timed out" in compact or "Operation timed out" in compact:
         return "SSH route timed out while the instance was booting"
     return _shorten(compact)
+
+
+def resolve_git_commit(project_root: Path, repo_ref: str) -> str:
+    """Resolve the Git object archived for a Vast run to an exact commit SHA."""
+    completed = _run_checked(["git", "rev-parse", f"{repo_ref}^{{commit}}"], cwd=project_root)
+    return completed.stdout.strip()
 
 
 def _parse_cli_object(output: str) -> dict[str, Any]:

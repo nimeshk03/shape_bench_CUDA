@@ -33,6 +33,28 @@ def test_run_gpu_eval_batch_writes_summary_for_attempts(tmp_path) -> None:
     assert summary["attempts"][1]["passed_shapes"] == 6
 
 
+def test_run_gpu_eval_batch_logs_attempt_and_shape_progress(tmp_path) -> None:
+    attempt = _make_project_attempt(tmp_path, prompt_mode="baseline", attempt=1)
+    messages: list[str] = []
+
+    run_gpu_eval_batch(
+        project_root=tmp_path,
+        attempt_dirs=[attempt],
+        device="cpu",
+        require_cuda=False,
+        run_preflight=False,
+        benchmark_warmup=1,
+        benchmark_iters=1,
+        log=messages.append,
+    )
+
+    assert any("batch start: attempts=1" in message for message in messages)
+    assert any("attempt 1/1 start" in message for message in messages)
+    assert any("task_001 baseline attempt_001: original shape=[4, 4]: start" in message for message in messages)
+    assert any("benchmark generated start" in message for message in messages)
+    assert messages[-1] == "batch complete"
+
+
 def _make_project_attempt(tmp_path, *, prompt_mode: str, attempt: int):
     task_dir = tmp_path / "tasks" / "task_001"
     task_dir.mkdir(parents=True, exist_ok=True)

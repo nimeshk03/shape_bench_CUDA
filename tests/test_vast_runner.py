@@ -13,6 +13,7 @@ from harness.vast_runner import (
     destroy_instance,
     parse_instance_id,
     parse_ssh_args,
+    resolve_git_commit,
     ssh_command,
     wait_for_ssh,
 )
@@ -229,3 +230,20 @@ def test_destroy_instance_raises_when_cli_fails(monkeypatch) -> None:
 
     with pytest.raises(RuntimeError, match="cannot destroy"):
         destroy_instance(123)
+
+
+def test_resolve_git_commit_resolves_repo_ref(monkeypatch, tmp_path) -> None:
+    commands: list[list[str]] = []
+
+    def fake_run_checked(command, *, cwd=None):
+        commands.append(command)
+
+        class Result:
+            stdout = "abc123\n"
+
+        return Result()
+
+    monkeypatch.setattr(vast_runner, "_run_checked", fake_run_checked)
+
+    assert resolve_git_commit(tmp_path, "HEAD") == "abc123"
+    assert commands == [["git", "rev-parse", "HEAD^{commit}"]]

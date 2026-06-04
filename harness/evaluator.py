@@ -24,6 +24,7 @@ from harness.task_loader import TaskDefinition, load_task
 DEFAULT_CONTRACT_FILE = "eval_contract.json"
 DEFAULT_BENCHMARK_WARMUP = 10
 DEFAULT_BENCHMARK_ITERS = 50
+LogFn = Callable[[str], None]
 
 
 @dataclass(frozen=True)
@@ -42,6 +43,7 @@ def evaluate_attempt(
     benchmark: bool = True,
     benchmark_warmup: int = DEFAULT_BENCHMARK_WARMUP,
     benchmark_iters: int = DEFAULT_BENCHMARK_ITERS,
+    log: LogFn | None = None,
 ) -> EvaluationRun:
     """Evaluate one prepared attempt across all task shape variants."""
     if benchmark_warmup < 0:
@@ -49,18 +51,30 @@ def evaluate_attempt(
     if benchmark_iters <= 0:
         raise ValueError("benchmark_iters must be positive")
     attempt_path = Path(attempt_dir)
+    _log(log, f"loading contract: {attempt_path}")
     contract = _load_contract(attempt_path)
     project_root = _project_root_from_attempt(attempt_path)
     task = load_task(project_root / "tasks" / contract["task_id"])
     resolved_device = _resolve_device(device)
     _ensure_torch_extensions_dir()
     environment = _environment_extra(resolved_device)
+    attempt_label = _attempt_label(contract)
+    _log(
+        log,
+        (
+            f"{attempt_label}: start task={contract['task_id']} "
+            f"device={resolved_device} benchmark={benchmark}"
+        ),
+    )
 
     solution_path = attempt_path / contract["extracted_dir"] / contract["entrypoint_file"]
     try:
+        _log(log, f"{attempt_label}: importing solution {solution_path}")
         solution_module = _load_module(solution_path, prefix="shapebench_solution")
         forward = getattr(solution_module, contract["entrypoint_function"])
+        _log(log, f"{attempt_label}: solution import ready")
     except Exception as exc:
+        _log(log, f"{attempt_label}: solution import failed: {_short_error(exc)}")
         results = _failure_results_for_all_shapes(
             task,
             contract,
@@ -73,8 +87,11 @@ def evaluate_attempt(
         return _finish_run(results, output_path)
 
     try:
+        _log(log, f"{attempt_label}: importing task model {task.model_path}")
         task_module = _load_module(task.model_path, prefix="shapebench_task")
+        _log(log, f"{attempt_label}: task model import ready")
     except Exception as exc:
+        _log(log, f"{attempt_label}: task model import failed: {_short_error(exc)}")
         results = _failure_results_for_all_shapes(
             task,
             contract,
@@ -100,9 +117,11 @@ def evaluate_attempt(
             benchmark=benchmark,
             benchmark_warmup=benchmark_warmup,
             benchmark_iters=benchmark_iters,
+            log=log,
         )
         for shape_category, shape in task.shapes.items()
     ]
+    _log(log, f"{attempt_label}: complete")
     return _finish_run(results, output_path)
 
 
@@ -131,13 +150,20 @@ def _evaluate_shape(
     benchmark: bool,
     benchmark_warmup: int,
     benchmark_iters: int,
+    log: LogFn | None,
 ) -> ShapeBenchResult:
     base_extra = _base_extra(contract, device=device, environment=environment)
     base_extra["seed"] = seed
+    attempt_label = _attempt_label(contract)
+    shape_label = f"{shape_category} shape={list(shape)}"
+    _log(log, f"{attempt_label}: {shape_label}: start")
     try:
+        _log(log, f"{attempt_label}: {shape_label}: creating inputs/reference")
         inputs = _create_inputs(task_module, shape, device=device, seed=seed)
         expected = _reference_output(task_module, inputs)
+        _log(log, f"{attempt_label}: {shape_label}: running generated forward")
         actual = forward(*inputs)
+        _log(log, f"{attempt_label}: {shape_label}: comparing outputs")
         comparison = compare_tensors(
             expected,
             actual,
@@ -145,6 +171,7 @@ def _evaluate_shape(
             rtol=float(task.metadata["rtol"]),
         )
     except Exception as exc:
+        _log(log, f"{attempt_label}: {shape_label}: failed during correctness: {_short_error(exc)}")
         return _result(
             task=task,
             contract=contract,
@@ -168,6 +195,21 @@ def _evaluate_shape(
             if shape_category == "original"
             else "shape_variant_correctness_failure"
         )
+        _log(
+            log,
+            (
+                f"{attempt_label}: {shape_label}: correctness failed "
+                f"max_abs_error={comparison.max_abs_error}"
+            ),
+        )
+    else:
+        _log(
+            log,
+            (
+                f"{attempt_label}: {shape_label}: correctness passed "
+                f"max_abs_error={comparison.max_abs_error}"
+            ),
+        )
     timing = _benchmark_shape(
         task_module=task_module,
         forward=forward,
@@ -175,7 +217,10 @@ def _evaluate_shape(
         enabled=benchmark and comparison.passed,
         warmup=benchmark_warmup,
         iters=benchmark_iters,
+        log=log,
+        label=f"{attempt_label}: {shape_label}",
     )
+    _log(log, f"{attempt_label}: {shape_label}: complete")
     return _result(
         task=task,
         contract=contract,
@@ -342,8 +387,11 @@ def _benchmark_shape(
     enabled: bool,
     warmup: int,
     iters: int,
+    log: LogFn | None,
+    label: str,
 ) -> dict[str, Any]:
     if not enabled:
+        _log(log, f"{label}: benchmark skipped")
         return {
             "pytorch_eager_ms": None,
             "generated_ms": None,
@@ -361,12 +409,14 @@ def _benchmark_shape(
         "iterations": iters,
     }
     try:
+        _log(log, f"{label}: benchmark PyTorch eager start warmup={warmup} iters={iters}")
         eager = benchmark_callable(
             lambda *args: _reference_output(task_module, args),
             inputs,
             warmup=warmup,
             iters=iters,
         )
+        _log(log, f"{label}: benchmark generated start warmup={warmup} iters={iters}")
         generated = benchmark_callable(
             forward,
             inputs,
@@ -374,6 +424,7 @@ def _benchmark_shape(
             iters=iters,
         )
     except Exception as exc:
+        _log(log, f"{label}: benchmark failed: {_short_error(exc)}")
         extra["error"] = str(exc)
         return {
             "pytorch_eager_ms": None,
@@ -385,6 +436,18 @@ def _benchmark_shape(
     speedup = None
     if generated.average_ms > 0:
         speedup = eager.average_ms / generated.average_ms
+    _log(
+        log,
+        (
+            f"{label}: benchmark done "
+            f"pytorch_eager_ms={eager.average_ms:.6f} "
+            f"generated_ms={generated.average_ms:.6f} "
+            f"speedup={speedup:.3f}" if speedup is not None else
+            f"{label}: benchmark done "
+            f"pytorch_eager_ms={eager.average_ms:.6f} "
+            f"generated_ms={generated.average_ms:.6f} speedup=None"
+        ),
+    )
     extra["pytorch_eager_total_ms"] = eager.total_ms
     extra["generated_total_ms"] = generated.total_ms
     return {
@@ -446,6 +509,25 @@ def _classify_exception(exc: Exception) -> str:
     if any(marker in message for marker in compile_markers):
         return "compilation_failure"
     return "runtime_error"
+
+
+def _attempt_label(contract: dict[str, Any]) -> str:
+    return (
+        f"{contract['task_id']} {contract['prompt_mode']} "
+        f"attempt_{int(contract['attempt']):03d}"
+    )
+
+
+def _log(log: LogFn | None, message: str) -> None:
+    if log is not None:
+        log(message)
+
+
+def _short_error(exc: Exception, *, limit: int = 240) -> str:
+    message = str(exc).replace("\n", " ").strip()
+    if len(message) <= limit:
+        return message
+    return message[: limit - 3] + "..."
 
 
 def _ensure_torch_extensions_dir() -> None:

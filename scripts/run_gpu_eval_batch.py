@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+from datetime import datetime
 from pathlib import Path
 
 
@@ -58,12 +59,18 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Skip nvidia-smi, nvcc, and torch CUDA preflight checks.",
     )
+    parser.add_argument(
+        "--quiet",
+        action="store_true",
+        help="Suppress progress logging and print only the final summary.",
+    )
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     attempts = args.attempts or list(DEFAULT_ATTEMPTS)
+    progress_log = None if args.quiet else _progress_log
     try:
         batch = run_gpu_eval_batch(
             project_root=ROOT,
@@ -76,6 +83,7 @@ def main() -> int:
             benchmark=not args.no_benchmark,
             benchmark_warmup=args.benchmark_warmup,
             benchmark_iters=args.benchmark_iters,
+            log=progress_log,
         )
     except RuntimeError as exc:
         print(str(exc), file=sys.stderr)
@@ -92,6 +100,11 @@ def main() -> int:
             f"failures={attempt.failure_reasons}"
         )
     return 0
+
+
+def _progress_log(message: str) -> None:
+    timestamp = datetime.now().strftime("%H:%M:%S")
+    print(f"[gpu-eval {timestamp}] {message}", flush=True)
 
 
 if __name__ == "__main__":
