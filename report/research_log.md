@@ -1510,3 +1510,79 @@ artifacts.
 Follow-up validation tightened this guarantee so configs must use repo-relative
 attempt paths and each evaluation contract must exist in the exact git ref that
 will be archived for the GPU worker.
+
+## 2026-06-04 - Expanded Phase 1 GPU Batch: tasks 004-008
+
+Ran the expanded Phase 1 batch on an RTX 4090 using:
+
+```text
+configs/phase1_task004_008.json
+```
+
+Experiment design:
+
+```text
+5 tasks: task_004-task_008
+2 prompt modes: baseline and shape_aware
+3 generated attempts per task/mode
+6 shape categories per attempt: original, smaller, larger, odd, batch_variant, non_power_of_two
+Total: 30 attempts, 180 shape evaluations
+```
+
+Correctness result:
+
+```text
+Overall: 174/180 shape evaluations passed
+Attempts: 29/30 attempts passed all 6 shapes
+
+task_004 matrix_multiply: 36/36 passed
+task_005 rowwise_softmax: 36/36 passed
+task_006 rowwise_layer_norm: 36/36 passed
+task_007 broadcast_affine_clamp: 36/36 passed
+task_008 batched_transpose: 30/36 passed
+```
+
+The only failure was `task_008` shape-aware `attempt_001`, which failed all six
+shapes including the original shape. This should be treated as a generated-code
+correctness failure rather than a shape-generalization-only failure.
+
+Mean timing by task and prompt mode:
+
+```text
+task_id   prompt_mode   checks_passed   generated_ms   pytorch_eager_ms   mean_speedup_vs_eager
+task_004  baseline      18/18           0.013          0.007              0.557
+task_004  shape_aware   18/18           0.011          0.007              0.748
+task_005  baseline      18/18           0.012          0.005              0.535
+task_005  shape_aware   18/18           0.011          0.005              0.623
+task_006  baseline      18/18           0.007          0.036              5.624
+task_006  shape_aware   18/18           0.007          0.036              5.396
+task_007  baseline      18/18           0.005          0.013              2.461
+task_007  shape_aware   18/18           0.005          0.013              2.430
+task_008  baseline      18/18           0.007          0.027              2.721
+task_008  shape_aware   12/18           0.010          0.027              2.112
+```
+
+Interpretation:
+
+```text
+The expanded batch confirms that the evaluator can now collect correctness and
+timing data across multiple non-trivial CUDA task families. Correctness was
+strong overall, but shape-aware prompting did not clearly improve robustness in
+this batch. For task_008, one shape-aware attempt was worse than baseline because
+it failed even the original shape.
+
+Performance varied strongly by task. Matrix multiplication and softmax generated
+kernels were correct but slower than PyTorch eager on average. Layer norm,
+broadcast affine clamp, and batched transpose produced useful speedups while
+remaining shape-stable for most attempts.
+```
+
+Research implication:
+
+```text
+The next experiments should increase task diversity and attempt count, but the
+analysis should separate three cases: original-shape correctness failures,
+shape-variant-only failures, and performance instability across shapes. The
+task_008 failure shows why original-shape pass rate must remain a separate gate
+before claiming shape generalization behavior.
+```

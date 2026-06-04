@@ -1,0 +1,518 @@
+{
+  "aggregates": [
+    {
+      "checks": 18,
+      "max_abs_error": 4.9591064453125e-05,
+      "max_speedup_vs_eager": 0.6530688571073479,
+      "mean_generated_ms": 0.01325614181243711,
+      "mean_pytorch_eager_ms": 0.006956697648598088,
+      "mean_speedup_vs_eager": 0.5565001923547146,
+      "min_speedup_vs_eager": 0.3538573628507497,
+      "passed": 18,
+      "prompt_mode": "baseline",
+      "task_id": "task_004"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 4.9591064453125e-05,
+      "max_speedup_vs_eager": 1.0147637858018619,
+      "mean_generated_ms": 0.010904083287136422,
+      "mean_pytorch_eager_ms": 0.00683125884582599,
+      "mean_speedup_vs_eager": 0.7478182523750408,
+      "min_speedup_vs_eager": 0.3272351500872252,
+      "passed": 18,
+      "prompt_mode": "shape_aware",
+      "task_id": "task_004"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 7.450580596923828e-09,
+      "max_speedup_vs_eager": 0.9051134695247284,
+      "mean_generated_ms": 0.011987143920527564,
+      "mean_pytorch_eager_ms": 0.005095602116651005,
+      "mean_speedup_vs_eager": 0.5353082826853386,
+      "min_speedup_vs_eager": 0.24551413475414594,
+      "passed": 18,
+      "prompt_mode": "baseline",
+      "task_id": "task_005"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 7.450580596923828e-09,
+      "max_speedup_vs_eager": 0.9276717245880242,
+      "mean_generated_ms": 0.011231939618786177,
+      "mean_pytorch_eager_ms": 0.005014492974927028,
+      "mean_speedup_vs_eager": 0.6230827935642087,
+      "min_speedup_vs_eager": 0.16974115894247535,
+      "passed": 18,
+      "prompt_mode": "shape_aware",
+      "task_id": "task_005"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 9.5367431640625e-07,
+      "max_speedup_vs_eager": 8.054394723528938,
+      "mean_generated_ms": 0.00699954547194971,
+      "mean_pytorch_eager_ms": 0.03641012228197522,
+      "mean_speedup_vs_eager": 5.624294827121164,
+      "min_speedup_vs_eager": 3.9306745069731686,
+      "passed": 18,
+      "prompt_mode": "baseline",
+      "task_id": "task_006"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 9.5367431640625e-07,
+      "max_speedup_vs_eager": 7.8720031141626565,
+      "mean_generated_ms": 0.007241815845999453,
+      "mean_pytorch_eager_ms": 0.036268646363168955,
+      "mean_speedup_vs_eager": 5.396483178520995,
+      "min_speedup_vs_eager": 3.7809630850493456,
+      "passed": 18,
+      "prompt_mode": "shape_aware",
+      "task_id": "task_006"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 1.7881393432617188e-07,
+      "max_speedup_vs_eager": 2.8981932757804247,
+      "mean_generated_ms": 0.005357529605842299,
+      "mean_pytorch_eager_ms": 0.013259457579503456,
+      "mean_speedup_vs_eager": 2.461359138376649,
+      "min_speedup_vs_eager": 2.1156071115135062,
+      "passed": 18,
+      "prompt_mode": "baseline",
+      "task_id": "task_007"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 1.7881393432617188e-07,
+      "max_speedup_vs_eager": 2.9005948235840298,
+      "mean_generated_ms": 0.005405401655783256,
+      "mean_pytorch_eager_ms": 0.013218304245836206,
+      "mean_speedup_vs_eager": 2.4304235874647144,
+      "min_speedup_vs_eager": 2.1343351715974914,
+      "passed": 18,
+      "prompt_mode": "shape_aware",
+      "task_id": "task_007"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 0.0,
+      "max_speedup_vs_eager": 5.9335756709231635,
+      "mean_generated_ms": 0.007206491039445003,
+      "mean_pytorch_eager_ms": 0.026985684720178444,
+      "mean_speedup_vs_eager": 2.7208258434039814,
+      "min_speedup_vs_eager": 1.1938267807711096,
+      "passed": 18,
+      "prompt_mode": "baseline",
+      "task_id": "task_008"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 8.47510051727295,
+      "max_speedup_vs_eager": 3.7099755453408263,
+      "mean_generated_ms": 0.00953700354633232,
+      "mean_pytorch_eager_ms": 0.02700271938617031,
+      "mean_speedup_vs_eager": 2.1116049623961777,
+      "min_speedup_vs_eager": 1.195777633719702,
+      "passed": 12,
+      "prompt_mode": "shape_aware",
+      "task_id": "task_008"
+    }
+  ],
+  "gpu_eval_batch_summary": {
+    "attempts": [
+      {
+        "attempt_dir": "generated/baseline/task_004/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_004_baseline_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_004",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_004/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_004_baseline_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_004",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_004/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_004_baseline_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_004",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_004/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_004_shape_aware_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_004",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_004/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_004_shape_aware_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_004",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_004/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_004_shape_aware_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_004",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_005/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_005_baseline_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_005",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_005/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_005_baseline_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_005",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_005/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_005_baseline_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_005",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_005/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_005_shape_aware_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_005",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_005/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_005_shape_aware_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_005",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_005/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_005_shape_aware_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_005",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_006/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_006_baseline_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_006",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_006/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_006_baseline_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_006",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_006/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_006_baseline_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_006",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_006/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_006_shape_aware_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_006",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_006/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_006_shape_aware_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_006",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_006/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_006_shape_aware_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_006",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_007/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_007_baseline_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_007",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_007/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_007_baseline_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_007",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_007/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_007_baseline_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_007",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_007/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_007_shape_aware_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_007",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_007/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_007_shape_aware_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_007",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_007/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_007_shape_aware_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_007",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_008/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_008_baseline_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_008",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_008/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_008_baseline_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_008",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_008/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_008_baseline_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_008",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_008/attempt_001",
+        "failure_reasons": {
+          "original_shape_correctness_failure": 1,
+          "shape_variant_correctness_failure": 5
+        },
+        "original_passed": false,
+        "output_path": "results/raw/task_008_shape_aware_attempt_001_correctness.jsonl",
+        "passed_shapes": 0,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_008",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_008/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_008_shape_aware_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_008",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_008/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_008_shape_aware_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_008",
+        "total_shapes": 6
+      }
+    ],
+    "benchmark": {
+      "enabled": true,
+      "iterations": 50,
+      "warmup": 10
+    },
+    "created_at": "2026-06-04T04:14:15.146791+00:00",
+    "device": "auto",
+    "preflight": {
+      "failures": [],
+      "nvcc": {
+        "ok": true,
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2023 NVIDIA Corporation\nBuilt on Mon_Apr__3_17:16:06_PDT_2023\nCuda compilation tools, release 12.1, V12.1.105\nBuild cuda_12.1.r12.1/compiler.32688072_0"
+      },
+      "nvidia_smi": {
+        "ok": true,
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "Thu Jun  4 03:58:06 2026       \n+-----------------------------------------------------------------------------------------+\n| NVIDIA-SMI 595.58.03              Driver Version: 595.58.03      CUDA Version: 13.2     |\n+-----------------------------------------+------------------------+----------------------+\n| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n|                                         |                        |               MIG M. |\n|=========================================+========================+======================|\n|   0  NVIDIA GeForce RTX 4090        On  |   00000000:01:00.0 Off |                  Off |\n|  0%   51C    P2             63W /  400W |     425MiB /  24564MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n\n+-----------------------------------------------------------------------------------------+\n| Processes:                                                                              |\n|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n|        ID   ID                                                               Usage      |\n|=========================================================================================|\n|  No running processes found                                                             |\n+-----------------------------------------------------------------------------------------+"
+      },
+      "python": "3.10.13",
+      "torch": {
+        "cuda_available": true,
+        "cuda_version": "12.1",
+        "gpu_name": "NVIDIA GeForce RTX 4090",
+        "installed": true,
+        "version": "2.2.0"
+      }
+    },
+    "require_cuda": true,
+    "seed": 0,
+    "summary_output": "results/tables/gpu_eval_batch_summary.json"
+  },
+  "raw_results": {
+    "path": "raw_results.jsonl",
+    "record_count": 180,
+    "sha256": "195bb227c466c325be24d967c6237dd5685a8d75c0da04c41852441917a82796"
+  },
+  "schema_version": 2,
+  "source_commit": "da7385a0554e920064da5b9476ea0c364db949d9",
+  "source_run_dir": "results/vast_runs/20260604T035522Z",
+  "vast_run_metadata": {
+    "attempt_dirs": [
+      "generated/baseline/task_004/attempt_001",
+      "generated/baseline/task_004/attempt_002",
+      "generated/baseline/task_004/attempt_003",
+      "generated/shape_aware/task_004/attempt_001",
+      "generated/shape_aware/task_004/attempt_002",
+      "generated/shape_aware/task_004/attempt_003",
+      "generated/baseline/task_005/attempt_001",
+      "generated/baseline/task_005/attempt_002",
+      "generated/baseline/task_005/attempt_003",
+      "generated/shape_aware/task_005/attempt_001",
+      "generated/shape_aware/task_005/attempt_002",
+      "generated/shape_aware/task_005/attempt_003",
+      "generated/baseline/task_006/attempt_001",
+      "generated/baseline/task_006/attempt_002",
+      "generated/baseline/task_006/attempt_003",
+      "generated/shape_aware/task_006/attempt_001",
+      "generated/shape_aware/task_006/attempt_002",
+      "generated/shape_aware/task_006/attempt_003",
+      "generated/baseline/task_007/attempt_001",
+      "generated/baseline/task_007/attempt_002",
+      "generated/baseline/task_007/attempt_003",
+      "generated/shape_aware/task_007/attempt_001",
+      "generated/shape_aware/task_007/attempt_002",
+      "generated/shape_aware/task_007/attempt_003",
+      "generated/baseline/task_008/attempt_001",
+      "generated/baseline/task_008/attempt_002",
+      "generated/baseline/task_008/attempt_003",
+      "generated/shape_aware/task_008/attempt_001",
+      "generated/shape_aware/task_008/attempt_002",
+      "generated/shape_aware/task_008/attempt_003"
+    ],
+    "cleanup_error": null,
+    "created_at": "2026-06-04T04:14:21.577477+00:00",
+    "destroyed": true,
+    "disk_gb": 40,
+    "experiment_name": "phase1_task004_008",
+    "image": null,
+    "instance_id": 39399091,
+    "offer_id": 24681414,
+    "remote_exit_code": 0,
+    "repo_ref": "HEAD",
+    "source_commit": "da7385a0554e920064da5b9476ea0c364db949d9",
+    "template_hash": "e4c5e88bc289f4eecb0c955c4fe7430d"
+  }
+}
