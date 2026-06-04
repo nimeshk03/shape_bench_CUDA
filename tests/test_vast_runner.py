@@ -11,8 +11,10 @@ from harness.vast_runner import (
     create_instance,
     describe_ssh_probe_failure,
     destroy_instance,
+    get_v1_ssh_args,
     parse_instance_id,
     parse_ssh_args,
+    parse_v1_instance_ssh_args,
     resolve_git_commit,
     ssh_command,
     wait_for_ssh,
@@ -39,6 +41,22 @@ def test_parse_ssh_args_accepts_args_or_full_command() -> None:
 
 def test_parse_ssh_args_accepts_vast_ssh_url() -> None:
     assert parse_ssh_args("ssh://root@79.117.120.96:20182") == ["-p", "20182", "root@79.117.120.96"]
+
+
+def test_parse_v1_instance_ssh_args_accepts_command_string() -> None:
+    assert parse_v1_instance_ssh_args({"ssh": "ssh -p 20182 root@ssh5.vast.ai"}) == [
+        "-p",
+        "20182",
+        "root@ssh5.vast.ai",
+    ]
+
+
+def test_parse_v1_instance_ssh_args_accepts_structured_fields() -> None:
+    assert parse_v1_instance_ssh_args({"ssh": {"host": "ssh5.vast.ai", "port": 20182, "user": "root"}}) == [
+        "-p",
+        "20182",
+        "root@ssh5.vast.ai",
+    ]
 
 
 def test_ssh_command_disables_interactive_prompts() -> None:
@@ -187,6 +205,50 @@ def test_wait_for_ssh_fails_fast_on_repeated_publickey_denials(monkeypatch) -> N
 
     with pytest.raises(RuntimeError, match="public-key authentication failed"):
         wait_for_ssh(123, poll_seconds=0, max_wait_seconds=60, max_auth_failures=2)
+
+
+def test_wait_for_ssh_uses_v1_ssh_fallback(monkeypatch) -> None:
+    commands: list[list[str]] = []
+
+    def fake_run(command, *, cwd=None, timeout=60):
+        commands.append(command)
+
+        class Result:
+            returncode = 0
+            stdout = ""
+            stderr = ""
+
+        if command[:3] == ["vastai", "show", "instance"]:
+            Result.stdout = '{"actual_status": "running", "intended_status": "running"}'
+        elif command[:2] == ["vastai", "ssh-url"]:
+            Result.returncode = 1
+            Result.stderr = "Failed with error 410: /api/v0/instances/ is deprecated."
+        elif command[:3] == ["vastai", "show", "instances-v1"]:
+            Result.stdout = '{"instances": [{"id": 123, "ssh": "ssh -p 20182 root@ssh5.vast.ai"}]}'
+        elif command[0] == "ssh":
+            Result.stdout = "shapebench-ready\n"
+        else:
+            raise AssertionError(command)
+        return Result()
+
+    monkeypatch.setattr(vast_runner, "_run", fake_run)
+
+    assert wait_for_ssh(123, poll_seconds=0, max_wait_seconds=60) == ["-p", "20182", "root@ssh5.vast.ai"]
+    assert any(command[:3] == ["vastai", "show", "instances-v1"] for command in commands)
+
+
+def test_get_v1_ssh_args_returns_matching_instance(monkeypatch) -> None:
+    def fake_run(command, *, cwd=None, timeout=60):
+        class Result:
+            returncode = 0
+            stdout = '{"instances": [{"id": 456, "ssh": "ssh -p 111 root@other"}, {"id": 123, "ssh": "ssh -p 222 root@target"}]}'
+            stderr = ""
+
+        return Result()
+
+    monkeypatch.setattr(vast_runner, "_run", fake_run)
+
+    assert get_v1_ssh_args(123) == ["-p", "222", "root@target"]
 
 
 def test_describe_ssh_probe_failure_classifies_boot_and_key_errors() -> None:

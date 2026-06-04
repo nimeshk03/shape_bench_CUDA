@@ -199,6 +199,10 @@ def wait_for_ssh(
             ssh_url = _run(["vastai", "ssh-url", str(instance_id)])
             if ssh_url.returncode == 0 and ssh_url.stdout.strip():
                 ssh_args = parse_ssh_args(ssh_url.stdout)
+            else:
+                last_error = ssh_url.stderr.strip()
+                ssh_args = get_v1_ssh_args(instance_id)
+            if ssh_args:
                 probe = _run(ssh_command(ssh_args, "echo shapebench-ready"), timeout=20)
                 if probe.returncode == 0:
                     _log("SSH is ready")
@@ -213,8 +217,6 @@ def wait_for_ssh(
                         )
                 else:
                     publickey_denials = 0
-            else:
-                last_error = ssh_url.stderr.strip()
             if actual_status:
                 last_error = f"status={actual_status}; {last_error}".strip()
         else:
@@ -390,6 +392,54 @@ def parse_ssh_args(output: str) -> list[str]:
     return tokens
 
 
+def get_v1_ssh_args(instance_id: int) -> list[str] | None:
+    """Return SSH args from the Vast v1 instances endpoint, if available."""
+    completed = _run(
+        [
+            "vastai",
+            "show",
+            "instances-v1",
+            "--raw",
+            "--cols",
+            "id,status,ssh,msg",
+            "--all",
+        ]
+    )
+    if completed.returncode != 0:
+        return None
+    try:
+        data = json.loads(completed.stdout)
+    except json.JSONDecodeError:
+        return None
+    instances = data.get("instances")
+    if not isinstance(instances, list):
+        return None
+    for instance in instances:
+        if isinstance(instance, dict) and _coerce_int(instance.get("id")) == instance_id:
+            return parse_v1_instance_ssh_args(instance)
+    return None
+
+
+def parse_v1_instance_ssh_args(instance: dict[str, Any]) -> list[str] | None:
+    """Parse SSH args from one Vast instances-v1 raw instance object."""
+    ssh = instance.get("ssh")
+    if isinstance(ssh, str) and ssh.strip() and ssh.strip() not in {"-", "N/A", "None"}:
+        return parse_ssh_args(ssh)
+    if isinstance(ssh, dict):
+        host = ssh.get("host") or ssh.get("hostname") or ssh.get("addr")
+        port = ssh.get("port")
+        user = ssh.get("user") or ssh.get("username") or "root"
+        if isinstance(host, str) and host.strip() and isinstance(port, int):
+            return ["-p", str(port), f"{user}@{host}"]
+
+    host = instance.get("ssh_host") or instance.get("ssh_addr") or instance.get("sshAddr")
+    port = instance.get("ssh_port") or instance.get("sshPort")
+    user = instance.get("ssh_user") or instance.get("sshUser") or "root"
+    if isinstance(host, str) and host.strip() and isinstance(port, int):
+        return ["-p", str(port), f"{user}@{host}"]
+    return None
+
+
 def ssh_command(ssh_args: list[str], remote_command: str) -> list[str]:
     return ["ssh", *SSH_OPTIONS, *ssh_args, remote_command]
 
@@ -426,6 +476,19 @@ def _parse_cli_object(output: str) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ValueError(f"expected object, got: {text}")
     return value
+
+
+def _coerce_int(value: Any) -> int | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str):
+        try:
+            return int(value)
+        except ValueError:
+            return None
+    return None
 
 
 def _ensure_clean_repo(project_root: Path, *, allow_dirty: bool) -> None:
