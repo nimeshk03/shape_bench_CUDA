@@ -422,6 +422,10 @@ def get_v1_ssh_args(instance_id: int) -> list[str] | None:
 
 def parse_v1_instance_ssh_args(instance: dict[str, Any]) -> list[str] | None:
     """Parse SSH args from one Vast instances-v1 raw instance object."""
+    direct_args = _parse_direct_v1_ssh_args(instance)
+    if direct_args is not None:
+        return direct_args
+
     ssh = instance.get("ssh")
     if isinstance(ssh, str) and ssh.strip() and ssh.strip() not in {"-", "N/A", "None"}:
         return parse_ssh_args(ssh)
@@ -437,6 +441,25 @@ def parse_v1_instance_ssh_args(instance: dict[str, Any]) -> list[str] | None:
     user = instance.get("ssh_user") or instance.get("sshUser") or "root"
     if isinstance(host, str) and host.strip() and isinstance(port, int):
         return ["-p", str(port), f"{user}@{host}"]
+    return None
+
+
+def _parse_direct_v1_ssh_args(instance: dict[str, Any]) -> list[str] | None:
+    public_ip = instance.get("public_ipaddr")
+    ports = instance.get("ports")
+    if not isinstance(public_ip, str) or not public_ip.strip() or not isinstance(ports, dict):
+        return None
+    ssh_ports = ports.get("22/tcp")
+    if not isinstance(ssh_ports, list):
+        return None
+    for mapping in ssh_ports:
+        if not isinstance(mapping, dict):
+            continue
+        host_port = mapping.get("HostPort")
+        if isinstance(host_port, str) and host_port.isdigit():
+            return ["-p", host_port, f"root@{public_ip}"]
+        if isinstance(host_port, int):
+            return ["-p", str(host_port), f"root@{public_ip}"]
     return None
 
 

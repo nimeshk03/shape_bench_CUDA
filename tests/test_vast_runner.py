@@ -51,6 +51,17 @@ def test_parse_v1_instance_ssh_args_accepts_command_string() -> None:
     ]
 
 
+def test_parse_v1_instance_ssh_args_prefers_direct_public_ip_port() -> None:
+    assert parse_v1_instance_ssh_args(
+        {
+            "public_ipaddr": "50.35.34.14",
+            "ports": {"22/tcp": [{"HostIp": "0.0.0.0", "HostPort": "9189"}]},
+            "ssh_host": "ssh3.vast.ai",
+            "ssh_port": 37386,
+        }
+    ) == ["-p", "9189", "root@50.35.34.14"]
+
+
 def test_parse_v1_instance_ssh_args_accepts_structured_fields() -> None:
     assert parse_v1_instance_ssh_args({"ssh": {"host": "ssh5.vast.ai", "port": 20182, "user": "root"}}) == [
         "-p",
