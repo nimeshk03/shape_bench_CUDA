@@ -1658,3 +1658,19 @@ shape-sensitive.
 Mean speedup can be distorted by timing outliers in microsecond-scale kernels,
 so median speedup should be reported alongside mean speedup in future analysis.
 ```
+
+## 2026-06-04 - Stage 9 Initial Findings Report
+
+Created a reproducible Stage 9 analysis path that loads compact experiment
+artifacts from `results/experiments/` and generates:
+
+```text
+report/initial_findings.md
+```
+
+The report summarizes the current exported GPU evidence across tasks
+`task_002`-`task_012`: 66 generated attempts and 384/396 passed shape
+evaluations. The key interpretation remains that current results do not show a
+shape-aware robustness advantage: baseline attempts passed all exported shape
+evaluations, while the observed shape-aware failures failed the original shape
+as well as shape variants.

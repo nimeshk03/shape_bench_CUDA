@@ -249,6 +249,29 @@ python scripts/run_vast_eval.py --offer-id <offer_id> --template-hash "" --image
 
 Use `--keep-instance` only for debugging. Otherwise the script destroys the instance to control cost.
 
+## Analysis And Reporting
+
+Compact exported experiment artifacts live under:
+
+```text
+results/experiments/<run_id>/
+```
+
+Generate the Stage 9 initial findings report from all exported artifacts:
+
+```bash
+python scripts/generate_initial_findings.py
+```
+
+This writes:
+
+```text
+report/initial_findings.md
+```
+
+The report includes experiment setup, task list, metric definitions, baseline
+versus shape-aware comparison, failure cases, lessons learned, and next steps.
+
 ## Current Phase
 
 Phase 1 focuses on:
