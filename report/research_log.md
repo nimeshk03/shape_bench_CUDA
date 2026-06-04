@@ -1415,7 +1415,7 @@ GPU run:
 
 ```text
 run directory: results/vast_runs/20260603T191105Z
-committed artifact: results/experiments/20260603T191105Z.json
+committed artifact: results/experiments/20260603T191105Z/summary.json
 source commit: 63f68d4aa06f5936573b135e0412d15b997d5561
 GPU: NVIDIA GeForce RTX 4090
 PyTorch: 2.2.0

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Export a compact, versionable JSON artifact from a completed run directory."""
+"""Export compact, versionable artifacts from a completed run directory."""
 
 from __future__ import annotations
 
@@ -18,10 +18,14 @@ from harness.experiment_artifact import export_experiment_artifact  # noqa: E402
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("run_dir", help="Run directory, for example results/vast_runs/20260603T191105Z")
-    parser.add_argument("--output", help="Output JSON path. Defaults to results/experiments/<run_id>.json.")
+    parser.add_argument("--output", help="Output directory. Defaults to results/experiments/<run_id>.")
     parser.add_argument(
         "--source-commit",
         help="Exact source commit for legacy run metadata that only recorded repo_ref=HEAD.",
+    )
+    parser.add_argument(
+        "--exported-at",
+        help="Optional export timestamp to include. Omit for deterministic artifacts.",
     )
     return parser.parse_args()
 
@@ -32,8 +36,9 @@ def main() -> int:
         args.run_dir,
         output_path=args.output,
         source_commit=args.source_commit,
+        exported_at=args.exported_at,
     )
-    print(f"Exported experiment artifact: {output_path}")
+    print(f"Exported experiment artifact summary: {output_path}")
     return 0
 
 

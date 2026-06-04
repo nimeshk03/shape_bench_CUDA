@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from collections import defaultdict
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+SCHEMA_VERSION = 2
+SUMMARY_FILENAME = "summary.json"
+RAW_RESULTS_FILENAME = "raw_results.jsonl"
 
 
 def export_experiment_artifact(
@@ -14,34 +18,55 @@ def export_experiment_artifact(
     *,
     output_path: str | Path | None = None,
     source_commit: str | None = None,
+    exported_at: str | None = None,
 ) -> Path:
-    """Write a compact JSON artifact for a completed Vast/GPU run."""
+    """Write a compact artifact directory for a completed Vast/GPU run."""
     run_path = Path(run_dir)
     metadata = _read_json(run_path / "vast_run_metadata.json")
     summary = _read_json(run_path / "results" / "tables" / "gpu_eval_batch_summary.json")
     raw_results = _read_raw_results(run_path / "results" / "raw")
 
     resolved_source_commit = source_commit or metadata.get("source_commit")
-    artifact = {
-        "schema_version": 1,
-        "exported_at": datetime.now(timezone.utc).isoformat(),
+    if not isinstance(resolved_source_commit, str) or not resolved_source_commit.strip():
+        raise ValueError("source_commit is required; pass --source-commit for legacy runs")
+    metadata = {**metadata, "source_commit": resolved_source_commit}
+
+    destination = Path(output_path) if output_path is not None else _default_output_path(run_path)
+    if destination.suffix:
+        raise ValueError("output_path must be a directory for schema_version 2 artifacts")
+    destination.mkdir(parents=True, exist_ok=True)
+
+    raw_payload = _jsonl_payload(raw_results)
+    raw_path = destination / RAW_RESULTS_FILENAME
+    raw_path.write_text(raw_payload, encoding="utf-8")
+    raw_sha256 = hashlib.sha256(raw_payload.encode("utf-8")).hexdigest()
+
+    artifact_summary = {
+        "schema_version": SCHEMA_VERSION,
         "source_run_dir": str(run_path),
         "source_commit": resolved_source_commit,
         "vast_run_metadata": metadata,
         "gpu_eval_batch_summary": summary,
         "aggregates": _aggregate(raw_results),
-        "raw_results": raw_results,
+        "raw_results": {
+            "path": RAW_RESULTS_FILENAME,
+            "record_count": len(raw_results),
+            "sha256": raw_sha256,
+        },
     }
+    if exported_at is not None:
+        artifact_summary["exported_at"] = exported_at
 
-    destination = Path(output_path) if output_path is not None else _default_output_path(run_path)
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    destination.write_text(json.dumps(artifact, indent=2, sort_keys=True), encoding="utf-8")
-    return destination
+    (destination / SUMMARY_FILENAME).write_text(
+        json.dumps(artifact_summary, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return destination / SUMMARY_FILENAME
 
 
 def _default_output_path(run_path: Path) -> Path:
     project_root = _project_root_from_run(run_path)
-    return project_root / "results" / "experiments" / f"{run_path.name}.json"
+    return project_root / "results" / "experiments" / run_path.name
 
 
 def _project_root_from_run(run_path: Path) -> Path:
@@ -75,6 +100,10 @@ def _read_raw_results(raw_dir: Path) -> list[dict[str, Any]]:
     if not records:
         raise ValueError(f"no correctness JSONL records found in {raw_dir}")
     return records
+
+
+def _jsonl_payload(records: list[dict[str, Any]]) -> str:
+    return "".join(json.dumps(record, sort_keys=True) + "\n" for record in records)
 
 
 def _aggregate(records: list[dict[str, Any]]) -> list[dict[str, Any]]:

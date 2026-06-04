@@ -1,0 +1,244 @@
+{
+  "aggregates": [
+    {
+      "checks": 18,
+      "max_abs_error": 1.52587890625e-05,
+      "max_speedup_vs_eager": 1.0943623007126064,
+      "mean_generated_ms": 0.0073497142228815295,
+      "mean_pytorch_eager_ms": 0.006827859001027213,
+      "mean_speedup_vs_eager": 0.9304671880740316,
+      "min_speedup_vs_eager": 0.879292586730977,
+      "passed": 18,
+      "prompt_mode": "baseline",
+      "task_id": "task_002"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 1.52587890625e-05,
+      "max_speedup_vs_eager": 0.957019411544917,
+      "mean_generated_ms": 0.012253274520238241,
+      "mean_pytorch_eager_ms": 0.00819695285624928,
+      "mean_speedup_vs_eager": 0.7402702062538944,
+      "min_speedup_vs_eager": 0.38768876246714434,
+      "passed": 18,
+      "prompt_mode": "shape_aware",
+      "task_id": "task_002"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 0.0,
+      "max_speedup_vs_eager": 6.431198386884316,
+      "mean_generated_ms": 0.009079846656984754,
+      "mean_pytorch_eager_ms": 0.03383180954390102,
+      "mean_speedup_vs_eager": 3.0668906010909858,
+      "min_speedup_vs_eager": 1.0884010955407237,
+      "passed": 18,
+      "prompt_mode": "baseline",
+      "task_id": "task_003"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 0.0,
+      "max_speedup_vs_eager": 6.661293805870587,
+      "mean_generated_ms": 0.008581003381146325,
+      "mean_pytorch_eager_ms": 0.03376577877336078,
+      "mean_speedup_vs_eager": 3.1748434635276213,
+      "min_speedup_vs_eager": 1.20285047096202,
+      "passed": 18,
+      "prompt_mode": "shape_aware",
+      "task_id": "task_003"
+    }
+  ],
+  "gpu_eval_batch_summary": {
+    "attempts": [
+      {
+        "attempt_dir": "generated/baseline/task_002/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_002_baseline_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_002",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_002/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_002_baseline_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_002",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_002/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_002_baseline_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_002",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_002/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_002_shape_aware_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_002",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_002/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_002_shape_aware_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_002",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_002/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_002_shape_aware_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_002",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_003/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_003_baseline_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_003",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_003/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_003_baseline_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_003",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_003/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_003_baseline_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_003",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_003/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_003_shape_aware_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_003",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_003/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_003_shape_aware_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_003",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_003/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/raw/task_003_shape_aware_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_003",
+        "total_shapes": 6
+      }
+    ],
+    "benchmark": {
+      "enabled": true,
+      "iterations": 50,
+      "warmup": 10
+    },
+    "created_at": "2026-06-03T19:21:18.013839+00:00",
+    "device": "auto",
+    "preflight": {
+      "failures": [],
+      "nvcc": {
+        "ok": true,
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2023 NVIDIA Corporation\nBuilt on Mon_Apr__3_17:16:06_PDT_2023\nCuda compilation tools, release 12.1, V12.1.105\nBuild cuda_12.1.r12.1/compiler.32688072_0"
+      },
+      "nvidia_smi": {
+        "ok": true,
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "Wed Jun  3 19:12:15 2026       \n+-----------------------------------------------------------------------------------------+\n| NVIDIA-SMI 580.126.09             Driver Version: 580.126.09     CUDA Version: 13.0     |\n+-----------------------------------------+------------------------+----------------------+\n| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n|                                         |                        |               MIG M. |\n|=========================================+========================+======================|\n|   0  NVIDIA GeForce RTX 4090        On  |   00000000:C1:00.0 Off |                  Off |\n|  0%   34C    P0             67W /  450W |       0MiB /  24564MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n\n+-----------------------------------------------------------------------------------------+\n| Processes:                                                                              |\n|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n|        ID   ID                                                               Usage      |\n|=========================================================================================|\n|  No running processes found                                                             |\n+-----------------------------------------------------------------------------------------+"
+      },
+      "python": "3.10.13",
+      "torch": {
+        "cuda_available": true,
+        "cuda_version": "12.1",
+        "gpu_name": "NVIDIA GeForce RTX 4090",
+        "installed": true,
+        "version": "2.2.0"
+      }
+    },
+    "require_cuda": true,
+    "seed": 0,
+    "summary_output": "results/tables/gpu_eval_batch_summary.json"
+  },
+  "raw_results": {
+    "path": "raw_results.jsonl",
+    "record_count": 72,
+    "sha256": "99772a13acdcdbcd35918e1c2458d7fef4572557c1ceabc2f56dc7040f7483e7"
+  },
+  "schema_version": 2,
+  "source_commit": "63f68d4aa06f5936573b135e0412d15b997d5561",
+  "source_run_dir": "results/vast_runs/20260603T191105Z",
+  "vast_run_metadata": {
+    "attempt_dirs": [
+      "generated/baseline/task_002/attempt_001",
+      "generated/baseline/task_002/attempt_002",
+      "generated/baseline/task_002/attempt_003",
+      "generated/shape_aware/task_002/attempt_001",
+      "generated/shape_aware/task_002/attempt_002",
+      "generated/shape_aware/task_002/attempt_003",
+      "generated/baseline/task_003/attempt_001",
+      "generated/baseline/task_003/attempt_002",
+      "generated/baseline/task_003/attempt_003",
+      "generated/shape_aware/task_003/attempt_001",
+      "generated/shape_aware/task_003/attempt_002",
+      "generated/shape_aware/task_003/attempt_003"
+    ],
+    "cleanup_error": null,
+    "created_at": "2026-06-03T19:21:24.265317+00:00",
+    "destroyed": true,
+    "disk_gb": 40,
+    "image": null,
+    "instance_id": 39338113,
+    "offer_id": 32539128,
+    "remote_exit_code": 0,
+    "repo_ref": "HEAD",
+    "source_commit": "63f68d4aa06f5936573b135e0412d15b997d5561",
+    "template_hash": "e4c5e88bc289f4eecb0c955c4fe7430d"
+  }
+}
