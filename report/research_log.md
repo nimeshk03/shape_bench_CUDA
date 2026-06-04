@@ -1586,3 +1586,75 @@ shape-variant-only failures, and performance instability across shapes. The
 task_008 failure shows why original-shape pass rate must remain a separate gate
 before claiming shape generalization behavior.
 ```
+
+## 2026-06-04 - Harder Shape-Stress GPU Batch: tasks 009-012
+
+Ran a harder Phase 1 batch on an RTX 4090 using:
+
+```text
+configs/phase1_task009_012.json
+results/experiments/20260604T081929Z/
+source commit: d2caa643bb5f143e7c36af798bf59f602c0f372b
+```
+
+Experiment design:
+
+```text
+4 tasks: task_009-task_012
+task families: non-contiguous affine/ReLU, dynamic last-dimension reduction,
+batched matrix multiplication, and strided batched transpose
+2 prompt modes: baseline and shape_aware
+3 generated attempts per task/mode
+6 shape categories per attempt: original, smaller, larger, odd, batch_variant,
+non_power_of_two
+Total: 24 attempts, 144 shape evaluations
+```
+
+Correctness result:
+
+```text
+Overall: 138/144 shape evaluations passed
+Attempts: 23/24 attempts passed all 6 shapes
+
+task_009 noncontiguous_affine_relu: 36/36 passed
+task_010 dynamic_lastdim_sum_squares: 36/36 passed
+task_011 batched_matrix_multiply: 36/36 passed
+task_012 strided_batched_transpose: 30/36 passed
+```
+
+The only failure was `task_012` shape-aware `attempt_001`, which failed all six
+shapes including the original shape. As with the earlier `task_008` failure,
+this is a generated-code correctness failure, not a shape-variant-only
+generalization failure.
+
+Timing by task and prompt mode, using only correctness-passing rows:
+
+```text
+task_id   prompt_mode   checks_passed   mean_speedup   median_speedup   mean_generated_ms
+task_009  baseline      18/18           1.443          1.753            0.278
+task_009  shape_aware   18/18           6.578          1.641            0.018
+task_010  baseline      18/18           1.564          1.382            0.012
+task_010  shape_aware   18/18           0.759          0.846            0.031
+task_011  baseline      18/18           0.866          0.876            0.019
+task_011  shape_aware   18/18           0.732          0.651            0.021
+task_012  baseline      18/18           0.919          0.969            0.040
+task_012  shape_aware   12/18           1.251          1.017            0.161
+```
+
+Interpretation:
+
+```text
+The harder batch again does not support a robustness advantage for shape-aware
+prompting. Baseline passed all attempts across these four tasks, while
+shape-aware had the only full correctness failure.
+
+The strongest performance contrast appears on task_010: baseline reduction
+kernels were correct and faster than PyTorch eager on average, while shape-aware
+reduction kernels were correct but slower. For task_011 batched matmul, both
+prompt modes were mostly slower than PyTorch eager. For task_012, correctness
+was stable for baseline and for two of three shape-aware attempts, but timing was
+shape-sensitive.
+
+Mean speedup can be distorted by timing outliers in microsecond-scale kernels,
+so median speedup should be reported alongside mean speedup in future analysis.
+```
