@@ -1,0 +1,14 @@
+{
+  "task_id": "task_004",
+  "name": "matrix_multiply",
+  "description": "Compute matrix multiplication C = A @ B for A shaped [M, K] and B shaped [K, N].",
+  "category": "matmul",
+  "input_kind": "matrix_pair",
+  "input_names": ["a", "b"],
+  "original_shape": [256, 256, 256],
+  "dtype": "float32",
+  "atol": 0.01,
+  "rtol": 0.01,
+  "expected_output": "2D tensor with shape [M, N]",
+  "notes": "Tiling-oriented task intended to expose hardcoded dimensions and block-boundary assumptions."
+}

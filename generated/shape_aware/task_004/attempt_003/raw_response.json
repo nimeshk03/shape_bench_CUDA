@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "text": "```cpp\n#include <torch/extension.h>\n#include <cuda.h>\n#include <cuda_runtime.h>\n\n#define TILE_SIZE 16\n\n__global__ void matmul_kernel(\n    const float* __restrict__ A,\n    const float* __restrict__ B,\n    float* __restrict__ C,\n    int M, int K, int N)\n{\n    __shared__ float tileA[TILE_SIZE][TILE_SIZE];\n    __shared__ float tileB[TILE_SIZE][TILE_SIZE];\n\n    int row = blockIdx.y * TILE_SIZE + threadIdx.y;\n    int col = blockIdx.x * TILE_SIZE + threadIdx.x;\n\n    float sum = 0.0f;\n\n    int numTiles = (K + TILE_SIZE - 1) / TILE_SIZE;\n\n    for (int t = 0; t < numTiles; t++) {\n        int aCol = t * TILE_SIZE + threadIdx.x;\n        int bRow = t * TILE_SIZE + threadIdx.y;\n\n        // Load tile from A\n        if (row < M && aCol < K)\n            tileA[threadIdx.y][threadIdx.x] = A[row * K + aCol];\n        else\n            tileA[threadIdx.y][threadIdx.x] = 0.0f;\n\n        // Load tile from B\n        if (bRow < K && col < N)\n            tileB[threadIdx.y][threadIdx.x] = B[bRow * N + col];\n        else\n            tileB[threadIdx.y][threadIdx.x] = 0.0f;\n\n        __syncthreads();\n\n        #pragma unroll\n        for (int i = 0; i < TILE_SIZE; i++) {\n            sum += tileA[threadIdx.y][i] * tileB[i][threadIdx.x];\n        }\n\n        __syncthreads();\n    }\n\n    if (row < M && col < N) {\n        C[row * N + col] = sum;\n    }\n}\n\ntorch::Tensor matrix_multiply(torch::Tensor a, torch::Tensor b) {\n    TORCH_CHECK(a.dim() == 2, \"A must be 2D\");\n    TORCH_CHECK(b.dim() == 2, \"B must be 2D\");\n    TORCH_CHECK(a.size(1) == b.size(0), \"Inner dimensions must match\");\n    TORCH_CHECK(a.is_cuda() && b.is_cuda(), \"Inputs must be on CUDA\");\n    TORCH_CHECK(a.dtype() == torch::kFloat32 && b.dtype() == torch::kFloat32, \"Inputs must be float32\");\n\n    a = a.contiguous();\n    b = b.contiguous();\n\n    int M = a.size(0);\n    int K = a.size(1);\n    int N = b.size(1);\n\n    auto c = torch::empty({M, N}, a.options());\n\n    dim3 blockDim(TILE_SIZE, TILE_SIZE);\n    dim3 gridDim((N + TILE_SIZE - 1) / TILE_SIZE,\n                 (M + TILE_SIZE - 1) / TILE_SIZE);\n\n    matmul_kernel<<<gridDim, blockDim>>>(\n        a.data_ptr<float>(),\n        b.data_ptr<float>(),\n        c.data_ptr<float>(),\n        M, K, N\n    );\n\n    cudaError_t err = cudaGetLastError();\n    TORCH_CHECK(err == cudaSuccess, \"CUDA kernel failed: \", cudaGetErrorString(err));\n\n    return c;\n}\n\nPYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {\n    m.def(\"matrix_multiply\", &matrix_multiply, \"Matrix multiplication (CUDA)\");\n}\n```\n\n```python\n# setup.py\nfrom setuptools import setup\nfrom torch.utils.cpp_extension import BuildExtension, CUDAExtension\n\nsetup(\n    name=\"matmul_cuda\",\n    ext_modules=[\n        CUDAExtension(\n            name=\"matmul_cuda\",\n            sources=[\"matmul_cuda.cu\"],\n        )\n    ],\n    cmdclass={\"build_ext\": BuildExtension},\n)\n```\n\n```python\n# solution.py\n\"\"\"CUDA extension wrapper matching the reference interface.\"\"\"\n\nfrom __future__ import annotations\n\nimport os\nimport torch\nfrom torch import Tensor\n\n# Build and load the extension inline\nfrom torch.utils.cpp_extension import load\n\n_ext = None\n\ndef _get_ext():\n    global _ext\n    if _ext is None:\n        _src = os.path.join(os.path.dirname(__file__), \"matmul_cuda.cu\")\n        _ext = load(\n            name=\"matmul_cuda\",\n            sources=[_src],\n            verbose=False,\n        )\n    return _ext\n\n\ndef reference(a: Tensor, b: Tensor) -> Tensor:\n    \"\"\"Drop-in replacement for the PyTorch reference using the CUDA kernel.\"\"\"\n    if a.is_cuda and b.is_cuda:\n        return _get_ext().matrix_multiply(a.contiguous(), b.contiguous())\n    # Fallback for CPU tensors: move to CUDA if available, else use torch\n    if torch.cuda.is_available():\n        device = torch.device(\"cuda\")\n        result = _get_ext().matrix_multiply(\n            a.to(device).contiguous(),\n            b.to(device).contiguous()\n        )\n        return result.to(a.device)\n    return torch.matmul(a, b)\n```",
+      "type": "text"
+    }
+  ],
+  "id": "msg_01Y8iUHWV24RU95KsbHu6xhn",
+  "model": "claude-sonnet-4-6",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1177,
+    "output_tokens": 1401,
+    "service_tier": "standard"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "attempt": 1,
+  "attempt_dir": "generated/shape_aware/task_006/attempt_001",
+  "created_fallback_solution": false,
+  "cuda_source": "task_006_kernel.cu",
+  "entrypoint_file": "solution.py",
+  "entrypoint_function": "forward",
+  "extension_function": "rowwise_layer_norm",
+  "extension_name": "task_006_ext",
+  "extracted_dir": "extracted",
+  "input_names": [
+    "x"
+  ],
+  "prompt_mode": "shape_aware",
+  "task_id": "task_006"
+}

@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "text": "```cpp\n#include <torch/extension.h>\n#include <cuda.h>\n#include <cuda_runtime.h>\n#include <math.h>\n\n#define EPSILON 1e-5f\n#define BLOCK_SIZE 256\n\n// Kernel: each block handles one row\n// Uses shared memory for reduction\n__global__ void rowwise_layer_norm_kernel(\n    const float* __restrict__ input,\n    float* __restrict__ output,\n    int rows,\n    int cols\n) {\n    int row = blockIdx.x;\n    if (row >= rows) return;\n\n    const float* row_in = input + row * cols;\n    float* row_out = output + row * cols;\n\n    __shared__ float smem[BLOCK_SIZE];\n\n    // Step 1: Compute mean\n    float sum = 0.0f;\n    for (int i = threadIdx.x; i < cols; i += blockDim.x) {\n        sum += row_in[i];\n    }\n    smem[threadIdx.x] = sum;\n    __syncthreads();\n\n    // Reduction for sum\n    for (int stride = blockDim.x / 2; stride > 0; stride >>= 1) {\n        if (threadIdx.x < stride) {\n            smem[threadIdx.x] += smem[threadIdx.x + stride];\n        }\n        __syncthreads();\n    }\n\n    float mean = smem[0] / (float)cols;\n    __syncthreads();\n\n    // Step 2: Compute variance\n    float var_sum = 0.0f;\n    for (int i = threadIdx.x; i < cols; i += blockDim.x) {\n        float diff = row_in[i] - mean;\n        var_sum += diff * diff;\n    }\n    smem[threadIdx.x] = var_sum;\n    __syncthreads();\n\n    // Reduction for variance sum\n    for (int stride = blockDim.x / 2; stride > 0; stride >>= 1) {\n        if (threadIdx.x < stride) {\n            smem[threadIdx.x] += smem[threadIdx.x + stride];\n        }\n        __syncthreads();\n    }\n\n    float variance = smem[0] / (float)cols;\n    float inv_std = rsqrtf(variance + EPSILON);\n    __syncthreads();\n\n    // Step 3: Normalize\n    for (int i = threadIdx.x; i < cols; i += blockDim.x) {\n        row_out[i] = (row_in[i] - mean) * inv_std;\n    }\n}\n\ntorch::Tensor rowwise_layer_norm_cuda(torch::Tensor x) {\n    TORCH_CHECK(x.is_cuda(), \"Input must be a CUDA tensor\");\n    TORCH_CHECK(x.dim() == 2, \"Input must be 2D\");\n    TORCH_CHECK(x.dtype() == torch::kFloat32, \"Input must be float32\");\n    TORCH_CHECK(x.is_contiguous(), \"Input must be contiguous\");\n\n    int rows = x.size(0);\n    int cols = x.size(1);\n\n    auto output = torch::empty_like(x);\n\n    // Choose block size: use BLOCK_SIZE threads per block, one block per row\n    int threads = BLOCK_SIZE;\n    // For very short rows, we could use fewer threads, but 256 is fine\n    if (cols < threads) {\n        // Round up to next power of 2\n        threads = 1;\n        while (threads < cols) threads <<= 1;\n        if (threads > BLOCK_SIZE) threads = BLOCK_SIZE;\n    }\n\n    dim3 grid(rows);\n    dim3 block(threads);\n\n    rowwise_layer_norm_kernel<<<grid, block>>>(\n        x.data_ptr<float>(),\n        output.data_ptr<float>(),\n        rows,\n        cols\n    );\n\n    return output;\n}\n\nPYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {\n    m.def(\"rowwise_layer_norm\", &rowwise_layer_norm_cuda, \"Row-wise layer normalization (CUDA)\");\n}\n```\n\n```python\n# setup.py / build glue\nfrom setuptools import setup\nfrom torch.utils.cpp_extension import BuildExtension, CUDAExtension\n\nsetup(\n    name=\"task_006_ext\",\n    ext_modules=[\n        CUDAExtension(\n            name=\"task_006_ext\",\n            sources=[\"task_006_kernel.cu\"],\n        )\n    ],\n    cmdclass={\"build_ext\": BuildExtension},\n)\n```\n\n```python\n# solution.py - harness entry point\nfrom __future__ import annotations\n\nimport os\nimport torch\nfrom torch import Tensor\n\n# Build and load the extension inline\nfrom torch.utils.cpp_extension import load\nimport os\n\n_ext = load(\n    name=\"task_006_ext\",\n    sources=[os.path.join(os.path.dirname(__file__), \"task_006_kernel.cu\")],\n    verbose=False,\n)\n\n\ndef forward(x: Tensor) -> Tensor:\n    \"\"\"Row-wise layer normalization using CUDA kernel.\"\"\"\n    if not x.is_cuda:\n        x = x.cuda()\n    if not x.is_contiguous():\n        x = x.contiguous()\n    return _ext.rowwise_layer_norm(x)\n```",
+      "type": "text"
+    }
+  ],
+  "id": "msg_01QUt3z8Mn1Ly24NhHQuZ3x4",
+  "model": "claude-sonnet-4-6",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1056,
+    "output_tokens": 1348,
+    "service_tier": "standard"
+  }
+}

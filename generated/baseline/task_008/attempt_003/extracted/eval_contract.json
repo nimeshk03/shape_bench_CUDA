@@ -1,0 +1,16 @@
+{
+  "attempt": 3,
+  "attempt_dir": "generated/baseline/task_008/attempt_003",
+  "created_fallback_solution": true,
+  "cuda_source": "solution.cu",
+  "entrypoint_file": "solution.py",
+  "entrypoint_function": "forward",
+  "extension_function": "batched_transpose",
+  "extension_name": "shapebench_task_008_baseline_attempt_003",
+  "extracted_dir": "extracted",
+  "input_names": [
+    "x"
+  ],
+  "prompt_mode": "baseline",
+  "task_id": "task_008"
+}

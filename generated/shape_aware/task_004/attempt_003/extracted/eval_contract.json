@@ -1,0 +1,17 @@
+{
+  "attempt": 3,
+  "attempt_dir": "generated/shape_aware/task_004/attempt_003",
+  "created_fallback_solution": true,
+  "cuda_source": "matmul_cuda.cu",
+  "entrypoint_file": "solution.py",
+  "entrypoint_function": "forward",
+  "extension_function": "matrix_multiply",
+  "extension_name": "shapebench_task_004_shape_aware_attempt_003",
+  "extracted_dir": "extracted",
+  "input_names": [
+    "a",
+    "b"
+  ],
+  "prompt_mode": "shape_aware",
+  "task_id": "task_004"
+}

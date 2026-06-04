@@ -1,0 +1,17 @@
+{
+  "attempt": 1,
+  "attempt_dir": "generated/shape_aware/task_004/attempt_001",
+  "created_fallback_solution": false,
+  "cuda_source": "matmul_cuda.cu",
+  "entrypoint_file": "solution.py",
+  "entrypoint_function": "forward",
+  "extension_function": "matmul",
+  "extension_name": "matmul_cuda",
+  "extracted_dir": "extracted",
+  "input_names": [
+    "a",
+    "b"
+  ],
+  "prompt_mode": "shape_aware",
+  "task_id": "task_004"
+}

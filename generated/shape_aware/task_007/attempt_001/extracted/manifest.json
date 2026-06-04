@@ -1,0 +1,31 @@
+{
+  "attempt_dir": "generated/shape_aware/task_007/attempt_001",
+  "files": [
+    {
+      "block_index": 1,
+      "confidence": "high",
+      "filename": "task_007_kernel.cu",
+      "language": "cpp",
+      "path": "extracted/task_007_kernel.cu",
+      "reason": "CUDA filename referenced by generated Python/build block"
+    },
+    {
+      "block_index": 2,
+      "confidence": "high",
+      "filename": "setup.py",
+      "language": "python",
+      "path": "extracted/setup.py",
+      "reason": "filename indicated by leading comment"
+    },
+    {
+      "block_index": 3,
+      "confidence": "high",
+      "filename": "solution.py",
+      "language": "python",
+      "path": "extracted/solution.py",
+      "reason": "filename indicated by leading comment"
+    }
+  ],
+  "output_dir": "extracted",
+  "source_response": "response.md"
+}

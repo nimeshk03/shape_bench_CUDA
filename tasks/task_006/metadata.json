@@ -1,0 +1,14 @@
+{
+  "task_id": "task_006",
+  "name": "rowwise_layer_norm",
+  "description": "Normalize each row of a 2D float32 tensor using row mean and variance.",
+  "category": "normalization",
+  "input_kind": "matrix",
+  "input_names": ["x"],
+  "original_shape": [1024, 1024],
+  "dtype": "float32",
+  "atol": 0.001,
+  "rtol": 0.001,
+  "expected_output": "2D tensor with same shape as input",
+  "notes": "Two-pass row reduction task intended to expose assumptions about row length and reduction synchronization."
+}

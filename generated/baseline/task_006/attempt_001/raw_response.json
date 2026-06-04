@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "text": "```cpp\n#include <torch/extension.h>\n#include <cuda.h>\n#include <cuda_runtime.h>\n#include <math.h>\n\n#define EPSILON 1e-5f\n#define BLOCK_SIZE 256\n\n// Kernel: each block handles one row\n// Uses shared memory for reduction\n__global__ void rowwise_layer_norm_kernel(\n    const float* __restrict__ x,\n    float* __restrict__ out,\n    int rows,\n    int cols\n) {\n    int row = blockIdx.x;\n    if (row >= rows) return;\n\n    const float* row_ptr = x + row * cols;\n    float* out_ptr = out + row * cols;\n\n    __shared__ float smem[BLOCK_SIZE];\n\n    // Pass 1: compute mean\n    float sum = 0.0f;\n    for (int i = threadIdx.x; i < cols; i += blockDim.x) {\n        sum += row_ptr[i];\n    }\n    smem[threadIdx.x] = sum;\n    __syncthreads();\n\n    // Reduce sum in shared memory\n    for (int stride = blockDim.x / 2; stride > 0; stride >>= 1) {\n        if (threadIdx.x < stride) {\n            smem[threadIdx.x] += smem[threadIdx.x + stride];\n        }\n        __syncthreads();\n    }\n    float mean = smem[0] / (float)cols;\n    __syncthreads();\n\n    // Pass 2: compute variance\n    float var_sum = 0.0f;\n    for (int i = threadIdx.x; i < cols; i += blockDim.x) {\n        float diff = row_ptr[i] - mean;\n        var_sum += diff * diff;\n    }\n    smem[threadIdx.x] = var_sum;\n    __syncthreads();\n\n    for (int stride = blockDim.x / 2; stride > 0; stride >>= 1) {\n        if (threadIdx.x < stride) {\n            smem[threadIdx.x] += smem[threadIdx.x + stride];\n        }\n        __syncthreads();\n    }\n    float variance = smem[0] / (float)cols;\n    float inv_std = rsqrtf(variance + EPSILON);\n    __syncthreads();\n\n    // Normalize\n    for (int i = threadIdx.x; i < cols; i += blockDim.x) {\n        out_ptr[i] = (row_ptr[i] - mean) * inv_std;\n    }\n}\n\ntorch::Tensor rowwise_layer_norm(torch::Tensor x) {\n    TORCH_CHECK(x.is_cuda(), \"Input must be a CUDA tensor\");\n    TORCH_CHECK(x.dim() == 2, \"Input must be 2D\");\n    TORCH_CHECK(x.scalar_type() == torch::kFloat32, \"Input must be float32\");\n    TORCH_CHECK(x.is_contiguous(), \"Input must be contiguous\");\n\n    int rows = x.size(0);\n    int cols = x.size(1);\n\n    auto out = torch::empty_like(x);\n\n    // Choose block size: use 256 threads, enough for cols up to 1024\n    int block_size = BLOCK_SIZE;\n    // For larger cols, we might want more threads, but 256 is fine for 1024\n    if (cols <= 128) block_size = 128;\n    else if (cols <= 256) block_size = 256;\n    else block_size = 256; // still 256, loop handles larger cols\n\n    dim3 grid(rows);\n    dim3 block(block_size);\n\n    rowwise_layer_norm_kernel<<<grid, block>>>(\n        x.data_ptr<float>(),\n        out.data_ptr<float>(),\n        rows,\n        cols\n    );\n\n    return out;\n}\n\nPYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {\n    m.def(\"rowwise_layer_norm\", &rowwise_layer_norm, \"Row-wise layer normalization (CUDA)\");\n}\n```\n\n```python\n# setup.py / build glue\nfrom setuptools import setup\nfrom torch.utils.cpp_extension import BuildExtension, CUDAExtension\n\nsetup(\n    name=\"task_006_ext\",\n    ext_modules=[\n        CUDAExtension(\n            name=\"task_006_ext\",\n            sources=[\"task_006_kernel.cu\"],\n        )\n    ],\n    cmdclass={\"build_ext\": BuildExtension},\n)\n```\n\n```python\n# solution.py - harness entry point\nfrom __future__ import annotations\nimport torch\nfrom torch import Tensor\nimport os\nimport sys\n\n# Build and load the extension inline\nfrom torch.utils.cpp_extension import load\nimport os\n\n_ext = None\n\ndef _get_ext():\n    global _ext\n    if _ext is None:\n        src_dir = os.path.dirname(os.path.abspath(__file__))\n        _ext = load(\n            name=\"task_006_ext\",\n            sources=[os.path.join(src_dir, \"task_006_kernel.cu\")],\n            verbose=False,\n        )\n    return _ext\n\n\nclass Model(torch.nn.Module):\n    def forward(self, x: Tensor) -> Tensor:\n        if x.is_cuda and x.is_contiguous() and x.dtype == torch.float32:\n            return _get_ext().rowwise_layer_norm(x)\n        # Fallback to reference\n        mean = torch.mean(x, dim=1, keepdim=True)\n        variance = torch.mean((x - mean) * (x - mean), dim=1, keepdim=True)\n        return (x - mean) * torch.rsqrt(variance + 1e-5)\n```",
+      "type": "text"
+    }
+  ],
+  "id": "msg_012vMyns1uAmgrXaZvPNobPy",
+  "model": "claude-sonnet-4-6",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1056,
+    "output_tokens": 1452,
+    "service_tier": "standard"
+  }
+}

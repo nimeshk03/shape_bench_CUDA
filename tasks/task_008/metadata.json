@@ -1,0 +1,14 @@
+{
+  "task_id": "task_008",
+  "name": "batched_transpose",
+  "description": "Transpose the last two dimensions of a 3D float32 tensor shaped [batch, rows, cols].",
+  "category": "layout",
+  "input_kind": "batched_matrix",
+  "input_names": ["x"],
+  "original_shape": [16, 256, 512],
+  "dtype": "float32",
+  "atol": 0.0,
+  "rtol": 0.0,
+  "expected_output": "3D tensor with shape [batch, cols, rows]",
+  "notes": "Batched layout task intended to expose indexing mistakes across batch, row, and column dimensions."
+}

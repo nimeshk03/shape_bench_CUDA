@@ -1,0 +1,16 @@
+{
+  "attempt": 3,
+  "attempt_dir": "generated/baseline/task_005/attempt_003",
+  "created_fallback_solution": true,
+  "cuda_source": "softmax_kernel.cu",
+  "entrypoint_file": "solution.py",
+  "entrypoint_function": "forward",
+  "extension_function": "forward",
+  "extension_name": "shapebench_task_005_baseline_attempt_003",
+  "extracted_dir": "extracted",
+  "input_names": [
+    "x"
+  ],
+  "prompt_mode": "baseline",
+  "task_id": "task_005"
+}

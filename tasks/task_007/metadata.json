@@ -1,0 +1,14 @@
+{
+  "task_id": "task_007",
+  "name": "broadcast_affine_clamp",
+  "description": "Compute clamp(x * scale + bias, -1, 1) where scale and bias broadcast across rows.",
+  "category": "broadcast",
+  "input_kind": "matrix_with_feature_vectors",
+  "input_names": ["x", "scale", "bias"],
+  "original_shape": [1024, 1024],
+  "dtype": "float32",
+  "atol": 0.0001,
+  "rtol": 0.0001,
+  "expected_output": "2D tensor with same shape as x",
+  "notes": "Broadcasting task intended to expose hardcoded feature dimensions and vector indexing mistakes."
+}

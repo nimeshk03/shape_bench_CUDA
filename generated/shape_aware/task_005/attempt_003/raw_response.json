@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "text": "```cpp\n#include <torch/extension.h>\n#include <cuda.h>\n#include <cuda_runtime.h>\n#include <float.h>\n\n// Kernel: one block per row, shared memory reduction for max and sum\n// Handles arbitrary row lengths via a loop over columns\n\ntemplate <int BLOCK_SIZE>\n__global__ void rowwise_softmax_kernel(\n    const float* __restrict__ input,\n    float* __restrict__ output,\n    int rows,\n    int cols\n) {\n    int row = blockIdx.x;\n    if (row >= rows) return;\n\n    const float* row_in = input + row * cols;\n    float* row_out = output + row * cols;\n\n    __shared__ float sdata[BLOCK_SIZE];\n\n    // Step 1: find row max for numerical stability\n    float thread_max = -FLT_MAX;\n    for (int col = threadIdx.x; col < cols; col += BLOCK_SIZE) {\n        float val = row_in[col];\n        if (val > thread_max) thread_max = val;\n    }\n    sdata[threadIdx.x] = thread_max;\n    __syncthreads();\n\n    // Reduce max\n    for (int stride = BLOCK_SIZE / 2; stride > 0; stride >>= 1) {\n        if (threadIdx.x < stride) {\n            if (sdata[threadIdx.x + stride] > sdata[threadIdx.x])\n                sdata[threadIdx.x] = sdata[threadIdx.x + stride];\n        }\n        __syncthreads();\n    }\n    float row_max = sdata[0];\n    __syncthreads();\n\n    // Step 2: compute exp(x - max) and partial sum\n    float thread_sum = 0.0f;\n    for (int col = threadIdx.x; col < cols; col += BLOCK_SIZE) {\n        float val = __expf(row_in[col] - row_max);\n        row_out[col] = val;\n        thread_sum += val;\n    }\n    sdata[threadIdx.x] = thread_sum;\n    __syncthreads();\n\n    // Reduce sum\n    for (int stride = BLOCK_SIZE / 2; stride > 0; stride >>= 1) {\n        if (threadIdx.x < stride) {\n            sdata[threadIdx.x] += sdata[threadIdx.x + stride];\n        }\n        __syncthreads();\n    }\n    float row_sum = sdata[0];\n    __syncthreads();\n\n    // Step 3: normalize\n    float inv_sum = 1.0f / row_sum;\n    for (int col = threadIdx.x; col < cols; col += BLOCK_SIZE) {\n        row_out[col] *= inv_sum;\n    }\n}\n\ntorch::Tensor rowwise_softmax_cuda(torch::Tensor x) {\n    TORCH_CHECK(x.is_cuda(), \"Input must be a CUDA tensor\");\n    TORCH_CHECK(x.dim() == 2, \"Input must be 2D\");\n    TORCH_CHECK(x.dtype() == torch::kFloat32, \"Input must be float32\");\n    TORCH_CHECK(x.is_contiguous(), \"Input must be contiguous\");\n\n    int rows = x.size(0);\n    int cols = x.size(1);\n\n    auto output = torch::empty_like(x);\n\n    const int BLOCK_SIZE = 256;\n    dim3 grid(rows);\n    dim3 block(BLOCK_SIZE);\n\n    rowwise_softmax_kernel<BLOCK_SIZE><<<grid, block>>>(\n        x.data_ptr<float>(),\n        output.data_ptr<float>(),\n        rows,\n        cols\n    );\n\n    return output;\n}\n\nPYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {\n    m.def(\"rowwise_softmax\", &rowwise_softmax_cuda, \"Row-wise softmax (CUDA)\");\n}\n```\n\n```python\n# setup.py / build glue\nimport os\nimport torch\nfrom torch.utils.cpp_extension import load\n\n_ext = None\n\ndef _load_ext():\n    global _ext\n    if _ext is None:\n        src_dir = os.path.dirname(os.path.abspath(__file__))\n        _ext = load(\n            name=\"rowwise_softmax_ext\",\n            sources=[os.path.join(src_dir, \"rowwise_softmax.cu\")],\n            extra_cuda_cflags=[\"-O3\", \"--use_fast_math\"],\n            verbose=False,\n        )\n    return _ext\n\n\nimport torch\nfrom torch import Tensor, nn\n\n\nclass Model(nn.Module):\n    \"\"\"CUDA-accelerated row-wise softmax.\"\"\"\n\n    def forward(self, x: Tensor) -> Tensor:\n        if x.is_cuda:\n            ext = _load_ext()\n            if not x.is_contiguous():\n                x = x.contiguous()\n            return ext.rowwise_softmax(x)\n        # CPU fallback\n        return torch.softmax(x, dim=1)\n\n\ndef reference(x: Tensor) -> Tensor:\n    return torch.softmax(x, dim=1)\n```",
+      "type": "text"
+    }
+  ],
+  "id": "msg_017rca9kK9LDuyNSXvGbsKTU",
+  "model": "claude-sonnet-4-6",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1090,
+    "output_tokens": 1297,
+    "service_tier": "standard"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "task_id": "task_005",
+  "name": "rowwise_softmax",
+  "description": "Compute softmax over each row of a 2D float32 tensor.",
+  "category": "reduction",
+  "input_kind": "matrix",
+  "input_names": ["x"],
+  "original_shape": [1024, 1024],
+  "dtype": "float32",
+  "atol": 0.0001,
+  "rtol": 0.0001,
+  "expected_output": "2D tensor with same shape as input",
+  "notes": "Reduction plus normalization task intended to expose row-length assumptions and numerical stability issues."
+}

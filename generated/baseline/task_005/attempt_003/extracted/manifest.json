@@ -1,0 +1,23 @@
+{
+  "attempt_dir": "generated/baseline/task_005/attempt_003",
+  "files": [
+    {
+      "block_index": 1,
+      "confidence": "high",
+      "filename": "softmax_kernel.cu",
+      "language": "cpp",
+      "path": "extracted/softmax_kernel.cu",
+      "reason": "CUDA filename referenced by generated Python/build block"
+    },
+    {
+      "block_index": 2,
+      "confidence": "high",
+      "filename": "setup.py",
+      "language": "python",
+      "path": "extracted/setup.py",
+      "reason": "filename indicated by leading comment"
+    }
+  ],
+  "output_dir": "extracted",
+  "source_response": "response.md"
+}

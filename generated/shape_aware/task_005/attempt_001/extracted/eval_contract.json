@@ -1,0 +1,16 @@
+{
+  "attempt": 1,
+  "attempt_dir": "generated/shape_aware/task_005/attempt_001",
+  "created_fallback_solution": true,
+  "cuda_source": "rowwise_softmax.cu",
+  "entrypoint_file": "solution.py",
+  "entrypoint_function": "forward",
+  "extension_function": "rowwise_softmax",
+  "extension_name": "shapebench_task_005_shape_aware_attempt_001",
+  "extracted_dir": "extracted",
+  "input_names": [
+    "x"
+  ],
+  "prompt_mode": "shape_aware",
+  "task_id": "task_005"
+}
