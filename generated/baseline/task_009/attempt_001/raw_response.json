@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "text": "```cpp\n#include <torch/extension.h>\n#include <cuda.h>\n#include <cuda_runtime.h>\n\n__global__ void affine_relu_kernel(\n    const float* __restrict__ x,\n    const float* __restrict__ scale,\n    const float* __restrict__ bias,\n    float* __restrict__ out,\n    int rows,\n    int cols,\n    int x_stride_row,  // stride in elements between rows of x\n    int x_stride_col   // stride in elements between cols of x\n) {\n    int col = blockIdx.x * blockDim.x + threadIdx.x;\n    int row = blockIdx.y * blockDim.y + threadIdx.y;\n    \n    if (row < rows && col < cols) {\n        float xval = x[row * x_stride_row + col * x_stride_col];\n        float s = scale[col];\n        float b = bias[col];\n        float result = xval * s + b;\n        out[row * cols + col] = result > 0.0f ? result : 0.0f;\n    }\n}\n\ntorch::Tensor affine_relu_cuda(\n    torch::Tensor x,\n    torch::Tensor scale,\n    torch::Tensor bias\n) {\n    TORCH_CHECK(x.dim() == 2, \"x must be 2D\");\n    TORCH_CHECK(x.scalar_type() == torch::kFloat32, \"x must be float32\");\n    TORCH_CHECK(scale.scalar_type() == torch::kFloat32, \"scale must be float32\");\n    TORCH_CHECK(bias.scalar_type() == torch::kFloat32, \"bias must be float32\");\n    \n    int rows = x.size(0);\n    int cols = x.size(1);\n    \n    // Get strides in elements (not bytes)\n    int x_stride_row = x.stride(0);\n    int x_stride_col = x.stride(1);\n    \n    auto out = torch::empty({rows, cols}, x.options().memory_format(torch::MemoryFormat::Contiguous));\n    \n    // Make sure scale and bias are contiguous\n    auto scale_c = scale.contiguous();\n    auto bias_c = bias.contiguous();\n    \n    dim3 block(32, 8);\n    dim3 grid((cols + block.x - 1) / block.x, (rows + block.y - 1) / block.y);\n    \n    affine_relu_kernel<<<grid, block>>>(\n        x.data_ptr<float>(),\n        scale_c.data_ptr<float>(),\n        bias_c.data_ptr<float>(),\n        out.data_ptr<float>(),\n        rows,\n        cols,\n        x_stride_row,\n        x_stride_col\n    );\n    \n    return out;\n}\n\nPYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {\n    m.def(\"affine_relu\", &affine_relu_cuda, \"Affine ReLU on non-contiguous tensor (CUDA)\");\n}\n```\n\n```python\n# setup.py / build glue\nimport os\nimport torch\nfrom torch.utils.cpp_extension import load\n\n_ext = None\n\ndef _load_ext():\n    global _ext\n    if _ext is None:\n        src_dir = os.path.dirname(os.path.abspath(__file__))\n        _ext = load(\n            name=\"affine_relu_ext\",\n            sources=[os.path.join(src_dir, \"affine_relu.cu\")],\n            extra_cuda_cflags=[\"-O3\", \"--use_fast_math\"],\n            verbose=False,\n        )\n    return _ext\n\n\nimport torch\nfrom torch import Tensor, nn\n\n\nclass Model(nn.Module):\n    \"\"\"CUDA-accelerated relu(x * scale + bias) for non-contiguous inputs.\"\"\"\n\n    def forward(self, x: Tensor, scale: Tensor, bias: Tensor) -> Tensor:\n        if x.is_cuda:\n            ext = _load_ext()\n            return ext.affine_relu(x, scale, bias)\n        # CPU fallback\n        return torch.relu(x * scale + bias)\n\n\ndef reference(x: Tensor, scale: Tensor, bias: Tensor) -> Tensor:\n    \"\"\"Functional reference.\"\"\"\n    return torch.relu(x * scale + bias)\n```",
+      "type": "text"
+    }
+  ],
+  "id": "msg_01QveoLyhbcc1cojmzLpMYiF",
+  "model": "claude-sonnet-4-6",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1083,
+    "output_tokens": 1084,
+    "service_tier": "standard"
+  }
+}

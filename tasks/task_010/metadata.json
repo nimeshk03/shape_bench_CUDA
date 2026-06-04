@@ -1,0 +1,14 @@
+{
+  "task_id": "task_010",
+  "name": "dynamic_lastdim_sum_squares",
+  "description": "Compute sum(x * x, dim=-1) for a 3D float32 tensor shaped [batch, rows, cols].",
+  "category": "reduction",
+  "input_kind": "batched_matrix",
+  "input_names": ["x"],
+  "original_shape": [16, 256, 512],
+  "dtype": "float32",
+  "atol": 0.001,
+  "rtol": 0.001,
+  "expected_output": "2D tensor with shape [batch, rows]",
+  "notes": "Reduction task intended to expose hardcoded last-dimension sizes and block-boundary assumptions."
+}

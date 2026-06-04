@@ -1,0 +1,14 @@
+{
+  "task_id": "task_012",
+  "name": "strided_batched_transpose",
+  "description": "Transpose the last two dimensions of a 3D float32 tensor that is created as a non-contiguous strided view.",
+  "category": "stride_layout",
+  "input_kind": "strided_batched_matrix",
+  "input_names": ["x"],
+  "original_shape": [16, 256, 512],
+  "dtype": "float32",
+  "atol": 0.0,
+  "rtol": 0.0,
+  "expected_output": "3D contiguous tensor with shape [batch, cols, rows]",
+  "notes": "Stride-sensitive layout task intended to expose kernels that ignore input strides while transposing."
+}

@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "text": "```cpp\n#include <torch/extension.h>\n#include <cuda.h>\n#include <cuda_runtime.h>\n\n// Each block handles one (batch, row) pair.\n// Threads in the block cooperatively reduce over the cols dimension.\n__global__ void sum_squares_kernel(\n    const float* __restrict__ x,\n    float* __restrict__ out,\n    int rows,\n    int cols)\n{\n    // blockIdx.x -> row index within batch\n    // blockIdx.y -> batch index\n    int batch = blockIdx.y;\n    int row   = blockIdx.x;\n\n    const float* row_ptr = x + (batch * rows + row) * cols;\n    float* out_ptr       = out + batch * rows + row;\n\n    extern __shared__ float sdata[];\n\n    float sum = 0.0f;\n    // Grid-stride loop over cols\n    for (int c = threadIdx.x; c < cols; c += blockDim.x) {\n        float v = row_ptr[c];\n        sum += v * v;\n    }\n    sdata[threadIdx.x] = sum;\n    __syncthreads();\n\n    // Parallel reduction in shared memory\n    for (int stride = blockDim.x / 2; stride > 0; stride >>= 1) {\n        if (threadIdx.x < stride) {\n            sdata[threadIdx.x] += sdata[threadIdx.x + stride];\n        }\n        __syncthreads();\n    }\n\n    if (threadIdx.x == 0) {\n        *out_ptr = sdata[0];\n    }\n}\n\ntorch::Tensor sum_squares_cuda(torch::Tensor x) {\n    TORCH_CHECK(x.is_cuda(), \"x must be a CUDA tensor\");\n    TORCH_CHECK(x.dim() == 3, \"x must be 3D\");\n    TORCH_CHECK(x.scalar_type() == torch::kFloat32, \"x must be float32\");\n    TORCH_CHECK(x.is_contiguous(), \"x must be contiguous\");\n\n    int batch = x.size(0);\n    int rows  = x.size(1);\n    int cols  = x.size(2);\n\n    auto out = torch::zeros({batch, rows}, x.options());\n\n    // Choose block size: next power of two >= min(cols, 1024), capped at 1024\n    int block_size = 1;\n    while (block_size < cols && block_size < 1024) block_size <<= 1;\n    if (block_size > 1024) block_size = 1024;\n\n    dim3 grid(rows, batch);\n    dim3 block(block_size);\n    size_t shared_mem = block_size * sizeof(float);\n\n    sum_squares_kernel<<<grid, block, shared_mem>>>(\n        x.data_ptr<float>(),\n        out.data_ptr<float>(),\n        rows,\n        cols\n    );\n\n    return out;\n}\n\nPYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {\n    m.def(\"sum_squares\", &sum_squares_cuda, \"Sum of squares over last dim (CUDA)\");\n}\n```\n\n```python\n# setup.py  (build glue)\nfrom setuptools import setup\nfrom torch.utils.cpp_extension import BuildExtension, CUDAExtension\n\nsetup(\n    name=\"task010_ext\",\n    ext_modules=[\n        CUDAExtension(\n            name=\"task010_ext\",\n            sources=[\"task010_kernel.cu\"],\n        )\n    ],\n    cmdclass={\"build_ext\": BuildExtension},\n)\n```\n\n```python\n# harness_entry.py  \u2013 drop-in forward() wrapper used by the evaluation harness\nimport torch\nfrom torch import Tensor\n\n# Build / load the extension on first import\nimport os, subprocess, sys\n\n_ext = None\n\ndef _load_ext():\n    global _ext\n    if _ext is not None:\n        return _ext\n    from torch.utils.cpp_extension import load\n    _ext = load(\n        name=\"task010_ext\",\n        sources=[os.path.join(os.path.dirname(__file__), \"task010_kernel.cu\")],\n        verbose=False,\n    )\n    return _ext\n\n\ndef forward(x: Tensor) -> Tensor:\n    ext = _load_ext()\n    return ext.sum_squares(x.contiguous())\n```",
+      "type": "text"
+    }
+  ],
+  "id": "msg_016vkuqSM811eN7ns1CzkVBy",
+  "model": "claude-sonnet-4-6",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1139,
+    "output_tokens": 1089,
+    "service_tier": "standard"
+  }
+}

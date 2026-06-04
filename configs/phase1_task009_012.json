@@ -1,0 +1,30 @@
+{
+  "name": "phase1_task009_012",
+  "description": "Balanced Phase 1 GPU batch for harder stride, reduction, and batched matmul shape-generalization tasks.",
+  "attempts": [
+    "generated/baseline/task_009/attempt_001",
+    "generated/baseline/task_009/attempt_002",
+    "generated/baseline/task_009/attempt_003",
+    "generated/shape_aware/task_009/attempt_001",
+    "generated/shape_aware/task_009/attempt_002",
+    "generated/shape_aware/task_009/attempt_003",
+    "generated/baseline/task_010/attempt_001",
+    "generated/baseline/task_010/attempt_002",
+    "generated/baseline/task_010/attempt_003",
+    "generated/shape_aware/task_010/attempt_001",
+    "generated/shape_aware/task_010/attempt_002",
+    "generated/shape_aware/task_010/attempt_003",
+    "generated/baseline/task_011/attempt_001",
+    "generated/baseline/task_011/attempt_002",
+    "generated/baseline/task_011/attempt_003",
+    "generated/shape_aware/task_011/attempt_001",
+    "generated/shape_aware/task_011/attempt_002",
+    "generated/shape_aware/task_011/attempt_003",
+    "generated/baseline/task_012/attempt_001",
+    "generated/baseline/task_012/attempt_002",
+    "generated/baseline/task_012/attempt_003",
+    "generated/shape_aware/task_012/attempt_001",
+    "generated/shape_aware/task_012/attempt_002",
+    "generated/shape_aware/task_012/attempt_003"
+  ]
+}

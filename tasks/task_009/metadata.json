@@ -1,0 +1,14 @@
+{
+  "task_id": "task_009",
+  "name": "noncontiguous_affine_relu",
+  "description": "Apply relu(x * scale + bias) to a 2D float32 tensor where x is a non-contiguous column-strided view.",
+  "category": "non_contiguous",
+  "input_kind": "strided_matrix_with_feature_vectors",
+  "input_names": ["x", "scale", "bias"],
+  "original_shape": [1024, 1024],
+  "dtype": "float32",
+  "atol": 0.000001,
+  "rtol": 0.000001,
+  "expected_output": "2D contiguous tensor with shape [rows, cols]",
+  "notes": "Elementwise task intended to expose generated kernels that assume contiguous input storage."
+}

@@ -1,0 +1,18 @@
+{
+  "attempt": 3,
+  "attempt_dir": "generated/shape_aware/task_009/attempt_003",
+  "created_fallback_solution": true,
+  "cuda_source": "task009_kernel.cu",
+  "entrypoint_file": "solution.py",
+  "entrypoint_function": "forward",
+  "extension_function": "affine_relu_cuda",
+  "extension_name": "shapebench_task_009_shape_aware_attempt_003",
+  "extracted_dir": "extracted",
+  "input_names": [
+    "x",
+    "scale",
+    "bias"
+  ],
+  "prompt_mode": "shape_aware",
+  "task_id": "task_009"
+}

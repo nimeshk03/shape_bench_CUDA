@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "text": "```cpp\n#include <torch/extension.h>\n#include <cuda_runtime.h>\n\n// Kernel that handles non-contiguous input with arbitrary strides\n__global__ void batched_transpose_kernel(\n    const float* __restrict__ input,\n    float* __restrict__ output,\n    int batch,\n    int rows,\n    int cols,\n    // Input strides (in elements)\n    int stride_batch,\n    int stride_row,\n    int stride_col,\n    // Output strides (contiguous: [batch, cols, rows])\n    int out_stride_batch,\n    int out_stride_col,\n    int out_stride_row\n) {\n    // Each thread handles one element\n    // Output shape: [batch, cols, rows]\n    int idx = blockIdx.x * blockDim.x + threadIdx.x;\n    int total = batch * cols * rows;\n    \n    if (idx >= total) return;\n    \n    // Decompose linear index into (b, c, r) in output space\n    int r = idx % rows;\n    int tmp = idx / rows;\n    int c = tmp % cols;\n    int b = tmp / cols;\n    \n    // Read from input at (b, r, c) using input strides\n    float val = input[b * stride_batch + r * stride_row + c * stride_col];\n    \n    // Write to output at (b, c, r) - contiguous output\n    output[b * out_stride_batch + c * out_stride_col + r * out_stride_row] = val;\n}\n\ntorch::Tensor batched_transpose(torch::Tensor x) {\n    TORCH_CHECK(x.dim() == 3, \"Input must be 3D\");\n    TORCH_CHECK(x.scalar_type() == torch::kFloat32, \"Input must be float32\");\n    \n    int batch = x.size(0);\n    int rows  = x.size(1);\n    int cols  = x.size(2);\n    \n    // Get input strides (in bytes -> convert to elements)\n    int stride_batch = x.stride(0);\n    int stride_row   = x.stride(1);\n    int stride_col   = x.stride(2);\n    \n    // Output is contiguous with shape [batch, cols, rows]\n    auto output = torch::empty({batch, cols, rows}, \n                               torch::TensorOptions()\n                                   .dtype(torch::kFloat32)\n                                   .device(x.device()));\n    \n    // Output strides (contiguous)\n    int out_stride_batch = cols * rows;\n    int out_stride_col   = rows;\n    int out_stride_row   = 1;\n    \n    int total = batch * rows * cols;\n    int threads = 256;\n    int blocks = (total + threads - 1) / threads;\n    \n    batched_transpose_kernel<<<blocks, threads>>>(\n        x.data_ptr<float>(),\n        output.data_ptr<float>(),\n        batch, rows, cols,\n        stride_batch, stride_row, stride_col,\n        out_stride_batch, out_stride_col, out_stride_row\n    );\n    \n    return output;\n}\n\nPYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {\n    m.def(\"batched_transpose\", &batched_transpose, \"Batched transpose with stride support\");\n}\n```\n\n```python\n# setup.py\nfrom setuptools import setup\nfrom torch.utils.cpp_extension import BuildExtension, CUDAExtension\n\nsetup(\n    name=\"task_012_ext\",\n    ext_modules=[\n        CUDAExtension(\n            name=\"task_012_ext\",\n            sources=[\"task_012_kernel.cu\"],\n        )\n    ],\n    cmdclass={\"build_ext\": BuildExtension},\n)\n```\n\n```python\n# solution.py  (harness entry point)\nfrom __future__ import annotations\nfrom collections.abc import Sequence\n\nimport torch\nfrom torch import Tensor\n\ntry:\n    import task_012_ext as _ext\n    _USE_CUDA = True\nexcept ImportError:\n    _USE_CUDA = False\n\n\ndef reference(x: Tensor) -> Tensor:\n    if _USE_CUDA and x.is_cuda:\n        return _ext.batched_transpose(x)\n    return torch.transpose(x, 1, 2).contiguous()\n```",
+      "type": "text"
+    }
+  ],
+  "id": "msg_01J5YYe8CGSLgFuwtdz2jU38",
+  "model": "claude-sonnet-4-6",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1189,
+    "output_tokens": 1084,
+    "service_tier": "standard"
+  }
+}

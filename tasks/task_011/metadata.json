@@ -1,0 +1,14 @@
+{
+  "task_id": "task_011",
+  "name": "batched_matrix_multiply",
+  "description": "Compute C = A @ B for batched matrices A shaped [batch, M, K] and B shaped [batch, K, N].",
+  "category": "batched_matmul",
+  "input_kind": "batched_matrix_pair",
+  "input_names": ["a", "b"],
+  "original_shape": [8, 128, 128, 128],
+  "dtype": "float32",
+  "atol": 0.01,
+  "rtol": 0.01,
+  "expected_output": "3D tensor with shape [batch, M, N]",
+  "notes": "Batched matmul task intended to expose hardcoded batch, tile, and dimension assumptions."
+}

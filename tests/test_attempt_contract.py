@@ -47,6 +47,59 @@ def test_prepare_attempt_contract_keeps_existing_solution(tmp_path) -> None:
     assert contract_json["extension_name"] == "custom_existing_ext"
 
 
+def test_prepare_attempt_contract_records_existing_solution_extension_function(tmp_path) -> None:
+    root = _make_project_root(tmp_path)
+    attempt_dir = root / "generated" / "shape_aware" / "task_001" / "attempt_007"
+    _write_attempt_metadata(attempt_dir, prompt_mode="shape_aware", attempt=7)
+    extracted_dir = attempt_dir / "extracted"
+    extracted_dir.mkdir(parents=True)
+    (extracted_dir / "solution.py").write_text(
+        'from torch.utils.cpp_extension import load\n'
+        '_ext = load(name="multi_ext", sources=[])\n'
+        "def forward(x, y):\n"
+        "    ext = _ext\n"
+        "    return ext.add_relu(x, y)\n",
+        encoding="utf-8",
+    )
+    (extracted_dir / "multi.cu").write_text(
+        """
+#include <torch/extension.h>
+
+torch::Tensor add_relu(torch::Tensor x, torch::Tensor y) {
+    return torch::relu(x + y);
+}
+
+torch::Tensor debug_add(torch::Tensor x, torch::Tensor y) {
+    return x + y;
+}
+
+PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
+    m.def("add_relu", &add_relu);
+    m.def("debug_add", &debug_add);
+}
+""",
+        encoding="utf-8",
+    )
+    (extracted_dir / "manifest.json").write_text(
+        json.dumps(
+            {
+                "files": [
+                    {"filename": "multi.cu"},
+                    {"filename": "solution.py"},
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    contract = prepare_attempt_contract(attempt_dir)
+
+    contract_json = json.loads((extracted_dir / "eval_contract.json").read_text(encoding="utf-8"))
+    assert contract.created_fallback_solution is False
+    assert contract.extension_function == "add_relu"
+    assert contract_json["extension_function"] == "add_relu"
+
+
 def test_prepare_attempt_contract_creates_fallback_solution(tmp_path) -> None:
     root = _make_project_root(tmp_path)
     attempt_dir = root / "generated" / "shape_aware" / "task_001" / "attempt_002"

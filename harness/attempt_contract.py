@@ -115,6 +115,9 @@ def prepare_attempt_contract(
         )
         created_fallback = True
 
+    if not created_fallback and extension_function is None:
+        extension_function = _find_solution_extension_function(solution_path)
+
     extension_name = (
         generated_extension_name
         if created_fallback
@@ -290,6 +293,27 @@ def _find_solution_extension_name(solution_path: Path) -> str | None:
     if len(unique) == 1:
         return unique[0]
     return None
+
+
+def _find_solution_extension_function(solution_path: Path) -> str | None:
+    tree = ast.parse(solution_path.read_text(encoding="utf-8"), filename=str(solution_path))
+    names: list[str] = []
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call) or not isinstance(node.func, ast.Attribute):
+            continue
+        receiver = node.func.value
+        if isinstance(receiver, ast.Name) and receiver.id in {"ext", "_ext"}:
+            names.append(node.func.attr)
+        elif isinstance(receiver, ast.Call) and _is_extension_loader_call(receiver.func):
+            names.append(node.func.attr)
+    unique = sorted(set(names))
+    if len(unique) == 1:
+        return unique[0]
+    return None
+
+
+def _is_extension_loader_call(func: ast.expr) -> bool:
+    return isinstance(func, ast.Name) and func.id in {"_load_ext", "_get_ext"}
 
 
 def _is_load_call(func: ast.expr) -> bool:

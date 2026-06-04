@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "text": "```cpp\n#include <torch/extension.h>\n#include <cuda.h>\n#include <cuda_runtime.h>\n\n#define TILE_SIZE 16\n\n__global__ void batched_matmul_kernel(\n    const float* __restrict__ A,\n    const float* __restrict__ B,\n    float* __restrict__ C,\n    int batch, int M, int K, int N\n) {\n    // Each block handles one (batch, tile_row, tile_col) combination\n    int b = blockIdx.z;\n    int row = blockIdx.y * TILE_SIZE + threadIdx.y;\n    int col = blockIdx.x * TILE_SIZE + threadIdx.x;\n\n    if (b >= batch) return;\n\n    const float* a_batch = A + b * M * K;\n    const float* b_batch = B + b * K * N;\n    float* c_batch = C + b * M * N;\n\n    __shared__ float sA[TILE_SIZE][TILE_SIZE];\n    __shared__ float sB[TILE_SIZE][TILE_SIZE];\n\n    float sum = 0.0f;\n\n    int num_tiles = (K + TILE_SIZE - 1) / TILE_SIZE;\n\n    for (int t = 0; t < num_tiles; t++) {\n        int k_a = t * TILE_SIZE + threadIdx.x;\n        int k_b = t * TILE_SIZE + threadIdx.y;\n\n        // Load tile from A\n        if (row < M && k_a < K)\n            sA[threadIdx.y][threadIdx.x] = a_batch[row * K + k_a];\n        else\n            sA[threadIdx.y][threadIdx.x] = 0.0f;\n\n        // Load tile from B\n        if (k_b < K && col < N)\n            sB[threadIdx.y][threadIdx.x] = b_batch[k_b * N + col];\n        else\n            sB[threadIdx.y][threadIdx.x] = 0.0f;\n\n        __syncthreads();\n\n        #pragma unroll\n        for (int k = 0; k < TILE_SIZE; k++) {\n            sum += sA[threadIdx.y][k] * sB[k][threadIdx.x];\n        }\n\n        __syncthreads();\n    }\n\n    if (row < M && col < N) {\n        c_batch[row * N + col] = sum;\n    }\n}\n\ntorch::Tensor batched_matmul_cuda(torch::Tensor a, torch::Tensor b) {\n    TORCH_CHECK(a.dim() == 3, \"a must be 3D\");\n    TORCH_CHECK(b.dim() == 3, \"b must be 3D\");\n    TORCH_CHECK(a.size(0) == b.size(0), \"batch sizes must match\");\n    TORCH_CHECK(a.size(2) == b.size(1), \"inner dimensions must match\");\n    TORCH_CHECK(a.is_cuda() && b.is_cuda(), \"inputs must be on CUDA\");\n    TORCH_CHECK(a.scalar_type() == torch::kFloat32, \"only float32 supported\");\n\n    a = a.contiguous();\n    b = b.contiguous();\n\n    int batch = a.size(0);\n    int M = a.size(1);\n    int K = a.size(2);\n    int N = b.size(2);\n\n    auto c = torch::empty({batch, M, N}, a.options());\n\n    dim3 block(TILE_SIZE, TILE_SIZE, 1);\n    dim3 grid(\n        (N + TILE_SIZE - 1) / TILE_SIZE,\n        (M + TILE_SIZE - 1) / TILE_SIZE,\n        batch\n    );\n\n    batched_matmul_kernel<<<grid, block>>>(\n        a.data_ptr<float>(),\n        b.data_ptr<float>(),\n        c.data_ptr<float>(),\n        batch, M, K, N\n    );\n\n    cudaError_t err = cudaGetLastError();\n    TORCH_CHECK(err == cudaSuccess, \"CUDA kernel error: \", cudaGetErrorString(err));\n\n    return c;\n}\n\nPYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {\n    m.def(\"batched_matmul\", &batched_matmul_cuda, \"Batched matrix multiplication (CUDA)\");\n}\n```\n\n```python\n# setup.py / build glue\nimport os\nimport torch\nfrom torch.utils.cpp_extension import load\n\n_ext = None\n\ndef _load_ext():\n    global _ext\n    if _ext is None:\n        src_dir = os.path.dirname(os.path.abspath(__file__))\n        _ext = load(\n            name=\"batched_matmul_ext\",\n            sources=[os.path.join(src_dir, \"batched_matmul.cu\")],\n            extra_cuda_cflags=[\"-O3\", \"--use_fast_math\"],\n            verbose=False,\n        )\n    return _ext\n\n\nimport torch\nfrom torch import Tensor, nn\n\n\nclass Model(nn.Module):\n    \"\"\"CUDA-accelerated batched matrix multiplication.\"\"\"\n\n    def forward(self, a: Tensor, b: Tensor) -> Tensor:\n        if a.is_cuda and b.is_cuda and a.dtype == torch.float32:\n            ext = _load_ext()\n            return ext.batched_matmul(a, b)\n        return torch.bmm(a, b)\n\n\ndef reference(a: Tensor, b: Tensor) -> Tensor:\n    return torch.bmm(a, b)\n```",
+      "type": "text"
+    }
+  ],
+  "id": "msg_014VWpSiYLZ4KM6CFaXZxG2R",
+  "model": "claude-sonnet-4-6",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1215,
+    "output_tokens": 1417,
+    "service_tier": "standard"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "text": "```cpp\n#include <torch/extension.h>\n#include <cuda.h>\n#include <cuda_runtime.h>\n\n#define TILE_SIZE 16\n\n__global__ void batched_matmul_kernel(\n    const float* __restrict__ A,\n    const float* __restrict__ B,\n    float* __restrict__ C,\n    int batch, int M, int K, int N\n) {\n    // Each block handles one (batch, tile_row, tile_col) combination\n    int b = blockIdx.z;\n    int row = blockIdx.y * TILE_SIZE + threadIdx.y;\n    int col = blockIdx.x * TILE_SIZE + threadIdx.x;\n\n    if (b >= batch) return;\n\n    const float* a_batch = A + b * M * K;\n    const float* b_batch = B + b * K * N;\n    float* c_batch = C + b * M * N;\n\n    __shared__ float sA[TILE_SIZE][TILE_SIZE];\n    __shared__ float sB[TILE_SIZE][TILE_SIZE];\n\n    float sum = 0.0f;\n\n    int num_tiles = (K + TILE_SIZE - 1) / TILE_SIZE;\n\n    for (int t = 0; t < num_tiles; t++) {\n        int a_col = t * TILE_SIZE + threadIdx.x;\n        int b_row = t * TILE_SIZE + threadIdx.y;\n\n        // Load tile from A\n        if (row < M && a_col < K) {\n            sA[threadIdx.y][threadIdx.x] = a_batch[row * K + a_col];\n        } else {\n            sA[threadIdx.y][threadIdx.x] = 0.0f;\n        }\n\n        // Load tile from B\n        if (b_row < K && col < N) {\n            sB[threadIdx.y][threadIdx.x] = b_batch[b_row * N + col];\n        } else {\n            sB[threadIdx.y][threadIdx.x] = 0.0f;\n        }\n\n        __syncthreads();\n\n        #pragma unroll\n        for (int k = 0; k < TILE_SIZE; k++) {\n            sum += sA[threadIdx.y][k] * sB[k][threadIdx.x];\n        }\n\n        __syncthreads();\n    }\n\n    if (row < M && col < N) {\n        c_batch[row * N + col] = sum;\n    }\n}\n\ntorch::Tensor batched_matmul_cuda(torch::Tensor a, torch::Tensor b) {\n    TORCH_CHECK(a.is_cuda(), \"a must be a CUDA tensor\");\n    TORCH_CHECK(b.is_cuda(), \"b must be a CUDA tensor\");\n    TORCH_CHECK(a.dim() == 3, \"a must be 3D\");\n    TORCH_CHECK(b.dim() == 3, \"b must be 3D\");\n    TORCH_CHECK(a.dtype() == torch::kFloat32, \"a must be float32\");\n    TORCH_CHECK(b.dtype() == torch::kFloat32, \"b must be float32\");\n\n    int batch = a.size(0);\n    int M = a.size(1);\n    int K = a.size(2);\n    int N = b.size(2);\n\n    TORCH_CHECK(b.size(0) == batch, \"batch size mismatch\");\n    TORCH_CHECK(b.size(1) == K, \"K dimension mismatch\");\n\n    auto a_contig = a.contiguous();\n    auto b_contig = b.contiguous();\n\n    auto c = torch::zeros({batch, M, N}, a.options());\n\n    dim3 block(TILE_SIZE, TILE_SIZE, 1);\n    dim3 grid(\n        (N + TILE_SIZE - 1) / TILE_SIZE,\n        (M + TILE_SIZE - 1) / TILE_SIZE,\n        batch\n    );\n\n    batched_matmul_kernel<<<grid, block>>>(\n        a_contig.data_ptr<float>(),\n        b_contig.data_ptr<float>(),\n        c.data_ptr<float>(),\n        batch, M, K, N\n    );\n\n    cudaError_t err = cudaGetLastError();\n    TORCH_CHECK(err == cudaSuccess, \"CUDA kernel error: \", cudaGetErrorString(err));\n\n    return c;\n}\n\nPYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {\n    m.def(\"batched_matmul\", &batched_matmul_cuda, \"Batched matrix multiplication (CUDA)\");\n}\n```\n\n```python\n# setup.py\nfrom setuptools import setup\nfrom torch.utils.cpp_extension import BuildExtension, CUDAExtension\n\nsetup(\n    name=\"batched_matmul_ext\",\n    ext_modules=[\n        CUDAExtension(\n            name=\"batched_matmul_ext\",\n            sources=[\"batched_matmul.cu\"],\n        )\n    ],\n    cmdclass={\"build_ext\": BuildExtension},\n)\n```\n\n```python\n# solution.py\n\"\"\"CUDA extension wrapper for batched matrix multiplication.\"\"\"\n\nfrom __future__ import annotations\n\nimport os\nimport torch\nfrom torch import Tensor\nfrom torch.utils.cpp_extension import load\n\n_ext = None\n\ndef _get_ext():\n    global _ext\n    if _ext is None:\n        src_dir = os.path.dirname(os.path.abspath(__file__))\n        _ext = load(\n            name=\"batched_matmul_ext\",\n            sources=[os.path.join(src_dir, \"batched_matmul.cu\")],\n            verbose=False,\n        )\n    return _ext\n\n\ndef reference(a: Tensor, b: Tensor) -> Tensor:\n    \"\"\"Run batched matmul using CUDA extension.\"\"\"\n    ext = _get_ext()\n    return ext.batched_matmul(a, b)\n```",
+      "type": "text"
+    }
+  ],
+  "id": "msg_01QQZKHzqoZDb8sEGAQFDDUr",
+  "model": "claude-sonnet-4-6",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1215,
+    "output_tokens": 1503,
+    "service_tier": "standard"
+  }
+}
