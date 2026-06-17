@@ -1,0 +1,418 @@
+{
+  "aggregates": [
+    {
+      "checks": 18,
+      "max_abs_error": 0.0,
+      "max_speedup_vs_eager": 2.943601222197143,
+      "mean_generated_ms": 0.04160114888691169,
+      "mean_pytorch_eager_ms": 0.0461498955559768,
+      "mean_speedup_vs_eager": 1.2424872996036493,
+      "min_speedup_vs_eager": 0.49615446520373263,
+      "passed": 18,
+      "prompt_mode": "baseline",
+      "task_id": "task_013"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 0.0,
+      "max_speedup_vs_eager": 2.822570981295707,
+      "mean_generated_ms": 0.050093848887829355,
+      "mean_pytorch_eager_ms": 0.05344598555641116,
+      "mean_speedup_vs_eager": 1.1894772392273818,
+      "min_speedup_vs_eager": 0.36931856153860165,
+      "passed": 18,
+      "prompt_mode": "shape_aware",
+      "task_id": "task_013"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 0.0,
+      "max_speedup_vs_eager": 2.999615248609821,
+      "mean_generated_ms": 0.03508387111095443,
+      "mean_pytorch_eager_ms": 0.04610295111231406,
+      "mean_speedup_vs_eager": 1.399625768076564,
+      "min_speedup_vs_eager": 0.7957279358262187,
+      "passed": 18,
+      "prompt_mode": "baseline",
+      "task_id": "task_014"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 0.0,
+      "max_speedup_vs_eager": 1.9980350427128637,
+      "mean_generated_ms": 0.04073446777965728,
+      "mean_pytorch_eager_ms": 0.04309949999979937,
+      "mean_speedup_vs_eager": 1.2180459140749933,
+      "min_speedup_vs_eager": 0.32379435002196594,
+      "passed": 18,
+      "prompt_mode": "shape_aware",
+      "task_id": "task_014"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 9.5367431640625e-07,
+      "max_speedup_vs_eager": 3.4089008170608315,
+      "mean_generated_ms": 0.029119350000049355,
+      "mean_pytorch_eager_ms": 0.08152125999913551,
+      "mean_speedup_vs_eager": 2.84610404554823,
+      "min_speedup_vs_eager": 2.1982309714291115,
+      "passed": 6,
+      "prompt_mode": "baseline",
+      "task_id": "task_015"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": null,
+      "max_speedup_vs_eager": null,
+      "mean_generated_ms": null,
+      "mean_pytorch_eager_ms": null,
+      "mean_speedup_vs_eager": null,
+      "min_speedup_vs_eager": null,
+      "passed": 0,
+      "prompt_mode": "shape_aware",
+      "task_id": "task_015"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 1.9073486328125e-06,
+      "max_speedup_vs_eager": 6.411223192913858,
+      "mean_generated_ms": 0.17636960666701876,
+      "mean_pytorch_eager_ms": 0.24680797555548553,
+      "mean_speedup_vs_eager": 1.8169954374707542,
+      "min_speedup_vs_eager": 0.8088799777415935,
+      "passed": 18,
+      "prompt_mode": "baseline",
+      "task_id": "task_016"
+    },
+    {
+      "checks": 18,
+      "max_abs_error": 7.239551544189453,
+      "max_speedup_vs_eager": 7.708363698135684,
+      "mean_generated_ms": 0.052245383333229256,
+      "mean_pytorch_eager_ms": 0.27312201666594166,
+      "mean_speedup_vs_eager": 5.384513061877995,
+      "min_speedup_vs_eager": 3.5622426895976247,
+      "passed": 12,
+      "prompt_mode": "shape_aware",
+      "task_id": "task_016"
+    }
+  ],
+  "gpu_eval_batch_summary": {
+    "attempts": [
+      {
+        "attempt_dir": "generated/baseline/task_013/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_013_baseline_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_013",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_013/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_013_baseline_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_013",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_013/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_013_baseline_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_013",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_013/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_013_shape_aware_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_013",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_013/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_013_shape_aware_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_013",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_013/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_013_shape_aware_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_013",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_014/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_014_baseline_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_014",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_014/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_014_baseline_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_014",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_014/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_014_baseline_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_014",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_014/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_014_shape_aware_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_014",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_014/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_014_shape_aware_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_014",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_014/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_014_shape_aware_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_014",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_015/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_015_baseline_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_015",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_015/attempt_002",
+        "failure_reasons": {
+          "compilation_failure": 6
+        },
+        "original_passed": false,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_015_baseline_attempt_002_correctness.jsonl",
+        "passed_shapes": 0,
+        "prompt_mode": "baseline",
+        "task_id": "task_015",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_015/attempt_003",
+        "failure_reasons": {
+          "compilation_failure": 6
+        },
+        "original_passed": false,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_015_baseline_attempt_003_correctness.jsonl",
+        "passed_shapes": 0,
+        "prompt_mode": "baseline",
+        "task_id": "task_015",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_015/attempt_001",
+        "failure_reasons": {
+          "compilation_failure": 6
+        },
+        "original_passed": false,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_015_shape_aware_attempt_001_correctness.jsonl",
+        "passed_shapes": 0,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_015",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_015/attempt_002",
+        "failure_reasons": {
+          "compilation_failure": 6
+        },
+        "original_passed": false,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_015_shape_aware_attempt_002_correctness.jsonl",
+        "passed_shapes": 0,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_015",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_015/attempt_003",
+        "failure_reasons": {
+          "compilation_failure": 6
+        },
+        "original_passed": false,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_015_shape_aware_attempt_003_correctness.jsonl",
+        "passed_shapes": 0,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_015",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_016/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_016_baseline_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_016",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_016/attempt_002",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_016_baseline_attempt_002_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_016",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/baseline/task_016/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_016_baseline_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "baseline",
+        "task_id": "task_016",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_016/attempt_001",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_016_shape_aware_attempt_001_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_016",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_016/attempt_002",
+        "failure_reasons": {
+          "original_shape_correctness_failure": 1,
+          "shape_variant_correctness_failure": 5
+        },
+        "original_passed": false,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_016_shape_aware_attempt_002_correctness.jsonl",
+        "passed_shapes": 0,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_016",
+        "total_shapes": 6
+      },
+      {
+        "attempt_dir": "generated/shape_aware/task_016/attempt_003",
+        "failure_reasons": {},
+        "original_passed": true,
+        "output_path": "results/colab_runs/20260617T182927Z/results/raw/task_016_shape_aware_attempt_003_correctness.jsonl",
+        "passed_shapes": 6,
+        "prompt_mode": "shape_aware",
+        "task_id": "task_016",
+        "total_shapes": 6
+      }
+    ],
+    "benchmark": {
+      "enabled": true,
+      "iterations": 50,
+      "warmup": 10
+    },
+    "created_at": "2026-06-17T18:33:17.110805+00:00",
+    "device": "auto",
+    "preflight": {
+      "failures": [],
+      "nvcc": {
+        "ok": true,
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2025 NVIDIA Corporation\nBuilt on Fri_Feb_21_20:23:50_PST_2025\nCuda compilation tools, release 12.8, V12.8.93\nBuild cuda_12.8.r12.8/compiler.35583870_0"
+      },
+      "nvidia_smi": {
+        "ok": true,
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "Wed Jun 17 18:29:48 2026       \n+-----------------------------------------------------------------------------------------+\n| NVIDIA-SMI 580.82.07              Driver Version: 580.82.07      CUDA Version: 13.0     |\n+-----------------------------------------+------------------------+----------------------+\n| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n|                                         |                        |               MIG M. |\n|=========================================+========================+======================|\n|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n| N/A   52C    P0             27W /   70W |       0MiB /  15360MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n\n+-----------------------------------------------------------------------------------------+\n| Processes:                                                                              |\n|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n|        ID   ID                                                               Usage      |\n|=========================================================================================|\n|  No running processes found                                                             |\n+-----------------------------------------------------------------------------------------+"
+      },
+      "python": "3.12.13",
+      "torch": {
+        "cuda_available": true,
+        "cuda_version": "12.8",
+        "gpu_name": "Tesla T4",
+        "installed": true,
+        "version": "2.11.0+cu128"
+      }
+    },
+    "require_cuda": true,
+    "seed": 0,
+    "summary_output": "results/colab_runs/20260617T182927Z/results/tables/gpu_eval_batch_summary.json"
+  },
+  "raw_results": {
+    "path": "raw_results.jsonl",
+    "record_count": 144,
+    "sha256": "791f0e8c13a431b729bd74a827be8fb0f5a8a3762366080c22d6842b699f4ef9"
+  },
+  "run_metadata": {
+    "backend": "colab",
+    "created_at": "2026-06-17T18:29:48.543168+00:00",
+    "experiment_config": "configs/phase1_task013_016.json",
+    "experiment_name": "phase1_task013_016",
+    "remote_exit_code": 0,
+    "repo_ref": "HEAD",
+    "source_commit": "2fb3e982cc66998ac072a78ab7f229f74f43e3e6",
+    "summary_output": "results/colab_runs/20260617T182927Z/results/tables/gpu_eval_batch_summary.json"
+  },
+  "schema_version": 2,
+  "source_commit": "2fb3e982cc66998ac072a78ab7f229f74f43e3e6",
+  "source_run_dir": "/content/shape_bench_CUDA/results/colab_runs/20260617T182927Z",
+  "vast_run_metadata": {
+    "backend": "colab",
+    "created_at": "2026-06-17T18:29:48.543168+00:00",
+    "experiment_config": "configs/phase1_task013_016.json",
+    "experiment_name": "phase1_task013_016",
+    "remote_exit_code": 0,
+    "repo_ref": "HEAD",
+    "source_commit": "2fb3e982cc66998ac072a78ab7f229f74f43e3e6",
+    "summary_output": "results/colab_runs/20260617T182927Z/results/tables/gpu_eval_batch_summary.json"
+  }
+}

@@ -1768,3 +1768,39 @@ failures either fail during CUDA extension compilation or fail the original
 shape as well as variants, so they should be reported separately from
 variant-only robustness failures.
 ```
+
+## 2026-06-18 - Colab Backend Validation
+
+Validated the Colab GPU workflow on a Tesla T4 using the same task batch as the
+latest harder layout/reduction experiment:
+
+```text
+run: results/experiments/20260617T182927Z
+backend: colab
+gpu: Tesla T4
+source commit: 2fb3e982cc66
+overall correctness: 108/144 shape evaluations passed
+attempts: 24
+```
+
+Correctness by task and prompt mode matched the prior RTX 4090 run:
+
+```text
+task_013 baseline:    18/18 passed
+task_013 shape_aware: 18/18 passed
+task_014 baseline:    18/18 passed
+task_014 shape_aware: 18/18 passed
+task_015 baseline:     6/18 passed
+task_015 shape_aware:  0/18 passed
+task_016 baseline:    18/18 passed
+task_016 shape_aware: 12/18 passed
+```
+
+Interpretation:
+
+```text
+Colab reproduced the same correctness/failure pattern as Vast.ai for this
+batch, so Colab is viable for GPU correctness validation. Timing should be
+reported separately by backend/GPU because the Colab T4 speedups differ from
+the Vast.ai RTX 4090 measurements.
+```
