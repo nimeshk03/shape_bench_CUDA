@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Generate the Stage 9 initial findings report from exported artifacts."""
+"""Generate the initial findings report from exported artifacts."""
 
 from __future__ import annotations
 

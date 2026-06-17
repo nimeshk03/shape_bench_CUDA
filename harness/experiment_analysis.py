@@ -99,12 +99,40 @@ class FailureCase:
     task_name: str
     prompt_mode: str
     attempt: int | str
+    failure_class: str
     original_passed: bool
     passed_shapes: int
     total_shapes: int
     failure_reasons: dict[str, int]
     failed_shape_categories: tuple[str, ...]
     max_abs_error: float | None
+
+
+@dataclass(frozen=True)
+class FailureTaxonomyStats:
+    """Aggregate failure taxonomy counts."""
+
+    failure_class: str
+    attempts: int
+    failed_shape_checks: int
+    original_failures: int
+    variant_failures: int
+    failure_reasons: dict[str, int]
+
+
+@dataclass(frozen=True)
+class TaskPromptFailureStats:
+    """Failure taxonomy counts for one task and prompt mode."""
+
+    task_id: str
+    task_name: str
+    prompt_mode: str
+    failure_class: str
+    attempts: int
+    failed_shape_checks: int
+    original_failures: int
+    variant_failures: int
+    failure_reasons: dict[str, int]
 
 
 @dataclass(frozen=True)
@@ -116,6 +144,8 @@ class AnalysisSummary:
     prompt_stats: tuple[RateStats, ...]
     task_prompt_stats: tuple[TaskPromptStats, ...]
     failure_cases: tuple[FailureCase, ...]
+    failure_taxonomy: tuple[FailureTaxonomyStats, ...]
+    task_prompt_failure_taxonomy: tuple[TaskPromptFailureStats, ...]
     total_attempts: int
     total_shape_checks: int
     passed_shape_checks: int
@@ -181,13 +211,15 @@ def analyze_experiments(
         for (task_id, prompt_mode), group in sorted(task_prompt_groups.items())
     )
 
-    failure_cases = _failure_cases(artifact_tuple, names)
+    failure_cases = tuple(_failure_cases(artifact_tuple, names))
     return AnalysisSummary(
         artifacts=artifact_tuple,
         task_names=names,
         prompt_stats=prompt_stats,
         task_prompt_stats=task_prompt_stats,
-        failure_cases=tuple(failure_cases),
+        failure_cases=failure_cases,
+        failure_taxonomy=_failure_taxonomy(failure_cases),
+        task_prompt_failure_taxonomy=_task_prompt_failure_taxonomy(failure_cases, names),
         total_attempts=len({_attempt_key(row) for row in rows}),
         total_shape_checks=len(rows),
         passed_shape_checks=sum(1 for row in rows if row.get("correct") is True),
@@ -197,6 +229,7 @@ def analyze_experiments(
 def render_initial_findings(summary: AnalysisSummary) -> str:
     """Render a Markdown initial-findings report."""
     task_ids = sorted({row.task_id for row in summary.task_prompt_stats})
+    failure_classes = {row.failure_class for row in summary.failure_taxonomy}
     experiment_lines = [
         f"- `{artifact.run_id}`: {len(artifact.attempt_keys)} attempts, "
         f"{_passed_count(artifact.raw_results)}/{len(artifact.raw_results)} shape checks passed, "
@@ -252,6 +285,7 @@ def render_initial_findings(summary: AnalysisSummary) -> str:
             "| Multi-shape pass rate | Fraction of attempts that pass every configured shape. |",
             "| Robustness score | Fraction of all per-shape evaluations that pass. |",
             "| Shape-variant-only failures | Attempts that pass original shape but fail at least one variant. |",
+            "| Failure class | Attempt-level classification that separates compile/build failures, original-shape failures, and variant-only failures. |",
             "| Mean/median speedup | Speedup versus PyTorch eager for correctness-passing rows only. |",
             "",
             "## Prompt-Mode Results",
@@ -267,6 +301,43 @@ def render_initial_findings(summary: AnalysisSummary) -> str:
             f"{_pct(row.robustness_score)} | {row.shape_variant_only_failures} | "
             f"{_fmt_number(row.mean_speedup)} | {_fmt_number(row.median_speedup)} |"
         )
+
+    lines.extend(
+        [
+            "",
+            "## Failure Taxonomy",
+            "",
+            "| Failure class | Attempts | Failed shape checks | Original failures | Variant failures | Raw failure reasons |",
+            "|---|---:|---:|---:|---:|---|",
+        ]
+    )
+    if summary.failure_taxonomy:
+        for row in summary.failure_taxonomy:
+            lines.append(
+                f"| `{row.failure_class}` | {row.attempts} | {row.failed_shape_checks} | "
+                f"{row.original_failures} | {row.variant_failures} | {_fmt_reasons(row.failure_reasons)} |"
+            )
+    else:
+        lines.append("| none | 0 | 0 | 0 | 0 | n/a |")
+
+    lines.extend(
+        [
+            "",
+            "## Failure Taxonomy By Task And Prompt",
+            "",
+            "| Task | Prompt mode | Failure class | Attempts | Failed shape checks | Original failures | Variant failures | Raw failure reasons |",
+            "|---|---|---|---:|---:|---:|---:|---|",
+        ]
+    )
+    if summary.task_prompt_failure_taxonomy:
+        for row in summary.task_prompt_failure_taxonomy:
+            lines.append(
+                f"| `{row.task_id}` | `{row.prompt_mode}` | `{row.failure_class}` | "
+                f"{row.attempts} | {row.failed_shape_checks} | {row.original_failures} | "
+                f"{row.variant_failures} | {_fmt_reasons(row.failure_reasons)} |"
+            )
+    else:
+        lines.append("| none | n/a | n/a | 0 | 0 | 0 | 0 | n/a |")
 
     lines.extend(
         [
@@ -297,39 +368,53 @@ def render_initial_findings(summary: AnalysisSummary) -> str:
     if summary.failure_cases:
         lines.extend(
             [
-                "| Run | Task | Prompt mode | Attempt | Original passed | Shapes passed | Failure reasons | Failed shapes | Max abs error |",
-                "|---|---|---|---:|---|---:|---|---|---:|",
+                "| Run | Task | Prompt mode | Attempt | Failure class | Original passed | Shapes passed | Failure reasons | Failed shapes | Max abs error |",
+                "|---|---|---|---:|---|---|---:|---|---|---:|",
             ]
         )
         for case in summary.failure_cases:
-            reasons = ", ".join(f"{key}: {value}" for key, value in sorted(case.failure_reasons.items()))
             failed_shapes = ", ".join(case.failed_shape_categories)
             lines.append(
                 f"| `{case.run_id}` | `{case.task_id}` | `{case.prompt_mode}` | {case.attempt} | "
+                f"`{case.failure_class}` | "
                 f"{'yes' if case.original_passed else 'no'} | "
-                f"{case.passed_shapes}/{case.total_shapes} | {reasons} | {failed_shapes} | "
+                f"{case.passed_shapes}/{case.total_shapes} | {_fmt_reasons(case.failure_reasons)} | {failed_shapes} | "
                 f"{_fmt_number(case.max_abs_error)} |"
             )
     else:
         lines.append("No correctness failures were observed in the exported artifacts.")
 
+    lesson_lines = [
+        "- The current evidence does not show a robustness advantage for shape-aware prompting.",
+        (
+            "- Some attempts passed the original shape but failed variants; these are the clearest direct shape-generalization failures."
+            if "shape_variant_only_failure" in failure_classes
+            else "- No exported attempt currently shows a shape-variant-only failure; observed failures either fail the original shape too or fail before correctness can be measured."
+        ),
+    ]
+    if "compilation_failure" in failure_classes:
+        lesson_lines.append(
+            "- Compilation failures are a major failure class and should be reported separately from correctness failures."
+        )
+    lesson_lines.extend(
+        [
+            "- Attempt-level failure classes are needed because compilation failures, original-shape failures, and variant-only failures have different research meanings.",
+            "- Performance varies strongly by task family; reductions and elementwise tasks can show speedups, while generated matmul-like kernels are often slower than PyTorch eager.",
+            "- Mean speedup can be distorted by microsecond-scale timing outliers, so median speedup should be reported alongside mean speedup.",
+        ]
+    )
+
+    lines.extend(["", "## Lessons Learned", "", *lesson_lines])
+
     lines.extend(
         [
             "",
-            "## Lessons Learned",
-            "",
-            "- The current evidence does not show a robustness advantage for shape-aware prompting.",
-            "- Baseline attempts passed all exported shape evaluations in the current artifact set.",
-            "- Shape-aware failures so far failed the original shape too, so they are generated-code correctness failures rather than shape-variant-only failures.",
-            "- Performance varies strongly by task family; reductions and elementwise tasks can show speedups, while generated matmul-like kernels are often slower than PyTorch eager.",
-            "- Mean speedup can be distorted by microsecond-scale timing outliers, so median speedup should be reported alongside mean speedup.",
-            "",
             "## Next Steps",
             "",
-            "1. Add a generated CSV/Markdown table output for paper figures and quick review.",
+            "1. Inspect representative kernels from each failure class to identify source-level root causes.",
             "2. Repeat timing-sensitive batches to estimate run-to-run variance.",
             "3. Add tasks that are more likely to create shape-variant-only failures, such as randomized shape sampling and stronger non-contiguous stride cases.",
-            "4. Inspect failed generated kernels to classify root causes beyond the current high-level failure taxonomy.",
+            "4. Add prompt ablations targeted at the dominant failure classes.",
             "",
         ]
     )
@@ -423,15 +508,102 @@ def _failure_cases(
                     task_name=task_names.get(str(task_id), str(task_id)),
                     prompt_mode=str(prompt_mode),
                     attempt=attempt,
+                    failure_class=_classify_failure(rows),
                     original_passed=bool(original_rows and original_rows[0].get("correct") is True),
                     passed_shapes=_passed_count(rows),
                     total_shapes=len(rows),
-                    failure_reasons=dict(Counter(str(row.get("failure_reason")) for row in failed_rows)),
+                    failure_reasons=dict(Counter(_failure_reason(row) for row in failed_rows)),
                     failed_shape_categories=tuple(str(row["shape_category"]) for row in failed_rows),
                     max_abs_error=max(max_errors) if max_errors else None,
                 )
             )
     return cases
+
+
+def _failure_taxonomy(cases: tuple[FailureCase, ...]) -> tuple[FailureTaxonomyStats, ...]:
+    groups = _group_by(cases, lambda case: case.failure_class)
+    return tuple(
+        _failure_taxonomy_stats(failure_class, group)
+        for failure_class, group in sorted(groups.items())
+    )
+
+
+def _task_prompt_failure_taxonomy(
+    cases: tuple[FailureCase, ...],
+    task_names: dict[str, str],
+) -> tuple[TaskPromptFailureStats, ...]:
+    groups = _group_by(cases, lambda case: (case.task_id, case.prompt_mode, case.failure_class))
+    rows: list[TaskPromptFailureStats] = []
+    for (task_id, prompt_mode, failure_class), group in sorted(groups.items()):
+        stats = _failure_taxonomy_stats(failure_class, group)
+        rows.append(
+            TaskPromptFailureStats(
+                task_id=str(task_id),
+                task_name=task_names.get(str(task_id), str(task_id)),
+                prompt_mode=str(prompt_mode),
+                failure_class=str(failure_class),
+                attempts=stats.attempts,
+                failed_shape_checks=stats.failed_shape_checks,
+                original_failures=stats.original_failures,
+                variant_failures=stats.variant_failures,
+                failure_reasons=stats.failure_reasons,
+            )
+        )
+    return tuple(rows)
+
+
+def _failure_taxonomy_stats(
+    failure_class: str,
+    cases: list[FailureCase],
+) -> FailureTaxonomyStats:
+    reasons: Counter[str] = Counter()
+    for case in cases:
+        reasons.update(case.failure_reasons)
+    return FailureTaxonomyStats(
+        failure_class=str(failure_class),
+        attempts=len(cases),
+        failed_shape_checks=sum(case.total_shapes - case.passed_shapes for case in cases),
+        original_failures=sum(1 for case in cases if ORIGINAL_SHAPE_CATEGORY in case.failed_shape_categories),
+        variant_failures=sum(
+            sum(1 for shape_category in case.failed_shape_categories if shape_category != ORIGINAL_SHAPE_CATEGORY)
+            for case in cases
+        ),
+        failure_reasons=dict(sorted(reasons.items())),
+    )
+
+
+def _classify_failure(rows: list[dict[str, Any]]) -> str:
+    failed_rows = [row for row in rows if row.get("correct") is not True]
+    reasons = {_failure_reason(row) for row in failed_rows}
+    if "compilation_failure" in reasons:
+        return "compilation_failure"
+    if any("timeout" in reason for reason in reasons):
+        return "timeout_failure"
+    if any("runtime" in reason or "exception" in reason for reason in reasons):
+        return "runtime_failure"
+
+    original_failed = any(
+        row.get("correct") is not True and row.get("shape_category") == ORIGINAL_SHAPE_CATEGORY
+        for row in rows
+    )
+    variant_failed = any(
+        row.get("correct") is not True and row.get("shape_category") != ORIGINAL_SHAPE_CATEGORY
+        for row in rows
+    )
+    if original_failed and variant_failed:
+        return "original_and_variant_correctness_failure"
+    if original_failed:
+        return "original_shape_correctness_failure"
+    if variant_failed:
+        return "shape_variant_only_failure"
+    return "unknown_failure"
+
+
+def _failure_reason(row: dict[str, Any]) -> str:
+    value = row.get("failure_reason")
+    if isinstance(value, str) and value.strip():
+        return value
+    return "unknown_failure"
 
 
 def _attempt_key(row: dict[str, Any]) -> tuple[str, str, int | str]:
@@ -492,3 +664,7 @@ def _pct(value: float) -> str:
 
 def _fmt_number(value: float | None) -> str:
     return "n/a" if value is None else f"{value:.3f}"
+
+
+def _fmt_reasons(reasons: dict[str, int]) -> str:
+    return ", ".join(f"{key}: {value}" for key, value in sorted(reasons.items())) if reasons else "n/a"

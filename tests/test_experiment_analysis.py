@@ -111,10 +111,56 @@ def test_analyze_experiments_computes_prompt_rates_and_failures(tmp_path) -> Non
     assert prompt_stats["shape_aware"].shape_variant_only_failures == 1
     assert len(summary.failure_cases) == 2
     assert summary.failure_cases[0].original_passed is True
+    assert summary.failure_cases[0].failure_class == "shape_variant_only_failure"
     assert summary.failure_cases[1].original_passed is False
+    assert summary.failure_cases[1].failure_class == "original_and_variant_correctness_failure"
+
+    taxonomy = {row.failure_class: row for row in summary.failure_taxonomy}
+    assert taxonomy["shape_variant_only_failure"].attempts == 1
+    assert taxonomy["shape_variant_only_failure"].failed_shape_checks == 1
+    assert taxonomy["shape_variant_only_failure"].original_failures == 0
+    assert taxonomy["shape_variant_only_failure"].variant_failures == 1
+    assert taxonomy["original_and_variant_correctness_failure"].attempts == 1
+    assert taxonomy["original_and_variant_correctness_failure"].failed_shape_checks == 2
+    assert taxonomy["original_and_variant_correctness_failure"].original_failures == 1
+    assert taxonomy["original_and_variant_correctness_failure"].variant_failures == 1
 
 
-def test_render_initial_findings_contains_stage_9_sections(tmp_path) -> None:
+def test_analyze_experiments_classifies_compilation_failures_first(tmp_path) -> None:
+    records = [
+        _record(
+            "task_002",
+            "baseline",
+            1,
+            "original",
+            False,
+            failure_reason="compilation_failure",
+        ),
+        _record(
+            "task_002",
+            "baseline",
+            1,
+            "odd",
+            False,
+            failure_reason="shape_variant_correctness_failure",
+        ),
+    ]
+    _write_artifact(tmp_path, "run_001", records)
+
+    summary = analyze_experiments(load_experiment_artifacts(tmp_path))
+
+    assert len(summary.failure_cases) == 1
+    assert summary.failure_cases[0].failure_class == "compilation_failure"
+    assert summary.failure_taxonomy[0].failure_class == "compilation_failure"
+    assert summary.failure_taxonomy[0].attempts == 1
+    assert summary.failure_taxonomy[0].failed_shape_checks == 2
+    assert summary.failure_taxonomy[0].failure_reasons == {
+        "compilation_failure": 1,
+        "shape_variant_correctness_failure": 1,
+    }
+
+
+def test_render_initial_findings_contains_expected_sections(tmp_path) -> None:
     records = [
         _record("task_001", "baseline", 1, "original", True),
         _record("task_001", "baseline", 1, "odd", True),
@@ -128,6 +174,8 @@ def test_render_initial_findings_contains_stage_9_sections(tmp_path) -> None:
     assert "## Experiment Setup" in report
     assert "## Task List" in report
     assert "## Prompt-Mode Results" in report
+    assert "## Failure Taxonomy" in report
+    assert "## Failure Taxonomy By Task And Prompt" in report
     assert "## Failure Cases" in report
     assert "## Lessons Learned" in report
     assert "`task_001`" in report

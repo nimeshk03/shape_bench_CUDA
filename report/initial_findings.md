@@ -53,6 +53,7 @@ GPU platform: Vast.ai RTX 4090 runs
 | Multi-shape pass rate | Fraction of attempts that pass every configured shape. |
 | Robustness score | Fraction of all per-shape evaluations that pass. |
 | Shape-variant-only failures | Attempts that pass original shape but fail at least one variant. |
+| Failure class | Attempt-level classification that separates compile/build failures, original-shape failures, and variant-only failures. |
 | Mean/median speedup | Speedup versus PyTorch eager for correctness-passing rows only. |
 
 ## Prompt-Mode Results
@@ -61,6 +62,23 @@ GPU platform: Vast.ai RTX 4090 runs
 |---|---:|---:|---:|---:|---:|---:|---:|
 | `baseline` | 45 | 95.6% | 95.6% | 95.6% | 0 | 2.068 | 1.068 |
 | `shape_aware` | 45 | 86.7% | 86.7% | 86.7% | 0 | 2.339 | 0.984 |
+
+## Failure Taxonomy
+
+| Failure class | Attempts | Failed shape checks | Original failures | Variant failures | Raw failure reasons |
+|---|---:|---:|---:|---:|---|
+| `compilation_failure` | 5 | 30 | 5 | 25 | compilation_failure: 30 |
+| `original_and_variant_correctness_failure` | 3 | 18 | 3 | 15 | original_shape_correctness_failure: 3, shape_variant_correctness_failure: 15 |
+
+## Failure Taxonomy By Task And Prompt
+
+| Task | Prompt mode | Failure class | Attempts | Failed shape checks | Original failures | Variant failures | Raw failure reasons |
+|---|---|---|---:|---:|---:|---:|---|
+| `task_008` | `shape_aware` | `original_and_variant_correctness_failure` | 1 | 6 | 1 | 5 | original_shape_correctness_failure: 1, shape_variant_correctness_failure: 5 |
+| `task_012` | `shape_aware` | `original_and_variant_correctness_failure` | 1 | 6 | 1 | 5 | original_shape_correctness_failure: 1, shape_variant_correctness_failure: 5 |
+| `task_015` | `baseline` | `compilation_failure` | 2 | 12 | 2 | 10 | compilation_failure: 12 |
+| `task_015` | `shape_aware` | `compilation_failure` | 3 | 18 | 3 | 15 | compilation_failure: 18 |
+| `task_016` | `shape_aware` | `original_and_variant_correctness_failure` | 1 | 6 | 1 | 5 | original_shape_correctness_failure: 1, shape_variant_correctness_failure: 5 |
 
 ## Task And Prompt Breakdown
 
@@ -99,28 +117,29 @@ GPU platform: Vast.ai RTX 4090 runs
 
 ## Failure Cases
 
-| Run | Task | Prompt mode | Attempt | Original passed | Shapes passed | Failure reasons | Failed shapes | Max abs error |
-|---|---|---|---:|---|---:|---|---|---:|
-| `20260604T035522Z` | `task_008` | `shape_aware` | 1 | no | 0/6 | original_shape_correctness_failure: 1, shape_variant_correctness_failure: 5 | original, smaller, larger, odd, batch_variant, non_power_of_two | 8.475 |
-| `20260604T081929Z` | `task_012` | `shape_aware` | 1 | no | 0/6 | original_shape_correctness_failure: 1, shape_variant_correctness_failure: 5 | original, smaller, larger, odd, batch_variant, non_power_of_two | 7.904 |
-| `20260604T132953Z` | `task_015` | `baseline` | 2 | no | 0/6 | compilation_failure: 6 | original, smaller, larger, odd, batch_variant, non_power_of_two | n/a |
-| `20260604T132953Z` | `task_015` | `baseline` | 3 | no | 0/6 | compilation_failure: 6 | original, smaller, larger, odd, batch_variant, non_power_of_two | n/a |
-| `20260604T132953Z` | `task_015` | `shape_aware` | 1 | no | 0/6 | compilation_failure: 6 | original, smaller, larger, odd, batch_variant, non_power_of_two | n/a |
-| `20260604T132953Z` | `task_015` | `shape_aware` | 2 | no | 0/6 | compilation_failure: 6 | original, smaller, larger, odd, batch_variant, non_power_of_two | n/a |
-| `20260604T132953Z` | `task_015` | `shape_aware` | 3 | no | 0/6 | compilation_failure: 6 | original, smaller, larger, odd, batch_variant, non_power_of_two | n/a |
-| `20260604T132953Z` | `task_016` | `shape_aware` | 2 | no | 0/6 | original_shape_correctness_failure: 1, shape_variant_correctness_failure: 5 | original, smaller, larger, odd, batch_variant, non_power_of_two | 7.240 |
+| Run | Task | Prompt mode | Attempt | Failure class | Original passed | Shapes passed | Failure reasons | Failed shapes | Max abs error |
+|---|---|---|---:|---|---|---:|---|---|---:|
+| `20260604T035522Z` | `task_008` | `shape_aware` | 1 | `original_and_variant_correctness_failure` | no | 0/6 | original_shape_correctness_failure: 1, shape_variant_correctness_failure: 5 | original, smaller, larger, odd, batch_variant, non_power_of_two | 8.475 |
+| `20260604T081929Z` | `task_012` | `shape_aware` | 1 | `original_and_variant_correctness_failure` | no | 0/6 | original_shape_correctness_failure: 1, shape_variant_correctness_failure: 5 | original, smaller, larger, odd, batch_variant, non_power_of_two | 7.904 |
+| `20260604T132953Z` | `task_015` | `baseline` | 2 | `compilation_failure` | no | 0/6 | compilation_failure: 6 | original, smaller, larger, odd, batch_variant, non_power_of_two | n/a |
+| `20260604T132953Z` | `task_015` | `baseline` | 3 | `compilation_failure` | no | 0/6 | compilation_failure: 6 | original, smaller, larger, odd, batch_variant, non_power_of_two | n/a |
+| `20260604T132953Z` | `task_015` | `shape_aware` | 1 | `compilation_failure` | no | 0/6 | compilation_failure: 6 | original, smaller, larger, odd, batch_variant, non_power_of_two | n/a |
+| `20260604T132953Z` | `task_015` | `shape_aware` | 2 | `compilation_failure` | no | 0/6 | compilation_failure: 6 | original, smaller, larger, odd, batch_variant, non_power_of_two | n/a |
+| `20260604T132953Z` | `task_015` | `shape_aware` | 3 | `compilation_failure` | no | 0/6 | compilation_failure: 6 | original, smaller, larger, odd, batch_variant, non_power_of_two | n/a |
+| `20260604T132953Z` | `task_016` | `shape_aware` | 2 | `original_and_variant_correctness_failure` | no | 0/6 | original_shape_correctness_failure: 1, shape_variant_correctness_failure: 5 | original, smaller, larger, odd, batch_variant, non_power_of_two | 7.240 |
 
 ## Lessons Learned
 
 - The current evidence does not show a robustness advantage for shape-aware prompting.
-- Baseline attempts passed all exported shape evaluations in the current artifact set.
-- Shape-aware failures so far failed the original shape too, so they are generated-code correctness failures rather than shape-variant-only failures.
+- No exported attempt currently shows a shape-variant-only failure; observed failures either fail the original shape too or fail before correctness can be measured.
+- Compilation failures are a major failure class and should be reported separately from correctness failures.
+- Attempt-level failure classes are needed because compilation failures, original-shape failures, and variant-only failures have different research meanings.
 - Performance varies strongly by task family; reductions and elementwise tasks can show speedups, while generated matmul-like kernels are often slower than PyTorch eager.
 - Mean speedup can be distorted by microsecond-scale timing outliers, so median speedup should be reported alongside mean speedup.
 
 ## Next Steps
 
-1. Add a generated CSV/Markdown table output for paper figures and quick review.
+1. Inspect representative kernels from each failure class to identify source-level root causes.
 2. Repeat timing-sensitive batches to estimate run-to-run variance.
 3. Add tasks that are more likely to create shape-variant-only failures, such as randomized shape sampling and stronger non-contiguous stride cases.
-4. Inspect failed generated kernels to classify root causes beyond the current high-level failure taxonomy.
+4. Add prompt ablations targeted at the dominant failure classes.

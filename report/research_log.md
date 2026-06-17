@@ -1738,3 +1738,33 @@ This batch still does not provide evidence that shape-aware prompting improves
 shape robustness. It does show that stronger stride/layout and reduction tasks
 are useful for exposing generated-code failures.
 ```
+
+## 2026-06-17 - Failure Taxonomy Reporting
+
+Added attempt-level failure taxonomy to the analysis report so results separate:
+
+```text
+compilation_failure
+original_and_variant_correctness_failure
+shape_variant_only_failure
+runtime_failure
+timeout_failure
+```
+
+Current exported experiments contain two observed failure classes:
+
+```text
+compilation_failure: 5 attempts, 30 failed shape checks
+original_and_variant_correctness_failure: 3 attempts, 18 failed shape checks
+shape_variant_only_failure: 0 attempts
+```
+
+Interpretation:
+
+```text
+No exported attempt currently shows the cleanest shape-generalization failure
+pattern: passing the original shape but failing only variants. The observed
+failures either fail during CUDA extension compilation or fail the original
+shape as well as variants, so they should be reported separately from
+variant-only robustness failures.
+```
