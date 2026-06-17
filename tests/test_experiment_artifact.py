@@ -68,6 +68,7 @@ def test_export_experiment_artifact_writes_versionable_summary(tmp_path) -> None
     assert output_path == tmp_path / "results" / "experiments" / "run_001" / "summary.json"
     assert artifact["schema_version"] == 2
     assert artifact["source_commit"] == "abc123"
+    assert artifact["run_metadata"]["source_commit"] == "abc123"
     assert artifact["vast_run_metadata"]["source_commit"] == "abc123"
     assert "exported_at" not in artifact
     assert artifact["raw_results"] == {

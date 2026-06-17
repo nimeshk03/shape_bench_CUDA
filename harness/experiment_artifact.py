@@ -52,6 +52,7 @@ def export_experiment_artifact(
         "schema_version": SCHEMA_VERSION,
         "source_run_dir": str(run_path),
         "source_commit": resolved_source_commit,
+        "run_metadata": metadata,
         "vast_run_metadata": metadata,
         "gpu_eval_batch_summary": summary,
         "aggregates": _aggregate(raw_results),
