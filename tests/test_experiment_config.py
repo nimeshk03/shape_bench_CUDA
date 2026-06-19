@@ -1,11 +1,25 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import pytest
 
 from harness import experiment_config
 from harness.experiment_config import load_experiment_config, validate_experiment_config_in_git
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_repository_experiment_configs_are_loadable() -> None:
+    config_paths = sorted((ROOT / "configs").glob("*.json"))
+
+    assert config_paths
+    for config_path in config_paths:
+        config = load_experiment_config(config_path, project_root=ROOT)
+        assert config.name
+        assert config.attempts
 
 
 def test_load_experiment_config_returns_validated_attempts(tmp_path) -> None:

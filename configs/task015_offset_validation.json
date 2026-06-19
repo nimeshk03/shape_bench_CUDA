@@ -1,0 +1,12 @@
+{
+  "name": "task015_offset_validation",
+  "description": "Focused GPU validation batch for task_015 after preserving device-side storage offsets and recording input layout metadata.",
+  "attempts": [
+    "generated/baseline/task_015/attempt_001",
+    "generated/baseline/task_015/attempt_002",
+    "generated/baseline/task_015/attempt_003",
+    "generated/shape_aware/task_015/attempt_001",
+    "generated/shape_aware/task_015/attempt_002",
+    "generated/shape_aware/task_015/attempt_003"
+  ]
+}

@@ -1869,3 +1869,18 @@ The next GPU run can directly verify whether task_015 inputs have non-zero
 CUDA storage offsets. This removes the previous ambiguity where CPU slicing
 followed by device transfer could preserve strides while resetting the offset.
 ```
+
+## 2026-06-19 - Focused Offset Validation Batch
+
+Prepared a focused GPU experiment config for `task_015` only:
+
+```text
+configs/task015_offset_validation.json
+```
+
+Purpose:
+
+```text
+Validate the corrected device-side offset input construction and inspect the
+new input layout metadata before rerunning broader task batches.
+```
