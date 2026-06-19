@@ -112,6 +112,19 @@ def test_task_015_input_has_offset_and_irregular_strides() -> None:
     assert bias.shape == torch.Size([5])
 
 
+def test_task_015_slices_after_transfer_to_requested_device() -> None:
+    module = _load_task_module(ROOT / "tasks" / "task_015" / "model.py", "task_015")
+    x, scale, bias = module.create_inputs((3, 5, 7), device="meta", seed=42)
+
+    assert x.device.type == "meta"
+    assert scale.device.type == "meta"
+    assert bias.device.type == "meta"
+    assert not x.is_contiguous()
+    assert x.storage_offset() > 0
+    assert x.stride()[1] == 52
+    assert x.stride()[2] == 3
+
+
 def test_task_016_layer_norm_uses_dynamic_last_dimension() -> None:
     module = _load_task_module(ROOT / "tasks" / "task_016" / "model.py", "task_016")
     x, weight, bias = module.create_inputs((2, 3, 7), seed=42)

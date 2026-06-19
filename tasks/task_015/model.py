@@ -29,11 +29,14 @@ def create_inputs(
     batch, rows, cols = normalized_shape
     generator = torch.Generator(device="cpu")
     generator.manual_seed(seed)
+    target_device = torch.device(device)
     base = torch.randn((batch + 1, rows * 2 + 3, cols * 3 + 5), generator=generator, dtype=dtype)
+    # Move the base before slicing so CUDA evaluations preserve a real device-side offset view.
+    base = base.to(target_device)
     x = base[1:, 1 : 1 + rows * 2 : 2, 2 : 2 + cols * 3 : 3]
     scale = torch.randn((cols,), generator=generator, dtype=dtype)
     bias = torch.randn((rows,), generator=generator, dtype=dtype)
-    return x.to(device), scale.to(device), bias.to(device)
+    return x, scale.to(target_device), bias.to(target_device)
 
 
 def reference(x: Tensor, scale: Tensor, bias: Tensor) -> Tensor:

@@ -34,6 +34,30 @@ def test_evaluate_attempt_passes_cpu_solution_and_writes_jsonl(tmp_path) -> None
     assert loaded[0].speedup_vs_eager is not None
     assert loaded[0].extra["benchmark"]["enabled"] is True
     assert loaded[0].extra["benchmark"]["iterations"] == 2
+    assert loaded[0].extra["input_layouts"] == [
+        {
+            "device": "cpu",
+            "dtype": "torch.float32",
+            "index": 0,
+            "is_contiguous": True,
+            "name": "x",
+            "shape": [4, 4],
+            "storage_offset": 0,
+            "stride": [4, 1],
+            "type": "Tensor",
+        },
+        {
+            "device": "cpu",
+            "dtype": "torch.float32",
+            "index": 1,
+            "is_contiguous": True,
+            "name": "y",
+            "shape": [4, 4],
+            "storage_offset": 0,
+            "stride": [4, 1],
+            "type": "Tensor",
+        },
+    ]
 
 
 def test_evaluate_attempt_can_disable_benchmarking(tmp_path) -> None:

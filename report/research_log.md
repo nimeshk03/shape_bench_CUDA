@@ -1844,3 +1844,28 @@ The next offset-focused tasks should create the base tensor on the target
 device before slicing and should record or assert non-zero CUDA storage offsets
 in the evaluation metadata.
 ```
+
+## 2026-06-19 - Device-Side Offset Validation Fix
+
+Updated `task_015` so the base tensor is moved to the requested device before
+the offset/stride view is sliced. This keeps deterministic CPU-generated values
+while allowing CUDA evaluation to preserve a real device-side storage offset.
+
+The evaluator now records per-input layout metadata in each shape result:
+
+```text
+device
+dtype
+shape
+stride
+storage_offset
+is_contiguous
+```
+
+Interpretation:
+
+```text
+The next GPU run can directly verify whether task_015 inputs have non-zero
+CUDA storage offsets. This removes the previous ambiguity where CPU slicing
+followed by device transfer could preserve strides while resetting the offset.
+```

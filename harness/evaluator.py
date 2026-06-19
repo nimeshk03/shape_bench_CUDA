@@ -157,9 +157,11 @@ def _evaluate_shape(
     attempt_label = _attempt_label(contract)
     shape_label = f"{shape_category} shape={list(shape)}"
     _log(log, f"{attempt_label}: {shape_label}: start")
+    input_layouts = None
     try:
         _log(log, f"{attempt_label}: {shape_label}: creating inputs/reference")
         inputs = _create_inputs(task_module, shape, device=device, seed=seed)
+        input_layouts = _input_layout_metadata(inputs, contract["input_names"])
         expected = _reference_output(task_module, inputs)
         _log(log, f"{attempt_label}: {shape_label}: running generated forward")
         actual = forward(*inputs)
@@ -181,11 +183,12 @@ def _evaluate_shape(
             failure_reason=_classify_exception(exc),
             max_abs_error=None,
             mean_abs_error=None,
-            extra={
+            extra=_with_optional_input_layouts(
                 **base_extra,
-                "phase": "shape_evaluation",
-                "error": str(exc),
-            },
+                input_layouts=input_layouts,
+                phase="shape_evaluation",
+                error=str(exc),
+            ),
         )
 
     failure_reason = None
@@ -233,12 +236,13 @@ def _evaluate_shape(
         pytorch_eager_ms=timing["pytorch_eager_ms"],
         generated_ms=timing["generated_ms"],
         speedup_vs_eager=timing["speedup_vs_eager"],
-        extra={
+        extra=_with_optional_input_layouts(
             **base_extra,
-            "phase": "shape_evaluation",
-            "comparison": comparison.message,
-            "benchmark": timing["extra"],
-        },
+            input_layouts=input_layouts,
+            phase="shape_evaluation",
+            comparison=comparison.message,
+            benchmark=timing["extra"],
+        ),
     )
 
 
@@ -369,6 +373,43 @@ def _create_inputs(task_module: ModuleType, shape: tuple[int, ...], *, device: s
     if not isinstance(inputs, tuple):
         raise TypeError("create_inputs must return a tuple")
     return inputs
+
+
+def _input_layout_metadata(inputs: tuple[Any, ...], input_names: list[str]) -> list[dict[str, Any]]:
+    layouts: list[dict[str, Any]] = []
+    for index, value in enumerate(inputs):
+        name = input_names[index] if index < len(input_names) else f"arg_{index}"
+        metadata: dict[str, Any] = {
+            "index": index,
+            "name": name,
+            "type": type(value).__name__,
+        }
+        if _is_tensor_like(value):
+            metadata.update(
+                {
+                    "device": str(value.device),
+                    "dtype": str(value.dtype),
+                    "shape": [int(dim) for dim in value.shape],
+                    "stride": [int(stride) for stride in value.stride()],
+                    "storage_offset": int(value.storage_offset()),
+                    "is_contiguous": bool(value.is_contiguous()),
+                }
+            )
+        layouts.append(metadata)
+    return layouts
+
+
+def _is_tensor_like(value: Any) -> bool:
+    return all(
+        hasattr(value, attr)
+        for attr in ("device", "dtype", "shape", "stride", "storage_offset", "is_contiguous")
+    )
+
+
+def _with_optional_input_layouts(*, input_layouts: list[dict[str, Any]] | None, **extra: Any) -> dict[str, Any]:
+    if input_layouts is not None:
+        extra["input_layouts"] = input_layouts
+    return extra
 
 
 def _reference_output(task_module: ModuleType, inputs: tuple[Any, ...]) -> Any:
