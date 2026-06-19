@@ -1804,3 +1804,43 @@ batch, so Colab is viable for GPU correctness validation. Timing should be
 reported separately by backend/GPU because the Colab T4 speedups differ from
 the Vast.ai RTX 4090 measurements.
 ```
+
+## 2026-06-18 - Failed Kernel Root-Cause Inspection
+
+Inspected failed generated kernels from the harder layout/reduction batch and
+recorded source-level notes in:
+
+```text
+report/failure_root_causes.md
+```
+
+Main findings:
+
+```text
+task_015: five failed attempts are CUDA extension compilation failures caused
+by invalid PyTorch C++ storage pointer API usage. The models often attempted
+stride/storage-offset reasoning, but generated calls such as
+x.storage().data<float>() or x.storage().data_ptr<float>() are not valid.
+
+task_016: the failed shape-aware attempt compiles and runs, but its block
+reduction drops shared-memory partial sums from threads 32-63. This explains
+why it fails the original shape as well as all shape variants.
+```
+
+Important caveat:
+
+```text
+task_015 currently slices on CPU and then transfers the sliced tensor to the
+GPU. This likely preserves irregular strides but may reset the non-zero storage
+offset on device. The current results should therefore be interpreted as strong
+evidence about stride/API generation failures, not yet as clean evidence about
+non-zero CUDA storage-offset handling.
+```
+
+Implication:
+
+```text
+The next offset-focused tasks should create the base tensor on the target
+device before slicing and should record or assert non-zero CUDA storage offsets
+in the evaluation metadata.
+```
